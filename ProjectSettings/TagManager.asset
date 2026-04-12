@@ -53,11 +53,11 @@ TagManager:
   - name: Windows
     uniqueID: 4214666227
     locked: 0
-  - name: Doors
-    uniqueID: 4089188279
-    locked: 0
   - name: Player
     uniqueID: 476213515
+    locked: 0
+  - name: Doors
+    uniqueID: 4089188279
     locked: 0
   m_RenderingLayers:
   - Default
