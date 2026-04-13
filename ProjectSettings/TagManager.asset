@@ -48,9 +48,6 @@ TagManager:
   - name: Floor
     uniqueID: 2592922823
     locked: 0
-  - name: Player
-    uniqueID: 476213515
-    locked: 0
   - name: Item
     uniqueID: 305298163
     locked: 0
@@ -59,6 +56,12 @@ TagManager:
     locked: 0
   - name: Windows
     uniqueID: 4214666227
+    locked: 0
+  - name: Player
+    uniqueID: 476213515
+    locked: 0
+  - name: Parts
+    uniqueID: 2698030545
     locked: 0
   - name: Doors
     uniqueID: 4089188279
