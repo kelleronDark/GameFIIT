@@ -7,6 +7,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     private Vector2 moveInput;
+    public Transform holdPoint;
+    private GameObject carriedItem;
 
     void Start()
     {
@@ -46,6 +48,57 @@ public class PlayerController : MonoBehaviour
             currentScale.x = Mathf.Abs(currentScale.x);
         }
         transform.localScale = currentScale;
+
+        if (Keyboard.current.fKey.wasPressedThisFrame) // Новая система ввода
+        {
+            if (carriedItem == null)
+            {
+                TryPickUp();
+            }
+            else
+            {
+                DropItem();
+            }
+        }
+    }
+
+    void TryPickUp()
+    {
+        // Ищем ВСЕ коллайдеры в радиусе
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 1.5f);
+
+        foreach (var hit in hits)
+        {
+            // Проверяем, что это не мы сами и что у объекта есть тег Item
+            if (hit.gameObject != gameObject && hit.CompareTag("Item"))
+            {
+                carriedItem = hit.gameObject;
+                carriedItem.transform.SetParent(holdPoint);
+                carriedItem.transform.localPosition = Vector3.zero;
+
+                if (carriedItem.GetComponent<Rigidbody2D>())
+                    carriedItem.GetComponent<Rigidbody2D>().simulated = false;
+
+                break; // Нашли предмет — выходим из цикла
+            }
+        }
+    }
+
+    void DropItem()
+    {
+        carriedItem.transform.SetParent(null); // Убираем родство
+
+        if (carriedItem.GetComponent<Rigidbody2D>())
+            carriedItem.GetComponent<Rigidbody2D>().simulated = true;
+
+        carriedItem = null;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        // Рисует красный круг в окне Scene, показывающий радиус подбора
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, 1.5f);
     }
 
     void FixedUpdate()

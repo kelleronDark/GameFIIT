@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Item
   layers:
   - Default
   - TransparentFX
@@ -47,14 +48,17 @@ TagManager:
   - name: Floor
     uniqueID: 2592922823
     locked: 0
+  - name: Player
+    uniqueID: 476213515
+    locked: 0
+  - name: Item
+    uniqueID: 1701899437
+    locked: 0
   - name: Walls
     uniqueID: 1253421771
     locked: 0
   - name: Windows
     uniqueID: 4214666227
-    locked: 0
-  - name: Player
-    uniqueID: 476213515
     locked: 0
   m_RenderingLayers:
   - Default
