@@ -7,7 +7,28 @@ public class LeverControl : MonoBehaviour
     public BoxCollider2D doorCollider; // Сюда тащим Дверь
     public Animator leverAnimator;   // Сюда тащим САМ РЫЧАГ
     
+    public bool startsOpened = false; 
     private bool isPlayerNearby = false;
+
+    void Start()
+    {
+        if (startsOpened)
+        {
+            // Мгновенно ставим аниматор двери в финальный кадр открытого состояния
+            // Замени "Gate_Opened" на точное имя стейта в твоем Animator
+            doorAnimator.Play("Gate_Opened", 0, 1f); 
+            doorAnimator.SetBool("isOpen", true);
+
+            if (leverAnimator != null)
+            {
+                // То же самое для рычага, чтобы он сразу был нажат
+                leverAnimator.Play("Lever_On", 0, 1f); 
+                leverAnimator.SetBool("isActivated", true);
+            }
+            
+            if (doorCollider != null) doorCollider.enabled = false; 
+        }
+    }
 
     void Update()
     {

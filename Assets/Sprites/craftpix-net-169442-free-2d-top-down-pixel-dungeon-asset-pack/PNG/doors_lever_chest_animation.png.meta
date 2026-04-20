@@ -167,10 +167,10 @@ TextureImporter:
       name: doors_lever_chest_animation_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 160
-        width: 32
-        height: 32
+        x: 7
+        y: 167
+        width: 19
+        height: 25
       alignment: 2
       pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
