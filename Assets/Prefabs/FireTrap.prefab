@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3098612971762097775}
   - component: {fileID: 4847060748464993025}
   - component: {fileID: 5527767592549172169}
+  - component: {fileID: 4590214691158606163}
   m_Layer: 0
   m_Name: FireTrap
   m_TagString: Untagged
@@ -80,7 +81,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1253421771
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -8607454360911141211, guid: 65a56d5fd313a2c4aae1a8fd107730a9, type: 3}
@@ -161,3 +162,15 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.3196564, y: 0.7058182}
   m_EdgeRadius: 0
+--- !u!114 &4590214691158606163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2264430387200548397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc95b9a332176c34c86c4978cf625e3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
