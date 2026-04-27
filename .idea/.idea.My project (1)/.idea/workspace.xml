@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f1631102-0712-4684-804b-1fffdc5271b2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.My project (1)/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.My project (1)/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Sprites/free-pixel-art-dungeon-objects-asset-pack/PNG/trap_saw.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Sprites/free-pixel-art-dungeon-objects-asset-pack/PNG/trap_saw.png.meta" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +17,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/AlwaysActiveSpikeTrap.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Chest.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/SpikeTrap.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -111,7 +113,7 @@
       <workItem from="1776747439612" duration="2369000" />
       <workItem from="1776761429823" duration="1257000" />
       <workItem from="1777231090438" duration="4943000" />
-      <workItem from="1777314985506" duration="597000" />
+      <workItem from="1777314985506" duration="1992000" />
     </task>
     <servers />
   </component>
