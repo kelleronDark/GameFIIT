@@ -9,7 +9,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Obstacles
   - Water
   - UI
   - 
@@ -50,6 +50,9 @@ TagManager:
     locked: 0
   - name: Walls
     uniqueID: 1253421771
+    locked: 0
+  - name: Obstacles
+    uniqueID: 1122828607
     locked: 0
   - name: Windows
     uniqueID: 4214666227
