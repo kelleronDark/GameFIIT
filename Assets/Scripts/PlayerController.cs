@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     public Transform holdPoint;
     private GameObject carriedItem;
+    
+    [Header("UI")]
+    public UnityEngine.UI.Slider healthSlider; // <-- сюда перетащишь Slider из Unity
 
     void Start()
     {
@@ -22,6 +26,8 @@ public class PlayerController : MonoBehaviour
         // Инициализация здоровья
         currentHealth = maxHealth;
         Debug.Log($"Здоровье игрока: {currentHealth}/{maxHealth}");
+        
+        UpdateHealthUI(); // <-- ДОБАВЬ ЭТУ СТРОКУ
     }
 
     void Update()
@@ -142,15 +148,38 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // === НОВЫЕ МЕТОДЫ ДЛЯ ЗДОРОВЬЯ ===
+    private void UpdateHealthUI()
+    {
+        if (healthSlider != null)
+        {
+            // Рассчитываем процент здоровья (от 0 до 1)
+            float healthPercent = (float)currentHealth / maxHealth;
+            healthSlider.value = healthPercent;
+
+            // Меняем цвет заполнения: зелёный → жёлтый → красный
+            Image fillImage = healthSlider.fillRect.GetComponent<Image>();
+            if (fillImage != null)
+            {
+                if (healthPercent > 0.6f)
+                    fillImage.color = Color.green;
+                else if (healthPercent > 0.3f)
+                    fillImage.color = Color.yellow;
+                else
+                    fillImage.color = Color.red;
+            }
+        }
+    }
 
     /// <summary>
     /// Получить урон
     /// </summary>
-    /// <param name="damage">Количество урона</param>
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        if (currentHealth < 0) currentHealth = 0;
+
+        UpdateHealthUI(); // обновляем полоску
+
         Debug.Log($"Игрок получил {damage} урона. Здоровье: {currentHealth}/{maxHealth}");
 
         if (currentHealth <= 0)
@@ -160,29 +189,26 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Смерть игрока
+    /// Восстановить здоровье
     /// </summary>
-    private void Die()
-    {
-        Debug.Log("Игрок погиб!");
-        // Здесь можно добавить:
-        // - Перезапуск уровня
-        // - Экран Game Over
-        // - Эффект смерти
-        // - Отключение управления
-        enabled = false; // Отключаем скрипт (временно)
-        // Или: Destroy(gameObject);
-    }
-
-    /// <summary>
-    /// Восстановить здоровье (на будущее)
-    /// </summary>
-    /// <param name="amount">Сколько восстановить</param>
     public void Heal(int amount)
     {
         currentHealth += amount;
         if (currentHealth > maxHealth)
             currentHealth = maxHealth;
+
+        UpdateHealthUI(); // обновляем полоску
+
         Debug.Log($"Игрок восстановил {amount} HP. Здоровье: {currentHealth}/{maxHealth}");
+    }
+
+    /// <summary>
+    /// Смерть игрока
+    /// </summary>
+    private void Die()
+    {
+        Debug.Log("Игрок погиб!");
+        enabled = false; // отключаем управление (временно)
+        // Или: Destroy(gameObject); если хочешь удалить игрока
     }
 }
