@@ -35,11 +35,21 @@ public class KeyInventory : MonoBehaviour
 
     void InitializeUI()
     {
-        // Очищаем все слоты при старте
+        currentKeys = 0; // Сброс на всякий случай
+
         foreach (var slot in keySlots)
         {
-            if (slot != null)
-                slot.enabled = false;
+            if (slot == null) continue;
+
+            slot.enabled = true; // Фон всегда виден
+
+            Transform keyIconTransform = slot.transform.Find("KeyIcon");
+            if (keyIconTransform != null)
+            {
+                Image keyIcon = keyIconTransform.GetComponent<Image>();
+                if (keyIcon != null)
+                    keyIcon.enabled = false; // Иконка скрыта по умолчанию
+            }
         }
     }
 
@@ -105,17 +115,45 @@ public class KeyInventory : MonoBehaviour
 
     void UpdateUI()
     {
-        // Обновляем визуальное отображение слотов
+        // Проходим по всем 4 слотам
         for (int i = 0; i < keySlots.Length; i++)
         {
             if (keySlots[i] != null)
             {
-                // Показываем слот если есть ключ
-                keySlots[i].enabled = (i < currentKeys);
+                // 1. ОБЪЯВЛЯЕМ переменную hasKey здесь!
+                // Она true, если индекс слота меньше текущего количества ключей
+                bool hasKey = (i < currentKeys);
+
+                // 2. Находим иконку внутри слота
+                Transform keyIconTransform = keySlots[i].transform.Find("KeyIcon");
                 
-                // Устанавливаем спрайт ключа
-                if (keySprite != null)
-                    keySlots[i].sprite = keySprite;
+                if (keyIconTransform != null)
+                {
+                    Image keyIcon = keyIconTransform.GetComponent<Image>();
+                    if (keyIcon != null)
+                    {
+                        // Включаем/выключаем иконку в зависимости от hasKey
+                        keyIcon.enabled = hasKey;
+                        
+                        // Если иконка включена, ставим ей правильный спрайт
+                        if (hasKey && keySprite != null)
+                        {
+                            keyIcon.sprite = keySprite;
+                        }
+                    }
+                }
+
+                // 3. ЗАПУСКАЕМ ПУЛЬСАЦИЮ только для нового ключа
+                // Используем ту самую переменную hasKey, которую мы создали выше
+                if (hasKey && i == currentKeys - 1) 
+                {
+                    KeySlotPulse pulser = keySlots[i].GetComponent<KeySlotPulse>();
+                    
+                    if (pulser != null)
+                    {
+                        pulser.Pulse();
+                    }
+                }
             }
         }
     }
