@@ -1,9 +1,11 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // обязательно добавить
+using UnityEngine.InputSystem;
 
 public class PickupPart : MonoBehaviour
 {
-    public int partIndex;
+    public int partIndex;        // ID детали (можно использовать для логики)
+    public Sprite partSprite;  
+
     private InventoryManager inventory;
     private bool playerIsNear = false;
 
@@ -11,16 +13,18 @@ public class PickupPart : MonoBehaviour
     {
         inventory = FindObjectOfType<InventoryManager>();
         if (inventory == null)
-            Debug.LogError("InventoryManager не найден!");
+            Debug.LogError("InventoryManager не найден на сцене!");
     }
 
     void Update()
     {
-        // Новый способ проверки нажатия F
         if (playerIsNear && Keyboard.current.fKey.wasPressedThisFrame)
         {
-            inventory.PickupItem(partIndex);
-            Destroy(gameObject);
+            bool picked = inventory.PickupItem(partSprite);
+            if (picked)
+                Destroy(gameObject); // удаляем предмет со сцены
+            else
+                Debug.Log("Не удалось подобрать — инвентарь полон.");
         }
     }
 

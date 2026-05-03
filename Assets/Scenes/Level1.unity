@@ -17793,7 +17793,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4245283, g: 0.33842114, b: 0.33842114, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -18142,6 +18142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Invenory
   partIndex: 0
+  partSprite: {fileID: -6387210722906142475, guid: 410d99bd3c4fee5429865d283ec5b8ff, type: 3}
 --- !u!61 &257151094
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -18176,17 +18177,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.027088404, y: 0.040043354}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.625, y: 1.6875}
+    oldSize: {x: 0.34, y: 0.34}
     newSize: {x: 1.625, y: 1.6875}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.6396079, y: 0.56187725}
   m_EdgeRadius: 0
 --- !u!212 &257151095
 SpriteRenderer:
@@ -18237,7 +18238,7 @@ SpriteRenderer:
   m_SortingLayer: 10
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -1120378270748970023, guid: 72077cc4d18da1f4ab46f9f230646a8c, type: 3}
+  m_Sprite: {fileID: -6387210722906142475, guid: 410d99bd3c4fee5429865d283ec5b8ff, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -18256,8 +18257,8 @@ Transform:
   m_GameObject: {fileID: 257151092}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.94, y: -10.74, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -5.02, y: -11.49, z: 0}
+  m_LocalScale: {x: 2.778475, y: 2.778475, z: 2.778475}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -25718,7 +25719,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4245283, g: 0.33842114, b: 0.33842114, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -26074,6 +26075,7 @@ MonoBehaviour:
   - {fileID: 930209049}
   - {fileID: 1211504099}
   - {fileID: 1288589362}
+  maxItems: 4
 --- !u!1 &950967252
 GameObject:
   m_ObjectHideFlags: 0
@@ -45323,7 +45325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4245283, g: 0.33842114, b: 0.33842114, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -45446,7 +45448,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4245283, g: 0.33842114, b: 0.33842114, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -70402,6 +70404,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Invenory
   partIndex: 3
+  partSprite: {fileID: -899115524547473961, guid: 410d99bd3c4fee5429865d283ec5b8ff, type: 3}
 --- !u!61 &2006335216
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -70436,17 +70439,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.030421123, y: 0.00036014616}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.625, y: 1.6875}
+    oldSize: {x: 0.28, y: 0.32}
     newSize: {x: 1.625, y: 1.6875}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.51984787, y: 0.49010858}
   m_EdgeRadius: 0
 --- !u!212 &2006335217
 SpriteRenderer:
@@ -70497,7 +70500,7 @@ SpriteRenderer:
   m_SortingLayer: 10
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -1120378270748970023, guid: 72077cc4d18da1f4ab46f9f230646a8c, type: 3}
+  m_Sprite: {fileID: -899115524547473961, guid: 410d99bd3c4fee5429865d283ec5b8ff, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -70516,8 +70519,8 @@ Transform:
   m_GameObject: {fileID: 2006335214}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 12.88, y: 2.39, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 10.741, y: 2.631, z: 0}
+  m_LocalScale: {x: 2.819, y: 2.819, z: 2.819}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
