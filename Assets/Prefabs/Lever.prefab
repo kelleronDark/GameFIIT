@@ -82,7 +82,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1253421771
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -1727321243, guid: 8e28b187548caf14db68d8d9b50777e9, type: 3}
@@ -157,6 +157,7 @@ MonoBehaviour:
   doorCollider: {fileID: 0}
   leverAnimator: {fileID: 7431992126600269849}
   startsOpened: 0
+  hintPrefab: {fileID: 4752718864435063218, guid: 1f9599001008b5641951f4ed6855b215, type: 3}
 --- !u!95 &7431992126600269849
 Animator:
   serializedVersion: 7
