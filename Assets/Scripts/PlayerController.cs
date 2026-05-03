@@ -1,9 +1,12 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // 1. Обязательно добавляем этот namespace
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
     public float speed = 5f;
+    public int maxHealth = 100; // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РґРѕСЂРѕРІСЊРµ
+    private int currentHealth;  // РўРµРєСѓС‰РµРµ Р·РґРѕСЂРѕРІСЊРµ
+
     private Rigidbody2D rb;
     private Animator anim;
     private Vector2 moveInput;
@@ -12,15 +15,17 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Скрипт запущен! Использую New Input System.");
+        Debug.Log("РРіСЂРѕРє СЃРѕР·РґР°РЅ! РџСЂРѕРІРµСЂРєР° New Input System.");
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        
+        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Р·РґРѕСЂРѕРІСЊСЏ
+        currentHealth = maxHealth;
+        Debug.Log($"Р—РґРѕСЂРѕРІСЊРµ РёРіСЂРѕРєР°: {currentHealth}/{maxHealth}");
     }
 
     void Update()
     {
-        // 2. Новый способ получения ввода для WASD/Стрелок
-        // Это самый простой способ быстро починить код в новой системе
         if (Keyboard.current != null)
         {
             Vector2 input = Vector2.zero;
@@ -33,11 +38,9 @@ public class PlayerController : MonoBehaviour
             moveInput = input;
         }
 
-        // 3. Анимации (твой рабочий код без изменений)
         anim.SetFloat("MoveX", Mathf.Abs(moveInput.x));
         anim.SetFloat("MoveY", moveInput.y);
 
-        // 4. Поворот персонажа (твой рабочий код без изменений)
         Vector3 currentScale = transform.localScale;
         if (moveInput.x < 0)
         {
@@ -49,27 +52,57 @@ public class PlayerController : MonoBehaviour
         }
         transform.localScale = currentScale;
 
-        if (Keyboard.current.fKey.wasPressedThisFrame) // Новая система ввода
+        if (Keyboard.current.fKey.wasPressedThisFrame)
         {
-            if (carriedItem == null)
+            bool interactedWithObject = false;
+
+            // 1. РџСЂРѕРІРµСЂСЏРµРј РІСЃРµ РёРЅС‚РµСЂР°РєС‚РёРІРЅС‹Рµ РѕР±СЉРµРєС‚С‹ СЂСЏРґРѕРј
+            Collider2D[] nearbyObjects = Physics2D.OverlapCircleAll(transform.position, 2f);
+            foreach (var hit in nearbyObjects)
             {
-                TryPickUp();
+                if (hit.CompareTag("Interactable"))
+                {
+                    // РџСЂРѕРІРµСЂСЏРµРј РЅР° СЃСѓРЅРґСѓРє
+                    Chest chest = hit.GetComponent<Chest>();
+                    if (chest != null && !chest.isOpened)
+                    {
+                        chest.OpenChest();
+                        interactedWithObject = true;
+                        break;
+                    }
+
+                    // РџСЂРѕРІРµСЂСЏРµРј РЅР° РґРІРµСЂСЊ
+                    Door door = hit.GetComponent<Door>();
+                    if (door != null && !door.isOpened)
+                    {
+                        door.TryOpen();
+                        interactedWithObject = true;
+                        break;
+                    }
+                }
             }
-            else
+
+            // 2. Р•СЃР»Рё РЅРёС‡РµРіРѕ РЅРµ РѕС‚РєСЂС‹Р»Рё, РІС‹РїРѕР»РЅСЏРµРј СЃС‚Р°СЂСѓСЋ Р»РѕРіРёРєСѓ СЃ РїСЂРµРґРјРµС‚Р°РјРё
+            if (!interactedWithObject)
             {
-                DropItem();
+                if (carriedItem == null)
+                {
+                    TryPickUp();
+                }
+                else
+                {
+                    DropItem();
+                }
             }
         }
     }
 
     void TryPickUp()
     {
-        // Ищем ВСЕ коллайдеры в радиусе
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 1.5f);
 
         foreach (var hit in hits)
         {
-            // Проверяем, что это не мы сами и что у объекта есть тег Item
             if (hit.gameObject != gameObject && hit.CompareTag("Item"))
             {
                 carriedItem = hit.gameObject;
@@ -79,14 +112,14 @@ public class PlayerController : MonoBehaviour
                 if (carriedItem.GetComponent<Rigidbody2D>())
                     carriedItem.GetComponent<Rigidbody2D>().simulated = false;
 
-                break; // Нашли предмет — выходим из цикла
+                break;
             }
         }
     }
 
     void DropItem()
     {
-        carriedItem.transform.SetParent(null); // Убираем родство
+        carriedItem.transform.SetParent(null);
 
         if (carriedItem.GetComponent<Rigidbody2D>())
             carriedItem.GetComponent<Rigidbody2D>().simulated = true;
@@ -96,18 +129,60 @@ public class PlayerController : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        // Рисует красный круг в окне Scene, показывающий радиус подбора
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, 1.5f);
     }
 
     void FixedUpdate()
     {
-        // 5. Исправленная логика движения для 2D
         if (moveInput.magnitude > 0)
         {
             Vector2 movement = moveInput.normalized * speed * Time.fixedDeltaTime;
             rb.MovePosition(rb.position + movement);
         }
+    }
+
+    // === РќРћР’Р«Р• РњР•РўРћР”Р« Р”Р›РЇ Р—Р”РћР РћР’Р¬РЇ ===
+
+    /// <summary>
+    /// РџРѕР»СѓС‡РёС‚СЊ СѓСЂРѕРЅ
+    /// </summary>
+    /// <param name="damage">РљРѕР»РёС‡РµСЃС‚РІРѕ СѓСЂРѕРЅР°</param>
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        Debug.Log($"РРіСЂРѕРє РїРѕР»СѓС‡РёР» {damage} СѓСЂРѕРЅР°. Р—РґРѕСЂРѕРІСЊРµ: {currentHealth}/{maxHealth}");
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    /// <summary>
+    /// РЎРјРµСЂС‚СЊ РёРіСЂРѕРєР°
+    /// </summary>
+    private void Die()
+    {
+        Debug.Log("РРіСЂРѕРє РїРѕРіРёР±!");
+        // Р—РґРµСЃСЊ РјРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ:
+        // - РџРµСЂРµР·Р°РїСѓСЃРє СѓСЂРѕРІРЅСЏ
+        // - Р­РєСЂР°РЅ Game Over
+        // - Р­С„С„РµРєС‚ СЃРјРµСЂС‚Рё
+        // - РћС‚РєР»СЋС‡РµРЅРёРµ СѓРїСЂР°РІР»РµРЅРёСЏ
+        enabled = false; // РћС‚РєР»СЋС‡Р°РµРј СЃРєСЂРёРїС‚ (РІСЂРµРјРµРЅРЅРѕ)
+        // РР»Рё: Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ Р·РґРѕСЂРѕРІСЊРµ (РЅР° Р±СѓРґСѓС‰РµРµ)
+    /// </summary>
+    /// <param name="amount">РЎРєРѕР»СЊРєРѕ РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ</param>
+    public void Heal(int amount)
+    {
+        currentHealth += amount;
+        if (currentHealth > maxHealth)
+            currentHealth = maxHealth;
+        Debug.Log($"РРіСЂРѕРє РІРѕСЃСЃС‚Р°РЅРѕРІРёР» {amount} HP. Р—РґРѕСЂРѕРІСЊРµ: {currentHealth}/{maxHealth}");
     }
 }

@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Item
+  - Interactable
   layers:
   - Default
   - TransparentFX
@@ -48,6 +49,9 @@ TagManager:
   - name: Floor
     uniqueID: 2592922823
     locked: 0
+  - name: Linkers
+    uniqueID: 2478709917
+    locked: 0
   - name: Walls
     uniqueID: 1253421771
     locked: 0
@@ -57,14 +61,20 @@ TagManager:
   - name: Windows
     uniqueID: 4214666227
     locked: 0
-  - name: Player
-    uniqueID: 476213515
+  - name: Designer
+    uniqueID: 3443250871
+    locked: 0
+  - name: Item
+    uniqueID: 305298163
     locked: 0
   - name: Item
     uniqueID: 305298163
     locked: 0
   - name: Parts
     uniqueID: 2698030545
+    locked: 0
+  - name: Player
+    uniqueID: 476213515
     locked: 0
   - name: Doors
     uniqueID: 4089188279
