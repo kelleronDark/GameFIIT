@@ -9,6 +9,8 @@ public class Checkpoint : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (Time.timeSinceLevelLoad < 2f) return;
+        
         if (other.CompareTag("Player") && !isUsed
             && Time.time >= nextSaveTime)
         {
@@ -25,18 +27,26 @@ public class Checkpoint : MonoBehaviour
                 {
                     InventoryManager.Instance.SaveInventoryState();
                 }
-
-                // 2. Запускаем анимацию дискеты (наша гордость!)
-                if (UIAnimationController.Instance != null)
-                {
-                    UIAnimationController.Instance.TriggerSaveIcon();
-                }
+                
+                // if (KeyInventory.Instance != null)
+                // {
+                //     KeyInventory.Instance.SaveKeyState();
+                // }
 
                 // 3. Сохраняем данные на диск/в память
                 if (SaveManager.Instance != null)
                 {
                     SaveManager.Instance.SaveGame();
                 }
+                
+                // 4. Запускаем анимацию дискеты (наша гордость!)
+                if (UIAnimationController.Instance != null)
+                {
+                    UIAnimationController.Instance.TriggerSaveIcon();
+                }
+                
+                Collider2D col = GetComponent<Collider2D>();
+                if (col != null) col.enabled = false;
                 
                 Debug.Log("Чекпоинт активирован!");
             }

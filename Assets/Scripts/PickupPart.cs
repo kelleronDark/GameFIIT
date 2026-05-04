@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,23 +9,58 @@ public class PickupPart : MonoBehaviour
 
     private InventoryManager inventory;
     private bool playerIsNear = false;
+    private bool hasChecked = false;
 
     void Start()
     {
-        inventory = FindObjectOfType<InventoryManager>();
-        if (inventory == null)
-            Debug.LogError("InventoryManager не найден на сцене!");
+        inventory = InventoryManager.Instance;
+        StartCoroutine(CheckInventoryDelayed());
+    }
+    
+    IEnumerator CheckInventoryDelayed()
+    {
+        // Ждем чуть-чуть, пока отработает загрузка из SaveManager
+        yield return new WaitForSeconds(0.2f);
+
+        if (inventory != null && inventory.HasItem(partSprite.name))
+        {
+            Debug.Log($"[CLEANUP] Предмет {partSprite.name} уже в кармане. Удаляю с земли.");
+            Destroy(gameObject);
+        }
     }
 
     void Update()
     {
+        if (!hasChecked && inventory != null && inventory.isLoaded)
+        {
+            if (inventory.HasItem(partSprite.name))
+            {
+                Debug.Log($"[SaveSystem] Предмет {partSprite.name} уже в инвентаре. Самоуничтожение.");
+                Destroy(gameObject);
+            }
+            hasChecked = true;
+        }
+        
         if (playerIsNear && Keyboard.current.fKey.wasPressedThisFrame)
         {
             bool picked = inventory.PickupItem(partSprite);
             if (picked)
-                Destroy(gameObject); // удаляем предмет со сцены
+            {
+                // 2. Если подобрали — сохраняем прогресс (позицию, инвентарь, ключи)
+                if (SaveManager.Instance != null)
+                {
+                    // Вызываем наш надежный метод быстрой записи
+                    SaveManager.Instance.QuickSave();
+                    Debug.Log($"Запчасть {partIndex} подобрана. Игра сохранена.");
+                }
+
+                // 3. Удаляем объект со сцены
+                Destroy(gameObject);
+            }
             else
+            {
                 Debug.Log("Не удалось подобрать — инвентарь полон.");
+            }
         }
     }
 

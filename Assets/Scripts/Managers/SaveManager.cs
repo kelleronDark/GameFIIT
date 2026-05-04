@@ -35,15 +35,27 @@ public class SaveManager : MonoBehaviour
 
         if (player == null) return;
 
-        // 2. Собираем данные
+        PlayerController pc = player.GetComponent<PlayerController>();
         SaveData data = new SaveData();
-        data.posX = player.position.x;
-        data.posY = player.position.y;
+        
+        if (pc != null)
+        {
+            Vector3 cpPos = pc.GetLastCheckpointPos(); // Нам нужно добавить этот геттер
+            data.posX = cpPos.x;
+            data.posY = cpPos.y;
+        }
 
         // Добавляем данные из инвентаря (если InventoryManager существует)
         if (InventoryManager.Instance != null)
         {
             data.inventoryItemNames = InventoryManager.Instance.GetCollectedItemsNames();
+        }
+        
+        data.keyCount = KeyInventory.Instance.GetKeyCount();
+        
+        if (data.inventoryItemNames != null)
+        {
+            Debug.Log($"[SAVE] Сохраняю предметов: {data.inventoryItemNames.Count}. Первый: {(data.inventoryItemNames.Count > 0 ? data.inventoryItemNames[0] : "пусто")}");
         }
 
         // 3. Сериализация в JSON
@@ -65,11 +77,84 @@ public class SaveManager : MonoBehaviour
 
         string json = File.ReadAllText(filePath);
         SaveData data = JsonUtility.FromJson<SaveData>(json);
+        
+        if (InventoryManager.Instance != null)
+        {
+            InventoryManager.Instance.LoadInventoryFromNames(data.inventoryItemNames);
+        }
+            
+        if (KeyInventory.Instance != null)
+        {
+            KeyInventory.Instance.RestoreKeys(data.keyCount);
+        }
 
-        if (player == null) player = GameObject.FindGameObjectWithTag("Player").transform;
-        
-        player.position = new Vector2(data.posX, data.posY);
-        
-        // Тут в будущем добавим логику восстановления предметов в инвентарь
+        // Ищем игрока, если ссылка потерялась при смене сцены
+        if (player == null) 
+        {
+            GameObject p = GameObject.FindGameObjectWithTag("Player");
+            if (p != null) player = p.transform;
+        }
+
+        if (player != null)
+        {
+            player.position = new Vector2(data.posX, data.posY);
+            
+            var cam = FindFirstObjectByType<CameraFollow>();
+            if (cam != null) 
+            {
+                cam.target = player; // Гарантируем, что таргет назначен
+                cam.Warp();
+            }
+            
+            Debug.Log("Позиция игрока восстановлена.");
+        }
+    }
+    
+    public bool HasSaveFile()
+    {
+        return File.Exists(filePath);
+    }
+
+// 2. Удаление файла (нужна для кнопки "Новая игра")
+    public void DeleteSaveFile()
+    {
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+            Debug.Log("<color=red>Файл сохранения удален для новой игры.</color>");
+        }
+    }
+    
+    private void OnEnable()
+    {
+        // Подписываемся на событие загрузки сцены
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        // Отписываемся, чтобы не было утечек памяти
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+    
+    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
+    {
+        // Проверяем: если это сцена игры (индекс 1) и у нас есть что загружать
+        if (scene.buildIndex == 1 && HasSaveFile())
+        {
+            Debug.Log("Игровая сцена загружена, восстанавливаем данные...");
+            LoadGame(); // Твой метод загрузки
+        }
+    }
+    
+    // Добавь этот метод для сохранения при подборе запчастей
+    public void QuickSave()
+    {
+        // Сначала обновляем "снимки" в памяти
+        if (InventoryManager.Instance != null) InventoryManager.Instance.SaveInventoryState();
+        if (KeyInventory.Instance != null) KeyInventory.Instance.SaveKeyState();
+
+        // Затем пишем в файл
+        SaveGame();
     }
 }

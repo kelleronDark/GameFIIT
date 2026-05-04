@@ -30,6 +30,12 @@ public class PlayerController : MonoBehaviour
         
         lastCheckpointPos = transform.position;
         
+        if (SaveManager.Instance != null && !SaveManager.Instance.HasSaveFile())
+        {
+            CameraFollow cam = FindFirstObjectByType<CameraFollow>();
+            if (cam != null) cam.Warp();
+        }
+        
         UpdateHealthUI(); // <-- ДОБАВЬ ЭТУ СТРОКУ
     }
     
@@ -220,6 +226,9 @@ public class PlayerController : MonoBehaviour
 
         // 1. Телепортируем на последнюю сохраненную позицию
         transform.position = lastCheckpointPos;
+        
+        CameraFollow cam = FindFirstObjectByType<CameraFollow>();
+        if (cam != null) cam.Warp();
 
         // 2. Обнуляем инерцию (чтобы игрока не "несло" после респауна)
         if (rb != null) rb.linearVelocity = Vector2.zero;
@@ -236,6 +245,11 @@ public class PlayerController : MonoBehaviour
         {
             InventoryManager.Instance.ResetInventory();
         }
+        
+        if (KeyInventory.Instance != null)
+        {
+            KeyInventory.Instance.ResetKeys();
+        }
     }
     
     public void ForceDropItem()
@@ -247,5 +261,10 @@ public class PlayerController : MonoBehaviour
             // Если это квестовый предмет, который должен вернуться на спавн, 
             // лучше его уничтожить, а система спавна его создаст заново
         }
+    }
+    
+    public Vector3 GetLastCheckpointPos()
+    {
+        return lastCheckpointPos;
     }
 }
