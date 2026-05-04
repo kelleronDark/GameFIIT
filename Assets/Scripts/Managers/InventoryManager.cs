@@ -1,9 +1,14 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance; // Синглтон — удобно для доступа из PickupPart
+    
+    private Sprite[] savedSpritesSnapshot = new Sprite[4];
+    
+    private PlayerController playerController;
 
     [Header("UI Slots")]
     public Image[] slots; // Перетащи сюда Image от Slot 1–4
@@ -14,10 +19,47 @@ public class InventoryManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null) 
+            playerController = playerObj.GetComponent<PlayerController>();
+
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
+    
+    public void SaveInventoryState()
+    {
+        // Копируем текущие спрайты в массив сохранения
+        for (int i = 0; i < collectedSprites.Length; i++)
+        {
+            savedSpritesSnapshot[i] = collectedSprites[i];
+        }
+        Debug.Log("Снимок инвентаря для сохранения сделан.");
+    }
+    
+    public void ResetInventory()
+    {
+        // 1. Выбрасываем то, что в руках (твой метод уже есть)
+        playerController.ForceDropItem(); 
+
+        // 2. Откатываем массив спрайтов к моменту сохранения
+        for (int i = 0; i < collectedSprites.Length; i++)
+        {
+            collectedSprites[i] = savedSpritesSnapshot[i];
+        
+            // 3. Обновляем визуальные слоты UI
+            if (collectedSprites[i] != null)
+            {
+                slots[i].sprite = collectedSprites[i];
+                slots[i].enabled = true;
+            }
+            else
+            {
+                slots[i].sprite = null;
+                slots[i].enabled = false;
+            }
+        }
+        Debug.Log("Инвентарь откачен к состоянию последнего сохранения.");
     }
 
     void Start()
@@ -88,5 +130,15 @@ public class InventoryManager : MonoBehaviour
     {
         if (index < 0 || index >= collectedSprites.Length) return false;
         return collectedSprites[index] != null;
+    }
+    
+    public List<string> GetCollectedItemsNames()
+    {
+        List<string> names = new List<string>();
+        foreach (var sprite in collectedSprites)
+        {
+            if (sprite != null) names.Add(sprite.name);
+        }
+        return names;
     }
 }
