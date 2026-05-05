@@ -21,4 +21,17 @@ public class CameraFollow : MonoBehaviour
             smoothSpeed * Time.deltaTime
         );
     }
+    
+    public void Warp()
+    {
+        if (target == null) return;
+
+        transform.position = new Vector3(
+            target.position.x,
+            target.position.y,
+            -10f
+        );
+        
+        Debug.Log("Камера мгновенно перемещена к игроку.");
+    }
 }

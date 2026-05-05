@@ -15,6 +15,8 @@ public class KeyInventory : MonoBehaviour
 
     [Header("Debug")]
     public bool showDebugLogs = true;
+    
+    private int savedKeysSnapshot = 0;
 
     void Awake()
     {
@@ -169,5 +171,29 @@ public class KeyInventory : MonoBehaviour
     void RemoveTestKey()
     {
         UseKey();
+    }
+    
+    public void SaveKeyState()
+    {
+        // savedKeysSnapshot = currentKeys;
+        // Debug.Log($"Состояние ключей сохранено: {savedKeysSnapshot}");
+    }
+
+    // Вызывается при смерти
+    public void ResetKeys()
+    {
+        // currentKeys = savedKeysSnapshot;
+        // UpdateUI();
+        // Debug.Log("Ключи восстановлены из сохранения.");
+    }
+    
+    /// <summary>
+    /// Принудительно восстанавливает количество ключей (для загрузки и чекпоинтов)
+    /// </summary>
+    public void RestoreKeys(int count)
+    {
+        // currentKeys = count;
+        // savedKeysSnapshot = count; // Обновляем и снимок, чтобы после смерти ключи не откатились к 0
+        // UpdateUI(); // Перерисовываем иконки ключей в UI
     }
 }

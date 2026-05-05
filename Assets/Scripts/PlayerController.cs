@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     
     [Header("UI")]
     public UnityEngine.UI.Slider healthSlider; // <-- сюда перетащишь Slider из Unity
+    private Vector3 lastCheckpointPos;
 
     void Start()
     {
@@ -27,7 +28,21 @@ public class PlayerController : MonoBehaviour
         currentHealth = maxHealth;
         Debug.Log($"Здоровье игрока: {currentHealth}/{maxHealth}");
         
+        lastCheckpointPos = transform.position;
+        
+        if (SaveManager.Instance != null && !SaveManager.Instance.HasSaveFile())
+        {
+            CameraFollow cam = FindFirstObjectByType<CameraFollow>();
+            if (cam != null) cam.Warp();
+        }
+        
         UpdateHealthUI(); // <-- ДОБАВЬ ЭТУ СТРОКУ
+    }
+    
+    public void SetCheckpoint(Vector3 newPosition)
+    {
+        lastCheckpointPos = newPosition;
+        Debug.Log("Точка возрождения обновлена!");
     }
 
     void Update()
@@ -207,8 +222,49 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Die()
     {
-        Debug.Log("Игрок погиб!");
-        enabled = false; // отключаем управление (временно)
-        // Или: Destroy(gameObject); если хочешь удалить игрока
+        Debug.Log("Игрок погиб! Возврат на чекпоинт.");
+
+        // 1. Телепортируем на последнюю сохраненную позицию
+        transform.position = lastCheckpointPos;
+        
+        CameraFollow cam = FindFirstObjectByType<CameraFollow>();
+        if (cam != null) cam.Warp();
+
+        // 2. Обнуляем инерцию (чтобы игрока не "несло" после респауна)
+        if (rb != null) rb.linearVelocity = Vector2.zero;
+
+        // 3. Восстанавливаем здоровье
+        currentHealth = maxHealth;
+        UpdateHealthUI();
+
+        // 4. (Опционально) Если хочешь добавить визуальный эффект, 
+        // можно запустить короткую анимацию затемнения экрана.
+        
+        // ВЫЗЫВАЕМ ОТКАТ ИНВЕНТАРЯ
+        if (InventoryManager.Instance != null)
+        {
+            InventoryManager.Instance.ResetInventory();
+        }
+        
+        if (KeyInventory.Instance != null)
+        {
+            KeyInventory.Instance.ResetKeys();
+        }
+    }
+    
+    public void ForceDropItem()
+    {
+        if (carriedItem != null)
+        {
+            // Просто уничтожаем предмет или вызываем DropItem()
+            DropItem(); 
+            // Если это квестовый предмет, который должен вернуться на спавн, 
+            // лучше его уничтожить, а система спавна его создаст заново
+        }
+    }
+    
+    public Vector3 GetLastCheckpointPos()
+    {
+        return lastCheckpointPos;
     }
 }
