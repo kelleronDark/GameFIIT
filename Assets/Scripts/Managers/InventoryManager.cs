@@ -40,44 +40,43 @@ public class InventoryManager : MonoBehaviour
         Debug.Log("Снимок инвентаря для сохранения сделан.");
     }
     
-    public void ResetInventory()
-    {
-        // 1. Выбрасываем то, что в руках (твой метод уже есть)
-        if (playerController != null)
-            playerController.ForceDropItem();
-        
-        currentKeys = savedKeysSnapshot;
-
-        // 2. Откатываем массив спрайтов к моменту сохранения
-        for (int i = 0; i < collectedSprites.Length; i++)
-        {
-            collectedSprites[i] = savedSpritesSnapshot[i];
-        
-            // 3. Обновляем визуальные слоты UI
-            if (collectedSprites[i] != null)
-            {
-                slots[i].sprite = collectedSprites[i];
-                slots[i].enabled = true;
-            }
-            else
-            {
-                slots[i].sprite = null;
-                slots[i].enabled = false;
-            }
-        }
-        Debug.Log("Инвентарь откачен к состоянию последнего сохранения.");
-    }
+    // public void ResetInventory()
+    // {
+    //     // 1. Выбрасываем то, что в руках (твой метод уже есть)
+    //     if (playerController != null)
+    //         playerController.ForceDropItem();
+    //     
+    //     currentKeys = savedKeysSnapshot;
+    //
+    //     // 2. Откатываем массив спрайтов к моменту сохранения
+    //     for (int i = 0; i < collectedSprites.Length; i++)
+    //     {
+    //         collectedSprites[i] = savedSpritesSnapshot[i];
+    //     
+    //         // 3. Обновляем визуальные слоты UI
+    //         if (collectedSprites[i] != null)
+    //         {
+    //             slots[i].sprite = collectedSprites[i];
+    //             slots[i].enabled = true;
+    //         }
+    //         else
+    //         {
+    //             slots[i].sprite = null;
+    //             slots[i].enabled = false;
+    //         }
+    //     }
+    //     Debug.Log("Инвентарь откачен к состоянию последнего сохранения.");
+    // }
 
     void Start()
     {
-        // Инициализация: очищаем все слоты
         for (int i = 0; i < slots.Length; i++)
         {
             if (slots[i] != null)
             {
-                slots[i].sprite = null;       // Убираем любой дефолтный спрайт
-                slots[i].enabled = false;     // Скрываем изображение (фон можно оставить через другой Image или Canvas)
-                collectedSprites[i] = null;
+                slots[i].enabled = false; // Выключаем саму картинку
+                // Если хочешь, чтобы и фон слота исчезал, используй: 
+                // slots[i].gameObject.SetActive(false); 
             }
         }
     }
@@ -150,7 +149,8 @@ public class InventoryManager : MonoBehaviour
     
     public bool HasItem(string itemName)
     {
-        // Проверяем массив текущих собранных спрайтов
+        if (collectedSprites == null) return false;
+    
         foreach (var sprite in collectedSprites)
         {
             if (sprite != null && sprite.name == itemName)
@@ -165,94 +165,61 @@ public class InventoryManager : MonoBehaviour
     
     public void LoadInventoryFromNames(List<string> itemNames)
     {
-        isLoaded = false; // Начинаем загрузку
+        isLoaded = false; 
         ClearInventory();
-        
+    
         if (itemNames == null || itemNames.Count == 0) 
         {
             isLoaded = true; 
             return; 
         }
-        
-        Debug.Log($"[LOAD] Пытаюсь загрузить {itemNames.Count} предметов из файла.");
-        
-        // Загружаем ВСЕ спрайты из файла атласа в папке Resources
-        // Замени "YourAtlasName" на реальное имя твоего PNG файла (без расширения)
-        Sprite[] allSprites = Resources.LoadAll<Sprite>("generated-removebg-preview"); 
-        
-        if (allSprites == null || allSprites.Length == 0) {
-            Debug.LogError("[LOAD] КРИТИЧЕСКАЯ ОШИБКА: Спрайты по пути Resources/generated-removebg-preview не найдены! Проверь имя файла.");
-        } else {
-            Debug.Log($"[LOAD] В атласе найдено {allSprites.Length} спрайтов.");
-        }
+    
+        Sprite[] allSprites = Resources.LoadAll<Sprite>("generated-removebg-preview");
 
         for (int i = 0; i < itemNames.Count && i < collectedSprites.Length; i++)
         {
             string targetName = itemNames[i];
-            // Ищем в массиве спрайт с нужным именем
-            Sprite found = System.Array.Find(allSprites, s => s.name == itemNames[i]);
+            Sprite found = System.Array.Find(allSprites, s => s.name == targetName);
 
             if (found != null)
             {
-                collectedSprites[i] = found;
-                
+                collectedSprites[i] = found; 
                 slots[i].sprite = found;
-                slots[i].enabled = true;
                 
-                Color c = slots[i].color;
-                c.a = 1f;
-                slots[i].color = c;
-                
-                slots[i].gameObject.SetActive(true); // Активируем объект
-                
-                Debug.Log($"[LOAD] Предмет {targetName} успешно восстановлен в слот {i}");
-            }
-            else
-            {
-                Debug.LogWarning($"[LOAD] Не удалось найти спрайт с именем '{targetName}' в атласе!");
+                slots[i].enabled = true; 
+                slots[i].color = new Color(1, 1, 1, 1); // Белый цвет, Альфа 100%
+                slots[i].gameObject.SetActive(true);
+    
+                Debug.Log($"[UI-FIX] Слот {i} активирован для {found.name}");
             }
         }
-        
-        SaveInventoryState();
-        isLoaded = true; // Загрузка завершена!
-        
-        foreach (var slotImage in slots)
+    
+        // ВАЖНО: Сначала обновляем Snapshot вручную, чтобы он не был пустым
+        for (int i = 0; i < collectedSprites.Length; i++)
         {
-            if (slotImage.sprite != null)
-            {
-                slotImage.enabled = false; // Выключаем
-                slotImage.enabled = true;  // Включаем (это заставляет Unity перерисовать Image)
-            
-                // Убеждаемся, что цвет не прозрачный
-                Color c = slotImage.color;
-                c.a = 1f; 
-                slotImage.color = c;
-            
-                // Если у тебя есть дочерние объекты или текст, можно обновить и их
-                Canvas.ForceUpdateCanvases(); 
-            }
+            savedSpritesSnapshot[i] = collectedSprites[i];
         }
-        
-        // DebugLogInventory();
+    
+        isLoaded = true; 
+        RefreshUI();
+        Debug.Log("Инвентарь загружен и снимок обновлен данными из файла.");
     }
     
-    
-    
-    [ContextMenu("Debug Log Inventory Content")] // Позволит нажать правой кнопкой на компонент в инспекторе
-    public void DebugLogInventory()
+    public void RefreshUI()
     {
-        Debug.Log("<color=cyan>--- ИНСПЕКЦИЯ ИНВЕНТАРЯ ---</color>");
-        for (int i = 0; i < collectedSprites.Length; i++)
+        for (int i = 0; i < slots.Length; i++)
         {
             if (collectedSprites[i] != null)
             {
-                Debug.Log($"Слот {i}: [Имя: {collectedSprites[i].name}] [Спрайт назначен: {slots[i].sprite != null}] [Видимость: {slots[i].enabled}]");
+                slots[i].sprite = collectedSprites[i];
+                slots[i].enabled = true;
+                slots[i].color = Color.white;
+                slots[i].gameObject.SetActive(true);
             }
             else
             {
-                Debug.Log($"Слот {i}: ПУСТО");
+                slots[i].enabled = false;
             }
         }
-        Debug.Log("<color=cyan>---------------------------</color>");
     }
 }

@@ -14,29 +14,45 @@ public class PickupPart : MonoBehaviour
     void Start()
     {
         inventory = InventoryManager.Instance;
-        StartCoroutine(CheckInventoryDelayed());
+        // Дублируем проверку через небольшую паузу для уверенности после загрузки JSON
+        Invoke(nameof(CheckIfAlreadyPicked), 0.15f);
     }
     
-    IEnumerator CheckInventoryDelayed()
+    void OnEnable()
     {
-        // Ждем чуть-чуть, пока отработает загрузка из SaveManager
-        yield return new WaitForSeconds(0.2f);
+        // Повторная проверка при активации объекта
+        CheckIfAlreadyPicked();
+    }
+    
+    void CheckIfAlreadyPicked()
+    {
+        if (inventory == null) inventory = InventoryManager.Instance;
 
-        if (inventory != null && inventory.HasItem(partSprite.name))
+        if (inventory != null && partSprite != null)
         {
-            Debug.Log($"[CLEANUP] Предмет {partSprite.name} уже в кармане. Удаляю с земли.");
-            Destroy(gameObject);
+            if (inventory.HasItem(partSprite.name))
+            {
+                Debug.Log($"[CLEANUP] Деталь {partSprite.name} уже в инвентаре. Удаляю объект со сцены.");
+                Destroy(gameObject);
+            }
         }
     }
 
     void Update()
     {
+        if (inventory == null)
+        {
+            inventory = InventoryManager.Instance;
+            return; // Пока инвентарь не найден, Update дальше не идет
+        }
+        
         if (!hasChecked && inventory != null && inventory.isLoaded)
         {
             if (inventory.HasItem(partSprite.name))
             {
                 Debug.Log($"[SaveSystem] Предмет {partSprite.name} уже в инвентаре. Самоуничтожение.");
                 Destroy(gameObject);
+                return;
             }
             hasChecked = true;
         }

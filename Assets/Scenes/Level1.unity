@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 12478162}
   - component: {fileID: 12478161}
   m_Layer: 0
-  m_Name: Checkpoint
+  m_Name: Checkpoint_Start
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -197,6 +197,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
   cooldown: 2
   respawnOffset: {x: 0, y: 0.5, z: 0}
+  checkpointID: CP_Start
 --- !u!61 &12478162
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -15505,8 +15506,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 476213515
-  m_SortingLayer: 11
+  m_SortingLayerID: 1253421771
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2887954982335115268, guid: 1313e30fbc59a74408ef94d79e59e613, type: 3}
@@ -21879,7 +21880,7 @@ GameObject:
   - component: {fileID: 696101686}
   - component: {fileID: 696101685}
   m_Layer: 0
-  m_Name: Checkpoint (1)
+  m_Name: Checkpoint_BeforeL1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21914,6 +21915,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
   cooldown: 2
   respawnOffset: {x: 0, y: 0.5, z: 0}
+  checkpointID: CP_BL1
 --- !u!61 &696101686
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -69296,7 +69298,7 @@ GameObject:
   - component: {fileID: 1949438489}
   - component: {fileID: 1949438488}
   m_Layer: 0
-  m_Name: Checkpoint (2)
+  m_Name: Checkpoint_AfterL1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -69331,6 +69333,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
   cooldown: 2
   respawnOffset: {x: 0, y: 0.5, z: 0}
+  checkpointID: CP_AL1
 --- !u!61 &1949438489
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -77297,7 +77300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 268cc76d3fcf24fb1a4ad76209acbc98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Invenory
-  partIndex: 3
+  partIndex: 1
   partSprite: {fileID: -899115524547473961, guid: 410d99bd3c4fee5429865d283ec5b8ff, type: 3}
 --- !u!61 &2006335216
 BoxCollider2D:

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -20,21 +21,31 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Игрок создан! Проверка New Input System.");
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        
-        // Инициализация здоровья
         currentHealth = maxHealth;
+        
         Debug.Log($"Здоровье игрока: {currentHealth}/{maxHealth}");
         
         lastCheckpointPos = transform.position;
         
-        if (SaveManager.Instance != null && !SaveManager.Instance.HasSaveFile())
+        if (SaveManager.Instance != null && SaveManager.Instance.HasSaveFile())
         {
-            CameraFollow cam = FindFirstObjectByType<CameraFollow>();
-            if (cam != null) cam.Warp();
+            Vector3 cpPos = SaveManager.Instance.GetSavedCheckpointPosition();
+        
+            // Телепортируем игрока
+            transform.position = cpPos;
+            lastCheckpointPos = cpPos; // Обновляем локальную переменную
+        
+            Debug.Log($"Игрок возродился на чекпоинте: {cpPos}");
         }
+        else
+        {
+            lastCheckpointPos = transform.position;
+        }
+        
+        CameraFollow cam = FindFirstObjectByType<CameraFollow>();
+        if (cam != null) cam.Warp();
         
         UpdateHealthUI(); // <-- ДОБАВЬ ЭТУ СТРОКУ
     }
@@ -222,34 +233,14 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Die()
     {
-        Debug.Log("Игрок погиб! Возврат на чекпоинт.");
+        Debug.Log("Игрок погиб! Перезагрузка сцены...");
 
-        // 1. Телепортируем на последнюю сохраненную позицию
-        transform.position = lastCheckpointPos;
-        
-        CameraFollow cam = FindFirstObjectByType<CameraFollow>();
-        if (cam != null) cam.Warp();
-
-        // 2. Обнуляем инерцию (чтобы игрока не "несло" после респауна)
-        if (rb != null) rb.linearVelocity = Vector2.zero;
-
-        // 3. Восстанавливаем здоровье
-        currentHealth = maxHealth;
-        UpdateHealthUI();
-
-        // 4. (Опционально) Если хочешь добавить визуальный эффект, 
-        // можно запустить короткую анимацию затемнения экрана.
-        
-        // ВЫЗЫВАЕМ ОТКАТ ИНВЕНТАРЯ
-        if (InventoryManager.Instance != null)
-        {
-            InventoryManager.Instance.ResetInventory();
-        }
-        
-        if (KeyInventory.Instance != null)
-        {
-            KeyInventory.Instance.ResetKeys();
-        }
+        // Получаем имя текущей сцены и загружаем её заново
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(currentSceneName);
+    
+        // После LoadScene код ниже не выполнится в этом кадре, 
+        // так как объект будет уничтожен вместе со сценой.
     }
     
     public void ForceDropItem()
