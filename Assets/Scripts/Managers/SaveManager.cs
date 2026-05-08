@@ -81,6 +81,7 @@ public class SaveManager : MonoBehaviour
         if (InventoryManager.Instance != null)
         {
             InventoryManager.Instance.LoadInventoryFromNames(data.inventoryItemNames);
+            InventoryManager.Instance.RefreshUI();
         }
             
         if (KeyInventory.Instance != null)

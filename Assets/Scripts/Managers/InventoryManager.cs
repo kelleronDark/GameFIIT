@@ -70,13 +70,21 @@ public class InventoryManager : MonoBehaviour
 
     void Start()
     {
+        // Если инвентарь уже был загружен из сохранения —
+        // просто обновляем UI и не скрываем слоты
+        if (isLoaded)
+        {
+            RefreshUI();
+            return;
+        }
+
+        // Иначе это новая игра — очищаем UI
         for (int i = 0; i < slots.Length; i++)
         {
             if (slots[i] != null)
             {
-                slots[i].enabled = false; // Выключаем саму картинку
-                // Если хочешь, чтобы и фон слота исчезал, используй: 
-                // slots[i].gameObject.SetActive(false); 
+                slots[i].enabled = false;
+                slots[i].sprite = null;
             }
         }
     }
