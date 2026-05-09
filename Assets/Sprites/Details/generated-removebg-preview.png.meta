@@ -279,7 +279,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -321,11 +321,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 251
-        width: 273
-        height: 118
+        y: 252
+        width: 272
+        height: 117
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -342,12 +342,12 @@ TextureImporter:
       name: generated-removebg-preview_1
       rect:
         serializedVersion: 2
-        x: 202
-        y: 290
-        width: 104
-        height: 70
+        x: 203
+        y: 291
+        width: 102
+        height: 68
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -364,12 +364,12 @@ TextureImporter:
       name: generated-removebg-preview_2
       rect:
         serializedVersion: 2
-        x: 308
-        y: 292
-        width: 28
-        height: 32
+        x: 316
+        y: 324
+        width: 12
+        height: 35
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -386,12 +386,12 @@ TextureImporter:
       name: generated-removebg-preview_3
       rect:
         serializedVersion: 2
-        x: 315
-        y: 323
-        width: 14
-        height: 37
+        x: 346
+        y: 291
+        width: 18
+        height: 68
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -408,12 +408,12 @@ TextureImporter:
       name: generated-removebg-preview_4
       rect:
         serializedVersion: 2
-        x: 345
-        y: 290
-        width: 20
-        height: 70
+        x: 372
+        y: 180
+        width: 305
+        height: 179
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -427,15 +427,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: generated-removebg-preview_5
+      name: Part2
       rect:
         serializedVersion: 2
-        x: 371
-        y: 179
-        width: 306
-        height: 181
+        x: 309
+        y: 293
+        width: 26
+        height: 30
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -453,11 +453,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 210
-        width: 33
-        height: 22
+        y: 211
+        width: 29
+        height: 20
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -474,12 +474,12 @@ TextureImporter:
       name: generated-removebg-preview_7
       rect:
         serializedVersion: 2
-        x: 3
-        y: 226
-        width: 28
-        height: 26
+        x: 4
+        y: 227
+        width: 26
+        height: 24
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -496,12 +496,12 @@ TextureImporter:
       name: generated-removebg-preview_8
       rect:
         serializedVersion: 2
-        x: 32
-        y: 226
-        width: 104
-        height: 26
+        x: 33
+        y: 227
+        width: 102
+        height: 24
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -518,12 +518,12 @@ TextureImporter:
       name: generated-removebg-preview_9
       rect:
         serializedVersion: 2
-        x: 32
-        y: 213
-        width: 38
-        height: 19
+        x: 33
+        y: 221
+        width: 36
+        height: 10
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -540,12 +540,12 @@ TextureImporter:
       name: generated-removebg-preview_10
       rect:
         serializedVersion: 2
-        x: 69
-        y: 217
-        width: 9
-        height: 10
+        x: 135
+        y: 224
+        width: 512
+        height: 68
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -562,12 +562,12 @@ TextureImporter:
       name: generated-removebg-preview_11
       rect:
         serializedVersion: 2
-        x: 78
-        y: 217
-        width: 34
-        height: 10
+        x: 70
+        y: 218
+        width: 7
+        height: 8
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -584,12 +584,12 @@ TextureImporter:
       name: generated-removebg-preview_12
       rect:
         serializedVersion: 2
-        x: 134
-        y: 223
-        width: 514
-        height: 70
+        x: 79
+        y: 218
+        width: 32
+        height: 8
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -606,12 +606,12 @@ TextureImporter:
       name: generated-removebg-preview_13
       rect:
         serializedVersion: 2
-        x: 0
-        y: 167
-        width: 84
-        height: 23
+        x: 143
+        y: 184
+        width: 18
+        height: 34
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -628,12 +628,12 @@ TextureImporter:
       name: generated-removebg-preview_14
       rect:
         serializedVersion: 2
-        x: 5
-        y: 189
-        width: 24
-        height: 23
+        x: 178
+        y: 184
+        width: 17
+        height: 34
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -650,12 +650,12 @@ TextureImporter:
       name: generated-removebg-preview_15
       rect:
         serializedVersion: 2
-        x: 32
-        y: 185
-        width: 35
-        height: 33
+        x: 206
+        y: 184
+        width: 28
+        height: 34
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -672,12 +672,12 @@ TextureImporter:
       name: generated-removebg-preview_16
       rect:
         serializedVersion: 2
-        x: 67
-        y: 185
-        width: 36
-        height: 33
+        x: 242
+        y: 184
+        width: 23
+        height: 34
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -694,12 +694,12 @@ TextureImporter:
       name: generated-removebg-preview_17
       rect:
         serializedVersion: 2
-        x: 106
-        y: 188
-        width: 25
-        height: 25
+        x: 277
+        y: 184
+        width: 22
+        height: 34
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -716,12 +716,12 @@ TextureImporter:
       name: generated-removebg-preview_18
       rect:
         serializedVersion: 2
-        x: 142
-        y: 183
-        width: 20
-        height: 36
+        x: 311
+        y: 184
+        width: 23
+        height: 34
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -738,12 +738,12 @@ TextureImporter:
       name: generated-removebg-preview_19
       rect:
         serializedVersion: 2
-        x: 177
-        y: 183
-        width: 19
-        height: 36
+        x: 342
+        y: 184
+        width: 27
+        height: 34
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -760,12 +760,12 @@ TextureImporter:
       name: generated-removebg-preview_20
       rect:
         serializedVersion: 2
-        x: 205
-        y: 183
-        width: 30
-        height: 36
+        x: 6
+        y: 190
+        width: 22
+        height: 21
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -779,15 +779,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: generated-removebg-preview_21
+      name: Part4
       rect:
         serializedVersion: 2
-        x: 241
-        y: 183
-        width: 25
-        height: 36
+        x: 33
+        y: 186
+        width: 33
+        height: 31
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -804,12 +804,12 @@ TextureImporter:
       name: generated-removebg-preview_22
       rect:
         serializedVersion: 2
-        x: 276
-        y: 183
-        width: 24
-        height: 36
+        x: 68
+        y: 186
+        width: 34
+        height: 31
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -826,12 +826,12 @@ TextureImporter:
       name: generated-removebg-preview_23
       rect:
         serializedVersion: 2
-        x: 310
-        y: 183
-        width: 25
-        height: 36
+        x: 107
+        y: 189
+        width: 23
+        height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -848,12 +848,12 @@ TextureImporter:
       name: generated-removebg-preview_24
       rect:
         serializedVersion: 2
-        x: 341
-        y: 183
-        width: 29
-        height: 36
+        x: 0
+        y: 168
+        width: 83
+        height: 9
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -870,12 +870,12 @@ TextureImporter:
       name: generated-removebg-preview_25
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 161
-        height: 174
+        x: 84
+        y: 174
+        width: 7
+        height: 9
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -892,12 +892,12 @@ TextureImporter:
       name: generated-removebg-preview_26
       rect:
         serializedVersion: 2
-        x: 83
-        y: 173
-        width: 9
-        height: 11
+        x: 93
+        y: 114
+        width: 110
+        height: 72
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -914,12 +914,12 @@ TextureImporter:
       name: generated-removebg-preview_27
       rect:
         serializedVersion: 2
-        x: 92
-        y: 113
-        width: 112
-        height: 74
+        x: 204
+        y: 114
+        width: 32
+        height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -936,12 +936,12 @@ TextureImporter:
       name: generated-removebg-preview_28
       rect:
         serializedVersion: 2
-        x: 203
-        y: 113
-        width: 34
-        height: 62
+        x: 238
+        y: 114
+        width: 31
+        height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -958,12 +958,12 @@ TextureImporter:
       name: generated-removebg-preview_29
       rect:
         serializedVersion: 2
-        x: 237
-        y: 113
-        width: 33
-        height: 62
+        x: 271
+        y: 114
+        width: 136
+        height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -980,12 +980,12 @@ TextureImporter:
       name: generated-removebg-preview_30
       rect:
         serializedVersion: 2
-        x: 270
-        y: 113
-        width: 138
-        height: 62
+        x: 407
+        y: 114
+        width: 32
+        height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1002,12 +1002,12 @@ TextureImporter:
       name: generated-removebg-preview_31
       rect:
         serializedVersion: 2
-        x: 406
-        y: 113
+        x: 440
+        y: 114
         width: 34
-        height: 62
+        height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1024,12 +1024,12 @@ TextureImporter:
       name: generated-removebg-preview_32
       rect:
         serializedVersion: 2
-        x: 439
-        y: 113
-        width: 36
-        height: 62
+        x: 475
+        y: 114
+        width: 135
+        height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1046,12 +1046,12 @@ TextureImporter:
       name: generated-removebg-preview_33
       rect:
         serializedVersion: 2
-        x: 474
-        y: 113
-        width: 137
-        height: 62
+        x: 610
+        y: 140
+        width: 32
+        height: 34
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1068,12 +1068,12 @@ TextureImporter:
       name: generated-removebg-preview_34
       rect:
         serializedVersion: 2
-        x: 609
-        y: 139
-        width: 34
-        height: 36
+        x: 644
+        y: 116
+        width: 33
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1087,15 +1087,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: generated-removebg-preview_35
+      name: Part3
       rect:
         serializedVersion: 2
-        x: 643
-        y: 115
+        x: 0
+        y: 0
         width: 34
-        height: 60
+        height: 34
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1112,12 +1112,12 @@ TextureImporter:
       name: generated-removebg-preview_36
       rect:
         serializedVersion: 2
-        x: 135
-        y: 72
-        width: 34
-        height: 34
+        x: 136
+        y: 73
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1134,12 +1134,12 @@ TextureImporter:
       name: generated-removebg-preview_37
       rect:
         serializedVersion: 2
-        x: 169
-        y: 72
-        width: 36
-        height: 35
+        x: 170
+        y: 73
+        width: 34
+        height: 33
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1156,12 +1156,12 @@ TextureImporter:
       name: generated-removebg-preview_38
       rect:
         serializedVersion: 2
-        x: 203
-        y: 72
-        width: 34
-        height: 34
+        x: 204
+        y: 73
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1178,12 +1178,12 @@ TextureImporter:
       name: generated-removebg-preview_39
       rect:
         serializedVersion: 2
-        x: 237
-        y: 72
-        width: 33
-        height: 34
+        x: 238
+        y: 73
+        width: 31
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1197,15 +1197,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: generated-removebg-preview_40
+      name: Part1
       rect:
         serializedVersion: 2
-        x: 271
-        y: 72
-        width: 34
-        height: 34
+        x: 272
+        y: 73
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1222,12 +1222,12 @@ TextureImporter:
       name: generated-removebg-preview_41
       rect:
         serializedVersion: 2
-        x: 304
-        y: 72
-        width: 34
-        height: 34
+        x: 305
+        y: 73
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1244,12 +1244,12 @@ TextureImporter:
       name: generated-removebg-preview_42
       rect:
         serializedVersion: 2
-        x: 339
-        y: 72
-        width: 34
-        height: 34
+        x: 340
+        y: 73
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1266,12 +1266,12 @@ TextureImporter:
       name: generated-removebg-preview_43
       rect:
         serializedVersion: 2
-        x: 373
-        y: 72
-        width: 33
-        height: 34
+        x: 374
+        y: 73
+        width: 31
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1288,12 +1288,12 @@ TextureImporter:
       name: generated-removebg-preview_44
       rect:
         serializedVersion: 2
-        x: 407
-        y: 72
-        width: 33
-        height: 34
+        x: 408
+        y: 73
+        width: 31
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1310,12 +1310,12 @@ TextureImporter:
       name: generated-removebg-preview_45
       rect:
         serializedVersion: 2
-        x: 440
-        y: 72
-        width: 68
-        height: 36
+        x: 441
+        y: 73
+        width: 66
+        height: 34
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1332,12 +1332,12 @@ TextureImporter:
       name: generated-removebg-preview_46
       rect:
         serializedVersion: 2
-        x: 507
-        y: 67
-        width: 103
-        height: 41
+        x: 508
+        y: 68
+        width: 101
+        height: 39
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1354,12 +1354,12 @@ TextureImporter:
       name: generated-removebg-preview_47
       rect:
         serializedVersion: 2
-        x: 607
-        y: 35
-        width: 40
-        height: 71
+        x: 608
+        y: 36
+        width: 38
+        height: 69
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1376,12 +1376,12 @@ TextureImporter:
       name: generated-removebg-preview_48
       rect:
         serializedVersion: 2
-        x: 643
-        y: 35
-        width: 34
-        height: 75
+        x: 644
+        y: 36
+        width: 33
+        height: 73
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1398,12 +1398,12 @@ TextureImporter:
       name: generated-removebg-preview_49
       rect:
         serializedVersion: 2
-        x: 177
-        y: 41
-        width: 18
-        height: 24
+        x: 178
+        y: 42
+        width: 16
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1420,12 +1420,12 @@ TextureImporter:
       name: generated-removebg-preview_50
       rect:
         serializedVersion: 2
-        x: 211
-        y: 42
-        width: 18
-        height: 23
+        x: 212
+        y: 43
+        width: 16
+        height: 21
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1442,12 +1442,12 @@ TextureImporter:
       name: generated-removebg-preview_51
       rect:
         serializedVersion: 2
-        x: 245
-        y: 41
-        width: 17
-        height: 24
+        x: 246
+        y: 42
+        width: 15
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1464,12 +1464,12 @@ TextureImporter:
       name: generated-removebg-preview_52
       rect:
         serializedVersion: 2
-        x: 277
-        y: 43
-        width: 22
-        height: 20
+        x: 278
+        y: 44
+        width: 20
+        height: 18
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1486,12 +1486,12 @@ TextureImporter:
       name: generated-removebg-preview_53
       rect:
         serializedVersion: 2
-        x: 314
-        y: 41
-        width: 15
-        height: 24
+        x: 315
+        y: 42
+        width: 13
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1508,12 +1508,12 @@ TextureImporter:
       name: generated-removebg-preview_54
       rect:
         serializedVersion: 2
-        x: 348
-        y: 41
-        width: 15
-        height: 24
+        x: 349
+        y: 42
+        width: 13
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1530,12 +1530,12 @@ TextureImporter:
       name: generated-removebg-preview_55
       rect:
         serializedVersion: 2
-        x: 379
-        y: 43
-        width: 21
-        height: 20
+        x: 380
+        y: 44
+        width: 19
+        height: 18
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1552,12 +1552,12 @@ TextureImporter:
       name: generated-removebg-preview_56
       rect:
         serializedVersion: 2
-        x: 413
-        y: 43
-        width: 20
-        height: 19
+        x: 414
+        y: 44
+        width: 18
+        height: 17
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1574,12 +1574,12 @@ TextureImporter:
       name: generated-removebg-preview_57
       rect:
         serializedVersion: 2
-        x: 445
-        y: 43
-        width: 24
-        height: 19
+        x: 446
+        y: 44
+        width: 22
+        height: 17
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1596,12 +1596,12 @@ TextureImporter:
       name: generated-removebg-preview_58
       rect:
         serializedVersion: 2
-        x: 482
-        y: 41
-        width: 18
-        height: 24
+        x: 483
+        y: 42
+        width: 16
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1618,12 +1618,12 @@ TextureImporter:
       name: generated-removebg-preview_59
       rect:
         serializedVersion: 2
-        x: 514
-        y: 41
-        width: 21
-        height: 24
+        x: 515
+        y: 42
+        width: 19
+        height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1640,12 +1640,12 @@ TextureImporter:
       name: generated-removebg-preview_60
       rect:
         serializedVersion: 2
-        x: 542
-        y: 36
-        width: 33
-        height: 33
+        x: 543
+        y: 37
+        width: 31
+        height: 31
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1662,12 +1662,12 @@ TextureImporter:
       name: generated-removebg-preview_61
       rect:
         serializedVersion: 2
-        x: 574
-        y: 36
-        width: 35
-        height: 33
+        x: 575
+        y: 37
+        width: 33
+        height: 31
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1684,12 +1684,12 @@ TextureImporter:
       name: generated-removebg-preview_62
       rect:
         serializedVersion: 2
-        x: 101
+        x: 102
         y: 0
-        width: 69
-        height: 36
+        width: 67
+        height: 35
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1706,12 +1706,12 @@ TextureImporter:
       name: generated-removebg-preview_63
       rect:
         serializedVersion: 2
-        x: 169
+        x: 170
         y: 0
-        width: 70
-        height: 36
+        width: 68
+        height: 35
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1728,12 +1728,12 @@ TextureImporter:
       name: generated-removebg-preview_64
       rect:
         serializedVersion: 2
-        x: 237
+        x: 238
         y: 0
-        width: 34
-        height: 34
+        width: 32
+        height: 33
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1750,12 +1750,12 @@ TextureImporter:
       name: generated-removebg-preview_65
       rect:
         serializedVersion: 2
-        x: 271
+        x: 272
         y: 0
-        width: 170
-        height: 36
+        width: 168
+        height: 35
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1772,12 +1772,12 @@ TextureImporter:
       name: generated-removebg-preview_66
       rect:
         serializedVersion: 2
-        x: 450
+        x: 451
         y: 0
-        width: 14
-        height: 34
+        width: 12
+        height: 33
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1794,12 +1794,12 @@ TextureImporter:
       name: generated-removebg-preview_67
       rect:
         serializedVersion: 2
-        x: 482
+        x: 483
         y: 0
-        width: 18
-        height: 36
+        width: 16
+        height: 35
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1816,12 +1816,12 @@ TextureImporter:
       name: generated-removebg-preview_68
       rect:
         serializedVersion: 2
-        x: 510
+        x: 511
         y: 0
-        width: 167
-        height: 33
+        width: 166
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1838,7 +1838,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 737e44bc086de464480d45062e4ed0ee
     internalID: 0
     vertices: []
     indices: 
@@ -1846,8 +1846,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
+      Part1: -6387210722906142475
+      Part2: -4911629187046143550
+      Part3: -3269744660803888725
+      Part4: -4687768404907821816
       generated-removebg-preview_0: -623696584868126486
       generated-removebg-preview_1: -6743540368852324668
       generated-removebg-preview_10: 3231702719559040198
@@ -1862,7 +1868,6 @@ TextureImporter:
       generated-removebg-preview_19: -2108397279683639952
       generated-removebg-preview_2: -899115524547473961
       generated-removebg-preview_20: -3958331448038864446
-      generated-removebg-preview_21: -4687768404907821816
       generated-removebg-preview_22: -6472512210820854257
       generated-removebg-preview_23: -9170118055987485630
       generated-removebg-preview_24: 1637896139973584916
@@ -1877,13 +1882,11 @@ TextureImporter:
       generated-removebg-preview_32: 5742062116776438122
       generated-removebg-preview_33: -6731279882923026269
       generated-removebg-preview_34: -3261659540339365953
-      generated-removebg-preview_35: -3269744660803888725
       generated-removebg-preview_36: -268295802645664236
       generated-removebg-preview_37: 3282446298573405308
       generated-removebg-preview_38: -3060882790409411226
       generated-removebg-preview_39: 4814102305371703556
       generated-removebg-preview_4: 1502882915585242775
-      generated-removebg-preview_40: -6387210722906142475
       generated-removebg-preview_41: 2193972862495051396
       generated-removebg-preview_42: 449859473260257266
       generated-removebg-preview_43: -4582157224168173898
@@ -1893,7 +1896,6 @@ TextureImporter:
       generated-removebg-preview_47: -536640436712850340
       generated-removebg-preview_48: 158263787252829623
       generated-removebg-preview_49: -840853152322092832
-      generated-removebg-preview_5: -4911629187046143550
       generated-removebg-preview_50: 2463031474554402858
       generated-removebg-preview_51: -2360582195251109431
       generated-removebg-preview_52: 4087472980382294322

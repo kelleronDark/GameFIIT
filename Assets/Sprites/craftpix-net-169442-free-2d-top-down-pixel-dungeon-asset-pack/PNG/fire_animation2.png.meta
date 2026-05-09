@@ -167,11 +167,11 @@ TextureImporter:
       name: fire_animation2_0
       rect:
         serializedVersion: 2
-        x: 7
-        y: 171
-        width: 18
-        height: 18
-      alignment: 0
+        x: 8
+        y: 172
+        width: 16
+        height: 16
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -189,11 +189,11 @@ TextureImporter:
       name: fire_animation2_1
       rect:
         serializedVersion: 2
-        x: 38
-        y: 170
-        width: 18
-        height: 18
-      alignment: 0
+        x: 39
+        y: 171
+        width: 16
+        height: 16
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -211,11 +211,11 @@ TextureImporter:
       name: fire_animation2_2
       rect:
         serializedVersion: 2
-        x: 73
-        y: 171
-        width: 13
-        height: 14
-      alignment: 0
+        x: 74
+        y: 172
+        width: 11
+        height: 12
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -233,11 +233,11 @@ TextureImporter:
       name: fire_animation2_3
       rect:
         serializedVersion: 2
-        x: 7
-        y: 142
-        width: 18
-        height: 18
-      alignment: 0
+        x: 8
+        y: 143
+        width: 16
+        height: 16
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -255,11 +255,11 @@ TextureImporter:
       name: fire_animation2_4
       rect:
         serializedVersion: 2
-        x: 38
-        y: 142
-        width: 18
-        height: 18
-      alignment: 0
+        x: 39
+        y: 143
+        width: 16
+        height: 16
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -277,11 +277,11 @@ TextureImporter:
       name: fire_animation2_5
       rect:
         serializedVersion: 2
-        x: 73
-        y: 143
-        width: 13
-        height: 14
-      alignment: 0
+        x: 74
+        y: 144
+        width: 11
+        height: 12
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -299,11 +299,11 @@ TextureImporter:
       name: fire_animation2_6
       rect:
         serializedVersion: 2
-        x: 6
-        y: 106
-        width: 20
-        height: 20
-      alignment: 0
+        x: 7
+        y: 107
+        width: 18
+        height: 18
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -321,11 +321,11 @@ TextureImporter:
       name: fire_animation2_7
       rect:
         serializedVersion: 2
-        x: 40
-        y: 107
-        width: 14
-        height: 15
-      alignment: 0
+        x: 41
+        y: 108
+        width: 12
+        height: 13
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -343,11 +343,11 @@ TextureImporter:
       name: fire_animation2_8
       rect:
         serializedVersion: 2
-        x: 72
-        y: 107
-        width: 15
-        height: 15
-      alignment: 0
+        x: 73
+        y: 108
+        width: 13
+        height: 13
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -365,11 +365,11 @@ TextureImporter:
       name: fire_animation2_9
       rect:
         serializedVersion: 2
-        x: 6
-        y: 77
-        width: 20
-        height: 20
-      alignment: 0
+        x: 7
+        y: 78
+        width: 18
+        height: 18
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -387,11 +387,11 @@ TextureImporter:
       name: fire_animation2_10
       rect:
         serializedVersion: 2
-        x: 40
-        y: 80
-        width: 14
-        height: 14
-      alignment: 0
+        x: 41
+        y: 81
+        width: 12
+        height: 12
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -409,11 +409,11 @@ TextureImporter:
       name: fire_animation2_11
       rect:
         serializedVersion: 2
-        x: 72
-        y: 79
-        width: 15
-        height: 15
-      alignment: 0
+        x: 73
+        y: 80
+        width: 13
+        height: 13
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -431,11 +431,11 @@ TextureImporter:
       name: fire_animation2_12
       rect:
         serializedVersion: 2
-        x: 8
-        y: 43
-        width: 16
-        height: 17
-      alignment: 0
+        x: 9
+        y: 44
+        width: 14
+        height: 15
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -453,11 +453,11 @@ TextureImporter:
       name: fire_animation2_13
       rect:
         serializedVersion: 2
-        x: 39
-        y: 43
-        width: 16
-        height: 16
-      alignment: 0
+        x: 40
+        y: 44
+        width: 14
+        height: 14
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -475,11 +475,11 @@ TextureImporter:
       name: fire_animation2_14
       rect:
         serializedVersion: 2
-        x: 71
-        y: 42
-        width: 17
-        height: 17
-      alignment: 0
+        x: 72
+        y: 43
+        width: 15
+        height: 15
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -497,11 +497,11 @@ TextureImporter:
       name: fire_animation2_15
       rect:
         serializedVersion: 2
-        x: 8
-        y: 15
-        width: 16
-        height: 16
-      alignment: 0
+        x: 9
+        y: 16
+        width: 14
+        height: 14
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -519,11 +519,11 @@ TextureImporter:
       name: fire_animation2_16
       rect:
         serializedVersion: 2
-        x: 39
-        y: 15
-        width: 16
-        height: 16
-      alignment: 0
+        x: 40
+        y: 16
+        width: 14
+        height: 14
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -541,11 +541,11 @@ TextureImporter:
       name: fire_animation2_17
       rect:
         serializedVersion: 2
-        x: 71
-        y: 14
-        width: 17
-        height: 17
-      alignment: 0
+        x: 72
+        y: 15
+        width: 15
+        height: 15
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -563,7 +563,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 0a8d9e55935cf40c1820d3f23d4a6df5
     internalID: 0
     vertices: []
     indices: 
@@ -571,7 +571,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       fire_animation2_0: 7457898849070156403
       fire_animation2_1: -6205515954121075453
