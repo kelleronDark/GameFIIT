@@ -15,8 +15,10 @@ public class PlayerController : MonoBehaviour
     public Transform holdPoint;
     private GameObject carriedItem;
     
-    [Header("UI")]
-    public UnityEngine.UI.Slider healthSlider; // <-- сюда перетащишь Slider из Unity
+    public HealthBarController healthBar; // Назначь в инспекторе
+    
+    // [Header("UI")]
+    // public UnityEngine.UI.Slider healthSlider; // <-- сюда перетащишь Slider из Unity
     private Vector3 lastCheckpointPos;
 
     void Start()
@@ -47,7 +49,7 @@ public class PlayerController : MonoBehaviour
         CameraFollow cam = FindFirstObjectByType<CameraFollow>();
         if (cam != null) cam.Warp();
         
-        UpdateHealthUI(); // <-- ДОБАВЬ ЭТУ СТРОКУ
+        // UpdateHealthUI(); // <-- ДОБАВЬ ЭТУ СТРОКУ
     }
     
     public void SetCheckpoint(Vector3 newPosition)
@@ -159,11 +161,11 @@ public class PlayerController : MonoBehaviour
         carriedItem = null;
     }
 
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, 1.5f);
-    }
+    // private void OnDrawGizmosSelected()
+    // {
+    //     Gizmos.color = Color.red;
+    //     Gizmos.DrawWireSphere(transform.position, 1.5f);
+    // }
 
     void FixedUpdate()
     {
@@ -174,27 +176,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void UpdateHealthUI()
-    {
-        if (healthSlider != null)
-        {
-            // Рассчитываем процент здоровья (от 0 до 1)
-            float healthPercent = (float)currentHealth / maxHealth;
-            healthSlider.value = healthPercent;
-
-            // Меняем цвет заполнения: зелёный → жёлтый → красный
-            Image fillImage = healthSlider.fillRect.GetComponent<Image>();
-            if (fillImage != null)
-            {
-                if (healthPercent > 0.6f)
-                    fillImage.color = Color.green;
-                else if (healthPercent > 0.3f)
-                    fillImage.color = Color.yellow;
-                else
-                    fillImage.color = Color.red;
-            }
-        }
-    }
+    // private void UpdateHealthUI()
+    // {
+    //     if (healthSlider != null)
+    //     {
+    //         // Рассчитываем процент здоровья (от 0 до 1)
+    //         float healthPercent = (float)currentHealth / maxHealth;
+    //         healthSlider.value = healthPercent;
+    //
+    //         // Меняем цвет заполнения: зелёный → жёлтый → красный
+    //         Image fillImage = healthSlider.fillRect.GetComponent<Image>();
+    //         if (fillImage != null)
+    //         {
+    //             if (healthPercent > 0.6f)
+    //                 fillImage.color = Color.green;
+    //             else if (healthPercent > 0.3f)
+    //                 fillImage.color = Color.yellow;
+    //             else
+    //                 fillImage.color = Color.red;
+    //         }
+    //     }
+    // }
 
     /// <summary>
     /// Получить урон
@@ -203,8 +205,10 @@ public class PlayerController : MonoBehaviour
     {
         currentHealth -= damage;
         if (currentHealth < 0) currentHealth = 0;
+        
+        healthBar.SetHealth(currentHealth, maxHealth);
 
-        UpdateHealthUI(); // обновляем полоску
+        // UpdateHealthUI(); // обновляем полоску
 
         Debug.Log($"Игрок получил {damage} урона. Здоровье: {currentHealth}/{maxHealth}");
 
@@ -223,7 +227,7 @@ public class PlayerController : MonoBehaviour
         if (currentHealth > maxHealth)
             currentHealth = maxHealth;
 
-        UpdateHealthUI(); // обновляем полоску
+        // UpdateHealthUI(); // обновляем полоску
 
         Debug.Log($"Игрок восстановил {amount} HP. Здоровье: {currentHealth}/{maxHealth}");
     }
