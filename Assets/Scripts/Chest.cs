@@ -9,15 +9,20 @@ public class Chest : MonoBehaviour
     
     [Header("References")]
     public Animator animator;
-    public GameObject hintPrefab; // Префаб подсказки
-    private GameObject currentHint;
+    public GameObject hintPrefab;
+    public AudioSource audioSource; // 1. Источник звука
 
+    private GameObject currentHint;
     private bool playerInRange = false;
 
     void Start()
     {
         if (animator == null)
             animator = GetComponent<Animator>();
+        
+        // Если не назначили вручную, ищем на объекте
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -45,6 +50,12 @@ public class Chest : MonoBehaviour
         isOpened = true;
         Debug.Log("Сундук открыт!");
 
+        // 2. Воспроизводим звук
+        if (audioSource != null)
+        {
+            audioSource.Play();
+        }
+
         if (animator != null)
             animator.SetBool("IsOpen", true);
 
@@ -55,7 +66,7 @@ public class Chest : MonoBehaviour
             else Debug.LogWarning("Инвентарь полон! Ключ не подобран.");
         }
 
-        HideHint(); // Скрываем подсказку после открытия
+        HideHint();
     }
 
     void ShowHint()
@@ -65,7 +76,6 @@ public class Chest : MonoBehaviour
         currentHint = Instantiate(hintPrefab, transform.position + Vector3.up * 1.5f, Quaternion.identity);
         currentHint.transform.SetParent(transform);
 
-        // === НАЗНАЧАЕМ КАМЕРУ ===
         Canvas canvas = currentHint.GetComponentInChildren<Canvas>();
         if (canvas != null)
         {
@@ -73,10 +83,6 @@ public class Chest : MonoBehaviour
             if (mainCamera != null)
             {
                 canvas.worldCamera = mainCamera;
-            }
-            else
-            {
-                Debug.LogError("❌ Камера не найдена для подсказки сундука!");
             }
         }
 

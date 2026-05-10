@@ -1,5 +1,5 @@
 using UnityEngine;
-using TMPro; // Добавь этот namespace
+using TMPro;
 
 public class Door : MonoBehaviour
 {
@@ -9,15 +9,20 @@ public class Door : MonoBehaviour
     
     [Header("References")]
     public Animator animator;
-    public GameObject hintPrefab; // Префаб подсказки
-    private GameObject currentHint; // Текущая подсказка над дверью
+    public GameObject hintPrefab;
+    public AudioSource audioSource; // 1. Ссылка на источник звука
 
+    private GameObject currentHint;
     private bool playerInRange = false;
 
     void Start()
     {
         if (animator == null)
             animator = GetComponent<Animator>();
+        
+        // Если AudioSource не назначен вручную, пробуем взять компонент с этого же объекта
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -25,7 +30,7 @@ public class Door : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
-            ShowHint(); // Показываем подсказку
+            ShowHint();
         }
     }
 
@@ -34,13 +39,12 @@ public class Door : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            HideHint(); // Скрываем подсказку
+            HideHint();
         }
     }
 
     void Update()
     {
-        // Обновляем текст подсказки, если она активна
         if (currentHint != null && playerInRange)
         {
             TextMeshProUGUI hintText = currentHint.GetComponentInChildren<TextMeshProUGUI>();
@@ -72,7 +76,6 @@ public class Door : MonoBehaviour
             else
             {
                 Debug.Log("Нужен ключ, чтобы открыть эту дверь!");
-                // Можно добавить звук ошибки или визуальный эффект
             }
         }
         else
@@ -86,6 +89,12 @@ public class Door : MonoBehaviour
         isOpened = true;
         Debug.Log("Дверь открыта!");
 
+        // 2. Воспроизводим звук, если источник есть
+        if (audioSource != null)
+        {
+            audioSource.Play();
+        }
+
         if (animator != null)
             animator.SetBool("IsOpen", true);
 
@@ -93,35 +102,26 @@ public class Door : MonoBehaviour
         if (doorCollider != null)
             doorCollider.enabled = false;
 
-        HideHint(); // Скрываем подсказку после открытия
+        HideHint();
     }
 
     void ShowHint()
     {
         if (isOpened || currentHint != null) return;
 
-        // Создаём подсказку
         currentHint = Instantiate(hintPrefab, transform.position + Vector3.up * 1.5f, Quaternion.identity);
         currentHint.transform.SetParent(transform);
 
-        // === НОВОЕ: Находим камеру и назначаем её в Canvas ===
         Canvas canvas = currentHint.GetComponentInChildren<Canvas>();
         if (canvas != null)
         {
-            // Ищем главную камеру в сцене
-            Camera mainCamera = Camera.main; // или FindObjectOfType<Camera>()
+            Camera mainCamera = Camera.main;
             if (mainCamera != null)
             {
                 canvas.worldCamera = mainCamera;
-                Debug.Log("✅ Камера назначена в Canvas подсказки!");
-            }
-            else
-            {
-                Debug.LogError("❌ Не найдена камера в сцене! Проверь тег 'MainCamera'");
             }
         }
 
-        // Обновляем текст
         TextMeshProUGUI hintText = currentHint.GetComponentInChildren<TextMeshProUGUI>();
         if (hintText != null)
         {
