@@ -23,28 +23,28 @@ public class HealthBarController : MonoBehaviour
 
     public void SetHealth(int currentHealth, int maxHealth)
     {
-        // Рассчитываем процент
+        if (fillRect == null || fillImage == null) return;
+
         float healthPercent = Mathf.Clamp01((float)currentHealth / maxHealth);
-
-        // Меняем ширину
-        if (fillRect != null)
-        {
-            fillRect.sizeDelta = new Vector2(maxBarWidth * healthPercent, fillRect.sizeDelta.y);
-        }
-
-        // ОБЯЗАТЕЛЬНО обновляем цвет здесь!
-        UpdateColor(healthPercent);
+        
+        // 1. Меняем ширину
+        fillRect.sizeDelta = new Vector2(maxBarWidth * healthPercent, fillRect.sizeDelta.y);
+        
+        // 2. Обновляем цвет в зависимости от процента
+        UpdateColor(healthPercent); 
     }
 
     private void UpdateColor(float percent)
     {
-        if (fillImage == null) return;
+        Color targetColor;
 
         if (percent > 0.6f)
-            fillImage.color = greenColor;
+            targetColor = greenColor;
         else if (percent > 0.3f)
-            fillImage.color = yellowColor;
+            targetColor = yellowColor;
         else
-            fillImage.color = redColor;
+            targetColor = redColor;
+
+        fillImage.color = targetColor;
     }
 }

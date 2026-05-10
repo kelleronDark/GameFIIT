@@ -6,10 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f1631102-0712-4684-804b-1fffdc5271b2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.My project (1)/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.My project (1)/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/ChestKey.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/ChestKey.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/DoorKey.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/DoorKey.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Lever.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Lever.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level1.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/HealthBarController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/HealthBarController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/PlayerController.cs" afterDir="false" />
     </list>
@@ -120,7 +116,7 @@
       <workItem from="1777231090438" duration="4943000" />
       <workItem from="1777314985506" duration="1992000" />
       <workItem from="1777791538023" duration="3795000" />
-      <workItem from="1778396378569" duration="4789000" />
+      <workItem from="1778396378569" duration="8650000" />
     </task>
     <servers />
   </component>
