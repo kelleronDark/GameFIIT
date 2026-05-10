@@ -20,6 +20,9 @@ public class PlayerController : MonoBehaviour
     // [Header("UI")]
     // public UnityEngine.UI.Slider healthSlider; // <-- сюда перетащишь Slider из Unity
     private Vector3 lastCheckpointPos;
+    
+    [Header("Death Screen")]
+    public DeathScreen deathScreen; // Назначь в инспекторе
 
     void Start()
     {
@@ -48,6 +51,15 @@ public class PlayerController : MonoBehaviour
         
         CameraFollow cam = FindFirstObjectByType<CameraFollow>();
         if (cam != null) cam.Warp();
+        
+        if (healthBar != null)
+        {
+            healthBar.SetHealth(currentHealth, maxHealth);
+        }
+        else
+        {
+            Debug.LogError("❌ HealthBar не назначен в PlayerController!");
+        }
         
         // UpdateHealthUI(); // <-- ДОБАВЬ ЭТУ СТРОКУ
     }
@@ -256,14 +268,20 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Die()
     {
-        Debug.Log("Игрок погиб! Перезагрузка сцены...");
+        Debug.Log("Игрок погиб! Показываем экран смерти...");
 
-        // Получаем имя текущей сцены и загружаем её заново
-        string currentSceneName = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(currentSceneName);
-    
-        // После LoadScene код ниже не выполнится в этом кадре, 
-        // так как объект будет уничтожен вместе со сценой.
+        // Показываем экран смерти
+        if (deathScreen != null)
+        {
+            deathScreen.ShowDeathScreen();
+        }
+        else
+        {
+            Debug.LogWarning("️ DeathScreen не назначен в PlayerController!");
+            // Фоллбек: сразу перезагружаем сцену
+            string currentSceneName = SceneManager.GetActiveScene().name;
+            SceneManager.LoadScene(currentSceneName);
+        }
     }
     
     public void ForceDropItem()
