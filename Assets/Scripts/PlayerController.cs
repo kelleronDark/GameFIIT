@@ -92,31 +92,49 @@ public class PlayerController : MonoBehaviour
 
             // 1. Проверяем все интерактивные объекты рядом
             Collider2D[] nearbyObjects = Physics2D.OverlapCircleAll(transform.position, 2f);
+            
             foreach (var hit in nearbyObjects)
             {
-                if (hit.CompareTag("Interactable"))
+                // --- ПРОВЕРКА НА ЗЕЛЬЕ (Новое) ---
+                HealthPotion potion = hit.GetComponent<HealthPotion>();
+                if (potion != null)
                 {
-                    // Проверяем на сундук
-                    Chest chest = hit.GetComponent<Chest>();
-                    if (chest != null && !chest.isOpened)
-                    {
-                        chest.OpenChest();
-                        interactedWithObject = true;
-                        break;
-                    }
+                    // Лечим игрока
+                    Heal(potion.healAmount);
+                    
+                    // Играем звук (если есть AudioSource на самом зелье)
+                    AudioSource audio = hit.GetComponent<AudioSource>();
+                    if (audio != null) 
+                        audio.Play();
 
-                    // Проверяем на дверь
-                    Door door = hit.GetComponent<Door>();
-                    if (door != null && !door.isOpened)
-                    {
-                        door.TryOpen();
-                        interactedWithObject = true;
-                        break;
-                    }
+                    // Удаляем зелье со сцены
+                    float clipLength = audio.clip.length;
+                    Destroy(hit.gameObject, clipLength + 0.1f); // +0.1 сек запаса
+                    
+                    interactedWithObject = true;
+                    break; // Важно: прерываем цикл, чтобы не нажать F дважды
+                }
+
+                // Проверяем на сундук
+                Chest chest = hit.GetComponent<Chest>();
+                if (chest != null && !chest.isOpened)
+                {
+                    chest.OpenChest();
+                    interactedWithObject = true;
+                    break;
+                }
+
+                // Проверяем на дверь
+                Door door = hit.GetComponent<Door>();
+                if (door != null && !door.isOpened)
+                {
+                    door.TryOpen();
+                    interactedWithObject = true;
+                    break;
                 }
             }
 
-            // 2. Если ничего не открыли, выполняем старую логику с предметами
+            // 2. Если ничего не взаимодействовали, работаем с предметами в руках
             if (!interactedWithObject)
             {
                 if (carriedItem == null)
@@ -208,8 +226,6 @@ public class PlayerController : MonoBehaviour
         
         healthBar.SetHealth(currentHealth, maxHealth);
 
-        // UpdateHealthUI(); // обновляем полоску
-
         Debug.Log($"Игрок получил {damage} урона. Здоровье: {currentHealth}/{maxHealth}");
 
         if (currentHealth <= 0)
@@ -227,7 +243,10 @@ public class PlayerController : MonoBehaviour
         if (currentHealth > maxHealth)
             currentHealth = maxHealth;
 
-        // UpdateHealthUI(); // обновляем полоску
+        if (healthBar != null)
+        {
+            healthBar.SetHealth(currentHealth, maxHealth);
+        }
 
         Debug.Log($"Игрок восстановил {amount} HP. Здоровье: {currentHealth}/{maxHealth}");
     }
