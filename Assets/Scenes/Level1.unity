@@ -284,7 +284,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -14, y: -14}
+  m_SizeDelta: {x: -32, y: -32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &12637475
 MonoBehaviour:
@@ -18244,8 +18244,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -30, y: 28}
-  m_SizeDelta: {x: 60, y: 40}
+  m_AnchoredPosition: {x: -70.000046, y: 40}
+  m_SizeDelta: {x: 90, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &190306088
 MonoBehaviour:
@@ -21535,8 +21535,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -30, y: 0}
-  m_SizeDelta: {x: 60, y: 200}
+  m_AnchoredPosition: {x: -70, y: 8.3556}
+  m_SizeDelta: {x: 140, y: 331.2887}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &463244933
 MonoBehaviour:
@@ -21551,7 +21551,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.94716984, g: 0.61471504, b: 0.31989315, a: 0.392}
+  m_Color: {r: 0.4784314, g: 0.3254902, b: 0.15686275, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -21836,7 +21836,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5.625
+  orthographic size: 6.03125
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -32805,8 +32805,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -30.000006, y: -78}
-  m_SizeDelta: {x: 60, y: 40}
+  m_AnchoredPosition: {x: -70, y: -100}
+  m_SizeDelta: {x: 90, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &734829876
 MonoBehaviour:
@@ -74312,8 +74312,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -30, y: -28}
-  m_SizeDelta: {x: 60, y: 40}
+  m_AnchoredPosition: {x: -70, y: -30}
+  m_SizeDelta: {x: 90, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1157909774
 MonoBehaviour:
@@ -99503,10 +99503,10 @@ RectTransform:
   - {fileID: 2099393466}
   m_Father: {fileID: 463244932}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 78}
-  m_SizeDelta: {x: 60, y: 40}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -70, y: 110}
+  m_SizeDelta: {x: 90, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1425452068
 MonoBehaviour:
@@ -107829,6 +107829,10 @@ PrefabInstance:
       propertyPath: m_SortingLayerID
       value: 1253421771
       objectReference: {fileID: 0}
+    - target: {fileID: 5454116266751832513, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
       propertyPath: bayonetTrap
       value: 
@@ -107837,7 +107841,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lever (3)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5454116266751832513, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -121026,7 +121031,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -14, y: -14}
+  m_SizeDelta: {x: -32, y: -32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1686263641
 MonoBehaviour:
@@ -137220,7 +137225,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -14, y: -14}
+  m_SizeDelta: {x: -32, y: -32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2046693288
 MonoBehaviour:
@@ -137588,7 +137593,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -14, y: -14}
+  m_SizeDelta: {x: -32, y: -32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2099393467
 MonoBehaviour:
@@ -138015,6 +138020,14 @@ PrefabInstance:
     - target: {fileID: 6140784661599174080, guid: 5e213037f01b04dc294a8837b6d1a621, type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7638167924540664607, guid: 5e213037f01b04dc294a8837b6d1a621, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8482493082968184074, guid: 5e213037f01b04dc294a8837b6d1a621, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

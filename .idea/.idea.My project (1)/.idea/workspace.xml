@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f1631102-0712-4684-804b-1fffdc5271b2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.My project (1)/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.My project (1)/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/ChestKey.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/ChestKey.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/DoorKey.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/DoorKey.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/InteractionHintCanvas.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/InteractionHintCanvas.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Chest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Chest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Door.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Door.cs" afterDir="false" />
-    </list>
+    <list default="true" id="f1631102-0712-4684-804b-1fffdc5271b2" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -119,7 +112,7 @@
       <workItem from="1777231090438" duration="4943000" />
       <workItem from="1777314985506" duration="1992000" />
       <workItem from="1777791538023" duration="3795000" />
-      <workItem from="1778396378569" duration="1278000" />
+      <workItem from="1778396378569" duration="2170000" />
     </task>
     <servers />
   </component>
