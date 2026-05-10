@@ -11,14 +11,21 @@ public class LeverControl : MonoBehaviour
     [Header("Trap")]
     public BayonetTrap bayonetTrap;
     public bool startsOpened = false; 
-    private bool isPlayerNearby = false;
+
+    [Header("Audio")]
+    public AudioSource audioSource; // 1. Источник звука
 
     [Header("UI Hint")]
-    public GameObject hintPrefab; // Префаб подсказки
+    public GameObject hintPrefab;
     private GameObject currentHint;
+
+    private bool isPlayerNearby = false;
 
     void Start()
     {
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+
         if (startsOpened && doorAnimator != null)
         {
             doorAnimator.Play("Gate_Opened", 0, 1f);
@@ -45,6 +52,12 @@ public class LeverControl : MonoBehaviour
 
     private void ToggleGate()
     {
+        // 2. Воспроизводим звук переключения
+        if (audioSource != null)
+        {
+            audioSource.Play();
+        }
+
         // Если есть дверь — работаем с дверью
         if (doorAnimator != null)
         {
@@ -86,8 +99,7 @@ public class LeverControl : MonoBehaviour
         if (other.CompareTag("Player")) 
         {
             isPlayerNearby = true;
-            ShowHint(); // Показываем подсказку
-            Debug.Log("Нажми F, чтобы активировать");
+            ShowHint();
         }
     }
 
@@ -96,20 +108,17 @@ public class LeverControl : MonoBehaviour
         if (other.CompareTag("Player")) 
         {
             isPlayerNearby = false;
-            HideHint(); // Скрываем подсказку
+            HideHint();
         }
     }
 
-    // === ЕДИНЫЙ МЕТОД SHOWHINT (как в Chest.cs) ===
-
     void ShowHint()
     {
-        if (currentHint != null) return; // Уже есть подсказка
+        if (currentHint != null) return;
 
         currentHint = Instantiate(hintPrefab, transform.position + Vector3.up * 1.5f, Quaternion.identity);
         currentHint.transform.SetParent(transform);
 
-        // Назначаем камеру
         Canvas canvas = currentHint.GetComponentInChildren<Canvas>();
         if (canvas != null)
         {
@@ -117,10 +126,6 @@ public class LeverControl : MonoBehaviour
             if (mainCamera != null)
             {
                 canvas.worldCamera = mainCamera;
-            }
-            else
-            {
-                Debug.LogError("❌ Камера не найдена для подсказки рычага!");
             }
         }
 
@@ -135,7 +140,7 @@ public class LeverControl : MonoBehaviour
     {
         if (currentHint == null) return;
 
-        Destroy(currentHint); // Простое удаление — как было изначально
+        Destroy(currentHint);
         currentHint = null;
     }
 }
