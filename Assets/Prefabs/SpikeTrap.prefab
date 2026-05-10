@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7332119603409417479}
   - component: {fileID: 3694162960577340295}
   - component: {fileID: 4459474033387125751}
+  - component: {fileID: 3772505095953901789}
   m_Layer: 0
   m_Name: SpikeTrap
   m_TagString: Untagged
@@ -79,8 +80,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1816257379
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2277691727256752740, guid: 45dc86fd5caaa6047881849eeab7d654, type: 3}
@@ -149,7 +150,7 @@ Animator:
   m_GameObject: {fileID: 4557677130067450248}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f54d6f10292c70a42946e004262fd45c, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -161,3 +162,17 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3772505095953901789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4557677130067450248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3541fdac10097042a760084dce923ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  damagePerTick: 10
+  damageInterval: 0.5

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -14,29 +15,41 @@ public class PlayerController : MonoBehaviour
     public Transform holdPoint;
     private GameObject carriedItem;
     
-    [Header("UI")]
-    public UnityEngine.UI.Slider healthSlider; // <-- сюда перетащишь Slider из Unity
+    public HealthBarController healthBar; // Назначь в инспекторе
+    
+    // [Header("UI")]
+    // public UnityEngine.UI.Slider healthSlider; // <-- сюда перетащишь Slider из Unity
     private Vector3 lastCheckpointPos;
 
     void Start()
     {
-        Debug.Log("Игрок создан! Проверка New Input System.");
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        
-        // Инициализация здоровья
         currentHealth = maxHealth;
+        
         Debug.Log($"Здоровье игрока: {currentHealth}/{maxHealth}");
         
         lastCheckpointPos = transform.position;
         
-        if (SaveManager.Instance != null && !SaveManager.Instance.HasSaveFile())
+        if (SaveManager.Instance != null && SaveManager.Instance.HasSaveFile())
         {
-            CameraFollow cam = FindFirstObjectByType<CameraFollow>();
-            if (cam != null) cam.Warp();
+            Vector3 cpPos = SaveManager.Instance.GetSavedCheckpointPosition();
+        
+            // Телепортируем игрока
+            transform.position = cpPos;
+            lastCheckpointPos = cpPos; // Обновляем локальную переменную
+        
+            Debug.Log($"Игрок возродился на чекпоинте: {cpPos}");
+        }
+        else
+        {
+            lastCheckpointPos = transform.position;
         }
         
-        UpdateHealthUI(); // <-- ДОБАВЬ ЭТУ СТРОКУ
+        CameraFollow cam = FindFirstObjectByType<CameraFollow>();
+        if (cam != null) cam.Warp();
+        
+        // UpdateHealthUI(); // <-- ДОБАВЬ ЭТУ СТРОКУ
     }
     
     public void SetCheckpoint(Vector3 newPosition)
@@ -148,11 +161,11 @@ public class PlayerController : MonoBehaviour
         carriedItem = null;
     }
 
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, 1.5f);
-    }
+    // private void OnDrawGizmosSelected()
+    // {
+    //     Gizmos.color = Color.red;
+    //     Gizmos.DrawWireSphere(transform.position, 1.5f);
+    // }
 
     void FixedUpdate()
     {
@@ -163,27 +176,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void UpdateHealthUI()
-    {
-        if (healthSlider != null)
-        {
-            // Рассчитываем процент здоровья (от 0 до 1)
-            float healthPercent = (float)currentHealth / maxHealth;
-            healthSlider.value = healthPercent;
-
-            // Меняем цвет заполнения: зелёный → жёлтый → красный
-            Image fillImage = healthSlider.fillRect.GetComponent<Image>();
-            if (fillImage != null)
-            {
-                if (healthPercent > 0.6f)
-                    fillImage.color = Color.green;
-                else if (healthPercent > 0.3f)
-                    fillImage.color = Color.yellow;
-                else
-                    fillImage.color = Color.red;
-            }
-        }
-    }
+    // private void UpdateHealthUI()
+    // {
+    //     if (healthSlider != null)
+    //     {
+    //         // Рассчитываем процент здоровья (от 0 до 1)
+    //         float healthPercent = (float)currentHealth / maxHealth;
+    //         healthSlider.value = healthPercent;
+    //
+    //         // Меняем цвет заполнения: зелёный → жёлтый → красный
+    //         Image fillImage = healthSlider.fillRect.GetComponent<Image>();
+    //         if (fillImage != null)
+    //         {
+    //             if (healthPercent > 0.6f)
+    //                 fillImage.color = Color.green;
+    //             else if (healthPercent > 0.3f)
+    //                 fillImage.color = Color.yellow;
+    //             else
+    //                 fillImage.color = Color.red;
+    //         }
+    //     }
+    // }
 
     /// <summary>
     /// Получить урон
@@ -192,8 +205,10 @@ public class PlayerController : MonoBehaviour
     {
         currentHealth -= damage;
         if (currentHealth < 0) currentHealth = 0;
+        
+        healthBar.SetHealth(currentHealth, maxHealth);
 
-        UpdateHealthUI(); // обновляем полоску
+        // UpdateHealthUI(); // обновляем полоску
 
         Debug.Log($"Игрок получил {damage} урона. Здоровье: {currentHealth}/{maxHealth}");
 
@@ -212,7 +227,7 @@ public class PlayerController : MonoBehaviour
         if (currentHealth > maxHealth)
             currentHealth = maxHealth;
 
-        UpdateHealthUI(); // обновляем полоску
+        // UpdateHealthUI(); // обновляем полоску
 
         Debug.Log($"Игрок восстановил {amount} HP. Здоровье: {currentHealth}/{maxHealth}");
     }
@@ -222,34 +237,14 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Die()
     {
-        Debug.Log("Игрок погиб! Возврат на чекпоинт.");
+        Debug.Log("Игрок погиб! Перезагрузка сцены...");
 
-        // 1. Телепортируем на последнюю сохраненную позицию
-        transform.position = lastCheckpointPos;
-        
-        CameraFollow cam = FindFirstObjectByType<CameraFollow>();
-        if (cam != null) cam.Warp();
-
-        // 2. Обнуляем инерцию (чтобы игрока не "несло" после респауна)
-        if (rb != null) rb.linearVelocity = Vector2.zero;
-
-        // 3. Восстанавливаем здоровье
-        currentHealth = maxHealth;
-        UpdateHealthUI();
-
-        // 4. (Опционально) Если хочешь добавить визуальный эффект, 
-        // можно запустить короткую анимацию затемнения экрана.
-        
-        // ВЫЗЫВАЕМ ОТКАТ ИНВЕНТАРЯ
-        if (InventoryManager.Instance != null)
-        {
-            InventoryManager.Instance.ResetInventory();
-        }
-        
-        if (KeyInventory.Instance != null)
-        {
-            KeyInventory.Instance.ResetKeys();
-        }
+        // Получаем имя текущей сцены и загружаем её заново
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(currentSceneName);
+    
+        // После LoadScene код ниже не выполнится в этом кадре, 
+        // так как объект будет уничтожен вместе со сценой.
     }
     
     public void ForceDropItem()

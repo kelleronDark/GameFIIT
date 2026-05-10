@@ -8,6 +8,8 @@ public class LeverControl : MonoBehaviour
     public BoxCollider2D doorCollider;
     public Animator leverAnimator;
     
+    [Header("Trap")]
+    public BayonetTrap bayonetTrap;
     public bool startsOpened = false; 
     private bool isPlayerNearby = false;
 
@@ -17,18 +19,19 @@ public class LeverControl : MonoBehaviour
 
     void Start()
     {
-        if (startsOpened)
+        if (startsOpened && doorAnimator != null)
         {
-            doorAnimator.Play("Gate_Opened", 0, 1f); 
+            doorAnimator.Play("Gate_Opened", 0, 1f);
             doorAnimator.SetBool("isOpen", true);
 
             if (leverAnimator != null)
             {
-                leverAnimator.Play("Lever_On", 0, 1f); 
+                leverAnimator.Play("Lever_On", 0, 1f);
                 leverAnimator.SetBool("isActivated", true);
             }
-            
-            if (doorCollider != null) doorCollider.enabled = false; 
+
+            if (doorCollider != null)
+                doorCollider.enabled = false;
         }
     }
 
@@ -42,22 +45,40 @@ public class LeverControl : MonoBehaviour
 
     private void ToggleGate()
     {
-        bool newState = !doorAnimator.GetBool("isOpen");
-
-        doorAnimator.SetBool("isOpen", newState);
-        if (doorCollider != null) 
+        // Если есть дверь — работаем с дверью
+        if (doorAnimator != null)
         {
-            doorCollider.enabled = !newState; 
+            bool newState = !doorAnimator.GetBool("isOpen");
+
+            doorAnimator.SetBool("isOpen", newState);
+
+            if (doorCollider != null)
+            {
+                doorCollider.enabled = !newState;
+            }
+
+            if (leverAnimator != null)
+            {
+                leverAnimator.SetBool("isActivated", newState);
+            }
+
+            Debug.Log("Рычаг и дверь переключены. Состояние открыто: " + newState);
         }
 
-        if (leverAnimator != null)
+        // Если есть ловушка — выключаем её
+        if (bayonetTrap != null)
         {
-            leverAnimator.SetBool("isActivated", newState);
+            bayonetTrap.ToggleTrap();
+            
+            if (leverAnimator != null)
+            {
+                leverAnimator.SetBool("isActivated", true);
+            }
+
+            Debug.Log("Ловушка отключена.");
         }
 
-        Debug.Log("Рычаг и дверь переключены. Состояние открыто: " + newState);
-        
-        HideHint(); // Скрываем подсказку после активации
+        HideHint();
     }
 
     private void OnTriggerEnter2D(Collider2D other)

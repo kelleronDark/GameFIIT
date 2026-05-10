@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 4912694753908625130}
   - component: {fileID: 6421099721880269092}
   - component: {fileID: 1811812169208386817}
+  - component: {fileID: -918158063693210353}
+  - component: {fileID: -7037350073301099149}
   m_Layer: 0
   m_Name: CircleTrap
   m_TagString: Untagged
@@ -138,3 +140,39 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2, y: 1.2691343}
   m_EdgeRadius: 0
+--- !u!95 &-918158063693210353
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1634241373656886655}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 701ec61a87db309469a3052e34228a75, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-7037350073301099149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1634241373656886655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b445be7875b9608499880160a256e555, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  damagePerTick: 10
+  damageInterval: 0.5

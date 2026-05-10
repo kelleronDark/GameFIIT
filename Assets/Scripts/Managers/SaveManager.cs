@@ -7,6 +7,7 @@ public class SaveManager : MonoBehaviour
     public static SaveManager Instance;
     private string filePath;
     private Transform player;
+    private List<string> activeCheckpointsList = new List<string>();
 
     void Awake()
     {
@@ -40,9 +41,9 @@ public class SaveManager : MonoBehaviour
         
         if (pc != null)
         {
-            Vector3 cpPos = pc.GetLastCheckpointPos(); // Нам нужно добавить этот геттер
-            data.posX = cpPos.x;
-            data.posY = cpPos.y;
+            Vector3 cpPos = pc.GetLastCheckpointPos(); 
+            data.checkpointX = cpPos.x;
+            data.checkpointY = cpPos.y;
         }
 
         // Добавляем данные из инвентаря (если InventoryManager существует)
@@ -53,16 +54,11 @@ public class SaveManager : MonoBehaviour
         
         data.keyCount = KeyInventory.Instance.GetKeyCount();
         
-        if (data.inventoryItemNames != null)
-        {
-            Debug.Log($"[SAVE] Сохраняю предметов: {data.inventoryItemNames.Count}. Первый: {(data.inventoryItemNames.Count > 0 ? data.inventoryItemNames[0] : "пусто")}");
-        }
-
-        // 3. Сериализация в JSON
+        data.activatedCheckpoints = new List<string>(activeCheckpointsList);
+        
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(filePath, json);
-
-        Debug.Log($"<color=green>Прогресс сохранен в {filePath}</color>");
+        Debug.Log("Прогресс (чекпоинт) сохранен!");
 
         // 4. Запуск анимации иконки в углу
         if (UIAnimationController.Instance != null)
@@ -73,7 +69,11 @@ public class SaveManager : MonoBehaviour
 
     public void LoadGame()
     {
-        if (!File.Exists(filePath)) return;
+        if (!File.Exists(filePath)) 
+        {
+            Debug.LogWarning("Файл сохранения не найден по пути: " + filePath);
+            return;
+        }
 
         string json = File.ReadAllText(filePath);
         SaveData data = JsonUtility.FromJson<SaveData>(json);
@@ -81,12 +81,15 @@ public class SaveManager : MonoBehaviour
         if (InventoryManager.Instance != null)
         {
             InventoryManager.Instance.LoadInventoryFromNames(data.inventoryItemNames);
+            InventoryManager.Instance.RefreshUI();
         }
             
         if (KeyInventory.Instance != null)
         {
             KeyInventory.Instance.RestoreKeys(data.keyCount);
         }
+        
+        activeCheckpointsList = new List<string>(data.activatedCheckpoints);
 
         // Ищем игрока, если ссылка потерялась при смене сцены
         if (player == null) 
@@ -97,7 +100,7 @@ public class SaveManager : MonoBehaviour
 
         if (player != null)
         {
-            player.position = new Vector2(data.posX, data.posY);
+            player.position = new Vector3(data.checkpointX, data.checkpointY, 0);
             
             var cam = FindFirstObjectByType<CameraFollow>();
             if (cam != null) 
@@ -156,5 +159,27 @@ public class SaveManager : MonoBehaviour
 
         // Затем пишем в файл
         SaveGame();
+    }
+    
+    public Vector3 GetSavedCheckpointPosition()
+    {
+        if (!File.Exists(filePath)) return Vector3.zero;
+
+        string json = File.ReadAllText(filePath);
+        SaveData data = JsonUtility.FromJson<SaveData>(json);
+        return new Vector3(data.checkpointX, data.checkpointY, 0);
+    }
+    
+    public void RegisterCheckpoint(string id)
+    {
+        if (!activeCheckpointsList.Contains(id))
+        {
+            activeCheckpointsList.Add(id);
+        }
+    }
+
+    public bool IsCheckpointActivated(string id)
+    {
+        return activeCheckpointsList.Contains(id);
     }
 }
