@@ -1,15 +1,53 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class HealthPotion : MonoBehaviour
 {
     [Header("Settings")]
     public int healAmount = 25;
+    private bool isUsed = false; // Чтобы нельзя было юзнуть дважды
 
     [Header("UI Hint")]
     public GameObject hintPrefab; // Сюда в инспекторе кинешь префаб подсказки
     private GameObject currentHint;
     private bool playerInRange = false;
+    
+    void Update()
+    {
+        // Проверяем нажатие кнопки F, если игрок рядом и хилка еще не использована
+        if (playerInRange && !isUsed && Keyboard.current.fKey.wasPressedThisFrame)
+        {
+            UsePotion();
+        }
+    }
+    
+    void UsePotion()
+    {
+        isUsed = true; // Сразу блокируем повторное нажатие
+
+        // Ищем скрипт здоровья на игроке (замени PlayerHealth на имя своего скрипта)
+        PlayerController player = FindFirstObjectByType<PlayerController>();
+        if (player != null)
+        {
+            player.Heal(healAmount); // Лечим через метод игрока
+        }
+
+        AudioSource audio = GetComponent<AudioSource>();
+        float delay = 0.1f;
+        if (audio != null && audio.clip != null)
+        {
+            audio.Play();
+            delay = audio.clip.length;
+        }
+        
+        HideHint();
+        if (GetComponent<Collider2D>() != null) GetComponent<Collider2D>().enabled = false;
+        if (GetComponent<SpriteRenderer>() != null) GetComponent<SpriteRenderer>().enabled = false;
+
+        // Удаляем объект после того как доиграет звук
+        Destroy(gameObject, delay + 0.1f);
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {

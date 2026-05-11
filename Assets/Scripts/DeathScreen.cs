@@ -18,6 +18,7 @@ public class DeathScreen : MonoBehaviour
     public string hintMessage = "Нажмите F, чтобы возродиться"; // <-- Новое поле
     public float typeSpeed = 0.05f;
     public float fadeDuration = 1.5f;
+    private bool isDead = false;
 
     private bool isTyping = false;
     private bool canRestart = false;
@@ -42,6 +43,9 @@ public class DeathScreen : MonoBehaviour
 
     public void ShowDeathScreen()
     {
+        if (isDead) return; // Если уже мертвы — ничего не делаем
+        isDead = true;
+        
         Debug.Log("Показываем экран смерти...");
 
         if (deathPanel != null)
