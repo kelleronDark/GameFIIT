@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
@@ -20,7 +21,14 @@ public class PlayerController : MonoBehaviour
     // [Header("UI")]
     // public UnityEngine.UI.Slider healthSlider; // <-- сюда перетащишь Slider из Unity
     private Vector3 lastCheckpointPos;
-    
+
+    [Header("Throw Settings")]
+    public GameObject throwCursor; // Тот самый объект прицела
+    public float maxThrowDistance = 5f;
+    public float throwHeight = 2f; // Высота дуги
+    public float throwSpeed = 2f;  // Время полета (сек)
+    private bool isAiming = false;
+
     [Header("Death Screen")]
     public DeathScreen deathScreen; // Назначь в инспекторе
 
@@ -104,7 +112,7 @@ public class PlayerController : MonoBehaviour
 
             // 1. Проверяем все интерактивные объекты рядом
             Collider2D[] nearbyObjects = Physics2D.OverlapCircleAll(transform.position, 2f);
-            
+
             foreach (var hit in nearbyObjects)
             {
                 // --- ПРОВЕРКА НА ЗЕЛЬЕ (Новое) ---
@@ -113,16 +121,16 @@ public class PlayerController : MonoBehaviour
                 {
                     // Лечим игрока
                     Heal(potion.healAmount);
-                    
+
                     // Играем звук (если есть AudioSource на самом зелье)
                     AudioSource audio = hit.GetComponent<AudioSource>();
-                    if (audio != null) 
+                    if (audio != null)
                         audio.Play();
 
                     // Удаляем зелье со сцены
                     float clipLength = audio.clip.length;
                     Destroy(hit.gameObject, clipLength + 0.1f); // +0.1 сек запаса
-                    
+
                     interactedWithObject = true;
                     break; // Важно: прерываем цикл, чтобы не нажать F дважды
                 }
@@ -159,6 +167,40 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+
+        // ПРИЦЕЛИВАНИЕ (ПКМ)
+        if (carriedItem != null && Mouse.current.rightButton.isPressed)
+        {
+            isAiming = true;
+            throwCursor.SetActive(true);
+
+            // Получаем позицию мыши в мире
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            mousePos.z = 0;
+
+            // Ограничиваем дистанцию броска
+            float dist = Vector2.Distance(transform.position, mousePos);
+            if (dist > maxThrowDistance)
+            {
+                mousePos = transform.position + (mousePos - transform.position).normalized * maxThrowDistance;
+            }
+
+            throwCursor.transform.position = mousePos;
+
+            // БРОСОК (ЛКМ во время прицеливания)
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                StartCoroutine(ThrowItem(carriedItem, mousePos));
+                carriedItem = null; // Ссылка в руках обнуляется сразу
+                isAiming = false;
+                throwCursor.SetActive(false);
+            }
+        }
+        else
+        {
+            isAiming = false;
+            if (throwCursor != null) throwCursor.SetActive(false);
+        }
     }
 
     void TryPickUp()
@@ -173,8 +215,13 @@ public class PlayerController : MonoBehaviour
                 carriedItem.transform.SetParent(holdPoint);
                 carriedItem.transform.localPosition = Vector3.zero;
 
+                // 1. Отключаем физику движения
                 if (carriedItem.GetComponent<Rigidbody2D>())
                     carriedItem.GetComponent<Rigidbody2D>().simulated = false;
+
+                // 2. ОТКЛЮЧАЕМ КОЛЛАЙДЕР, чтобы игрок не становился широким
+                Collider2D col = carriedItem.GetComponent<Collider2D>();
+                if (col != null) col.enabled = false;
 
                 break;
             }
@@ -183,12 +230,53 @@ public class PlayerController : MonoBehaviour
 
     void DropItem()
     {
+        // Включаем коллайдер обратно перед тем как бросить под ноги
+        Collider2D col = carriedItem.GetComponent<Collider2D>();
+        if (col != null) col.enabled = true;
+
         carriedItem.transform.SetParent(null);
 
         if (carriedItem.GetComponent<Rigidbody2D>())
             carriedItem.GetComponent<Rigidbody2D>().simulated = true;
 
         carriedItem = null;
+    }
+
+    IEnumerator ThrowItem(GameObject item, Vector3 targetPos)
+    {
+        item.transform.SetParent(null);
+        Rigidbody2D itemRb = item.GetComponent<Rigidbody2D>();
+        Collider2D itemCol = item.GetComponent<Collider2D>();
+
+        // Включаем коллайдер (он был выключен при подборе), но делаем его триггером
+        if (itemCol)
+        {
+            itemCol.enabled = true;
+            itemCol.isTrigger = true;
+        }
+
+        if (itemRb) itemRb.simulated = false;
+
+        Vector3 startPos = item.transform.position;
+        float timer = 0;
+
+        while (timer < 1f)
+        {
+            timer += Time.deltaTime * throwSpeed;
+            Vector3 currentPos = Vector3.Lerp(startPos, targetPos, timer);
+            float height = Mathf.Sin(timer * Mathf.PI) * throwHeight;
+            currentPos.y += height;
+
+            item.transform.position = currentPos;
+            yield return null;
+        }
+
+        if (itemRb) itemRb.simulated = true;
+        if (itemCol) itemCol.isTrigger = false; // Возвращаем обычную физику
+
+        BoxImpact impact = item.GetComponent<BoxImpact>();
+        if (impact == null) impact = item.AddComponent<BoxImpact>();
+        impact.ActivateImpact();
     }
 
     // private void OnDrawGizmosSelected()

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Item
   - Interactable
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -81,6 +82,9 @@ TagManager:
     locked: 0
   - name: Doors
     uniqueID: 4089188279
+    locked: 0
+  - name: Cursor
+    uniqueID: 4132619689
     locked: 0
   m_RenderingLayers:
   - Default
