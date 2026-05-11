@@ -22173,7 +22173,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 6.2395835
+  orthographic size: 6.8229165
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -22354,6 +22354,8 @@ MonoBehaviour:
   - {fileID: 2007628078}
   - {fileID: 6436302}
   - {fileID: 1733895883}
+  damageAmount: 20
+  attackCooldown: 1.5
   chaseDistance: 5
   stopChaseDistance: 8
   playerDistError: 1.1
@@ -47040,6 +47042,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Box
       objectReference: {fileID: 0}
+    - target: {fileID: 5576407376876305921, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Size.x
+      value: 1.9704037
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576407376876305921, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Size.y
+      value: 2.2560883
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576407376876305921, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.025566101
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576407376876305921, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.12450218
+      objectReference: {fileID: 0}
     - target: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
       propertyPath: m_LocalPosition.x
       value: -13.47
@@ -47078,6 +47096,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8258021055311979087, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Size.x
+      value: 0.8161907
+      objectReference: {fileID: 0}
+    - target: {fileID: 8258021055311979087, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Size.y
+      value: 1.1790066
+      objectReference: {fileID: 0}
+    - target: {fileID: 8258021055311979087, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8258021055311979087, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Offset.x
+      value: 0.00015544891
+      objectReference: {fileID: 0}
+    - target: {fileID: 8258021055311979087, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.07688427
+      objectReference: {fileID: 0}
+    - target: {fileID: 8258021055311979087, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_IsTrigger
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
