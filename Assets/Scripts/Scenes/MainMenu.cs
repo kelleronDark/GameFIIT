@@ -6,37 +6,47 @@ public class MainMenu : MonoBehaviour
 {
     public Button continueButton;
     
+    [Header("Audio Settings")]
+    public AudioSource musicSource; // Ссылка на источник музыки
+    public AudioSource sfxSource;   // Ссылка на источник звуков (кликов)
+    public AudioClip clickSound;    // Сам файл звука клика
+
     void Start()
     {
-        // Проверяем наличие файла сохранения при запуске меню
         if (continueButton != null)
         {
-            // Если файла нет, кнопка становится серой и неактивной
             continueButton.interactable = SaveManager.Instance != null && SaveManager.Instance.HasSaveFile();
         }
     }
-    
-    // Метод для кнопки "Новая игра"
+
+    // Универсальный метод для проигрывания звука кнопки
+    public void PlayClickSound()
+    {
+        if (sfxSource != null && clickSound != null)
+        {
+            sfxSource.PlayOneShot(clickSound);
+        }
+    }
+
     public void StartGame()
     {
+        PlayClickSound();
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.DeleteSaveFile(); 
         }
-        // Загружаем сцену игры (обычно индекс 1)
         SceneManager.LoadScene(1);
     }
 
-    // Метод для кнопки "Продолжить"
     public void ContinueGame()
     {
-        // Просто грузим сцену. SaveManager сам поймет, что нужно загрузиться, 
-        // так как у него есть метод OnSceneLoaded.
+        PlayClickSound();
         SceneManager.LoadScene(1);
     }
 
     public void ExitGame()
     {
+        PlayClickSound();
         Debug.Log("Выход из игры..."); 
         Application.Quit(); 
     }
