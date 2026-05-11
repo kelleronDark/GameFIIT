@@ -108539,8 +108539,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lever (3)
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 5454116266751832513, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
