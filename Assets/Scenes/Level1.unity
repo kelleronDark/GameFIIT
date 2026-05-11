@@ -511,11 +511,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2214329308073438890, guid: 8504d05443d2b0f4fbb0ea0978133423, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.72
+      value: -0.12
       objectReference: {fileID: 0}
     - target: {fileID: 2214329308073438890, guid: 8504d05443d2b0f4fbb0ea0978133423, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 13.41
+      value: 12.83
       objectReference: {fileID: 0}
     - target: {fileID: 2214329308073438890, guid: 8504d05443d2b0f4fbb0ea0978133423, type: 3}
       propertyPath: m_LocalPosition.z
@@ -22173,7 +22173,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 6.2395835
+  orthographic size: 5.625
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -46579,11 +46579,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2214329308073438890, guid: 8504d05443d2b0f4fbb0ea0978133423, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.02
+      value: 13.06
       objectReference: {fileID: 0}
     - target: {fileID: 2214329308073438890, guid: 8504d05443d2b0f4fbb0ea0978133423, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -8.45
+      value: 0.33
       objectReference: {fileID: 0}
     - target: {fileID: 2214329308073438890, guid: 8504d05443d2b0f4fbb0ea0978133423, type: 3}
       propertyPath: m_LocalPosition.z
@@ -100203,11 +100203,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2214329308073438890, guid: 8504d05443d2b0f4fbb0ea0978133423, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.26
+      value: 6.83
       objectReference: {fileID: 0}
     - target: {fileID: 2214329308073438890, guid: 8504d05443d2b0f4fbb0ea0978133423, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -16.75
+      value: -14.7
       objectReference: {fileID: 0}
     - target: {fileID: 2214329308073438890, guid: 8504d05443d2b0f4fbb0ea0978133423, type: 3}
       propertyPath: m_LocalPosition.z
@@ -108701,8 +108701,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lever (3)
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 5454116266751832513, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -121539,11 +121538,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2214329308073438890, guid: 8504d05443d2b0f4fbb0ea0978133423, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 21.69
+      value: 17.63
       objectReference: {fileID: 0}
     - target: {fileID: 2214329308073438890, guid: 8504d05443d2b0f4fbb0ea0978133423, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -21.7
+      value: -32.06
       objectReference: {fileID: 0}
     - target: {fileID: 2214329308073438890, guid: 8504d05443d2b0f4fbb0ea0978133423, type: 3}
       propertyPath: m_LocalPosition.z

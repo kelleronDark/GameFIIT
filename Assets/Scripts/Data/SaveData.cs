@@ -9,4 +9,5 @@ public class SaveData
     public List<string> inventoryItemNames = new List<string>();
     public int keyCount;
     public List<string> activatedCheckpoints = new List<string>();
+    // public bool isBayonetTrapDeactivated;
 }

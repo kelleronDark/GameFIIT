@@ -8,6 +8,7 @@ public class SaveManager : MonoBehaviour
     private string filePath;
     private Transform player;
     private List<string> activeCheckpointsList = new List<string>();
+    private bool bayonetTrapDeactivated = false;
 
     void Awake()
     {
@@ -56,6 +57,8 @@ public class SaveManager : MonoBehaviour
         
         data.activatedCheckpoints = new List<string>(activeCheckpointsList);
         
+        // data.isBayonetTrapDeactivated = bayonetTrapDeactivated;
+        
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(filePath, json);
         Debug.Log("Прогресс (чекпоинт) сохранен!");
@@ -90,6 +93,15 @@ public class SaveManager : MonoBehaviour
         }
         
         activeCheckpointsList = new List<string>(data.activatedCheckpoints);
+        
+        // bayonetTrapDeactivated = data.isBayonetTrapDeactivated;
+        //
+        // BayonetTrap trap = FindFirstObjectByType<BayonetTrap>();
+        //
+        // if (trap != null)
+        // {
+        //     trap.RestoreStateFromSave();
+        // }
 
         // Ищем игрока, если ссылка потерялась при смене сцены
         if (player == null) 
@@ -181,5 +193,15 @@ public class SaveManager : MonoBehaviour
     public bool IsCheckpointActivated(string id)
     {
         return activeCheckpointsList.Contains(id);
+    }
+    
+    public void SetBayonetTrapState(bool state)
+    {
+        bayonetTrapDeactivated = state;
+    }
+
+    public bool IsBayonetTrapDeactivated()
+    {
+        return bayonetTrapDeactivated;
     }
 }

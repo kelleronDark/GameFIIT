@@ -82,13 +82,13 @@ public class LeverControl : MonoBehaviour
         if (bayonetTrap != null)
         {
             bayonetTrap.ToggleTrap();
-            
+
             if (leverAnimator != null)
             {
-                leverAnimator.SetBool("isActivated", true);
+                leverAnimator.SetBool("isActivated", !bayonetTrap.IsActive);
             }
 
-            Debug.Log("Ловушка отключена.");
+            Debug.Log("Ловушка переключена.");
         }
 
         HideHint();

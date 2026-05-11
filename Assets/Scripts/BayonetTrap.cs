@@ -62,4 +62,26 @@ public class BayonetTrap : MonoBehaviour
 
         Debug.Log("Ловушка переключена. Активна: " + isActive);
     }
+    
+    // public void DeactivateImmediately()
+    // {
+    //     isActive = false;
+    //
+    //     if (animator != null)
+    //     {
+    //         animator.Play("Deactivated_Idle", 0, 1f);
+    //         animator.SetBool("isDeactivated", true);
+    //     }
+    // }
+    
+    // public void RestoreStateFromSave()
+    // {
+    //     if (SaveManager.Instance != null &&
+    //         SaveManager.Instance.IsBayonetTrapDeactivated())
+    //     {
+    //         DeactivateImmediately();
+    //
+    //         Debug.Log("Ловушка восстановлена из сохранения.");
+    //     }
+    // }
 }
