@@ -26,19 +26,38 @@ public class LeverControl : MonoBehaviour
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
 
-        if (startsOpened && doorAnimator != null)
+        bool isAlreadyDeactivated = SaveManager.Instance != null && SaveManager.Instance.IsBayonetTrapDeactivated();
+
+        if (isAlreadyDeactivated)
         {
-            doorAnimator.Play("Gate_Opened", 0, 1f);
-            doorAnimator.SetBool("isOpen", true);
+            ApplyState(true); // Принудительно открываем/выключаем
+        }
+        else if (startsOpened)
+        {
+            ApplyState(true); // Настройки уровня по умолчанию
+        }
+    }
+    
+    private void ApplyState(bool isOpen)
+    {
+        if (doorAnimator != null)
+        {
+            doorAnimator.SetBool("isOpen", isOpen);
+            doorAnimator.Play(isOpen ? "Gate_Opened" : "Gate_Closed", 0, 1f);
+        }
 
-            if (leverAnimator != null)
-            {
-                leverAnimator.Play("Lever_On", 0, 1f);
-                leverAnimator.SetBool("isActivated", true);
-            }
+        if (doorCollider != null) doorCollider.enabled = !isOpen;
 
-            if (doorCollider != null)
-                doorCollider.enabled = false;
+        if (bayonetTrap != null)
+        {
+            // Используем SetState, чтобы не крутить логику Toggle по кругу
+            bayonetTrap.SetState(isOpen); 
+        }
+
+        if (leverAnimator != null)
+        {
+            leverAnimator.SetBool("isActivated", isOpen);
+            leverAnimator.Play(isOpen ? "Lever_On" : "Lever_Off", 0, 1f);
         }
     }
 
@@ -54,9 +73,7 @@ public class LeverControl : MonoBehaviour
     {
         // 2. Воспроизводим звук переключения
         if (audioSource != null)
-        {
             audioSource.Play();
-        }
 
         // Если есть дверь — работаем с дверью
         if (doorAnimator != null)
@@ -86,6 +103,11 @@ public class LeverControl : MonoBehaviour
             if (leverAnimator != null)
             {
                 leverAnimator.SetBool("isActivated", !bayonetTrap.IsActive);
+            }
+            
+            if (SaveManager.Instance != null)
+            {
+                SaveManager.Instance.SetBayonetTrapState(!bayonetTrap.IsActive);
             }
 
             Debug.Log("Ловушка переключена.");

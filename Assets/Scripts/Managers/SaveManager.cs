@@ -57,7 +57,7 @@ public class SaveManager : MonoBehaviour
         
         data.activatedCheckpoints = new List<string>(activeCheckpointsList);
         
-        // data.isBayonetTrapDeactivated = bayonetTrapDeactivated;
+        data.isBayonetTrapDeactivated = bayonetTrapDeactivated;
         
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(filePath, json);
@@ -94,14 +94,14 @@ public class SaveManager : MonoBehaviour
         
         activeCheckpointsList = new List<string>(data.activatedCheckpoints);
         
-        // bayonetTrapDeactivated = data.isBayonetTrapDeactivated;
-        //
-        // BayonetTrap trap = FindFirstObjectByType<BayonetTrap>();
-        //
-        // if (trap != null)
-        // {
-        //     trap.RestoreStateFromSave();
-        // }
+        bayonetTrapDeactivated = data.isBayonetTrapDeactivated;
+
+        // Ищем ловушку на сцене и применяем состояние
+        BayonetTrap trap = Object.FindFirstObjectByType<BayonetTrap>();
+        if (trap != null)
+        {
+            trap.SetState(bayonetTrapDeactivated);
+        }
 
         // Ищем игрока, если ссылка потерялась при смене сцены
         if (player == null) 

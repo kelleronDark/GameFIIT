@@ -54,34 +54,39 @@ public class BayonetTrap : MonoBehaviour
     public void ToggleTrap()
     {
         isActive = !isActive;
-
+        
         if (animator != null)
         {
             animator.SetBool("isDeactivated", !isActive);
+        }
+        
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.SetBayonetTrapState(!isActive);
         }
 
         Debug.Log("Ловушка переключена. Активна: " + isActive);
     }
     
-    // public void DeactivateImmediately()
-    // {
-    //     isActive = false;
-    //
-    //     if (animator != null)
-    //     {
-    //         animator.Play("Deactivated_Idle", 0, 1f);
-    //         animator.SetBool("isDeactivated", true);
-    //     }
-    // }
+    public void SetState(bool deactivated)
+    {
+        isActive = !deactivated;
     
-    // public void RestoreStateFromSave()
-    // {
-    //     if (SaveManager.Instance != null &&
-    //         SaveManager.Instance.IsBayonetTrapDeactivated())
-    //     {
-    //         DeactivateImmediately();
-    //
-    //         Debug.Log("Ловушка восстановлена из сохранения.");
-    //     }
-    // }
+        // 2. А вот здесь (при загрузке) нам нужно мгновенное состояние
+        if (animator != null)
+        {
+            animator.SetBool("isDeactivated", deactivated);
+        
+            if (deactivated)
+            {
+                // Мгновенно выключена
+                animator.Play("Deactivated_Idle", 0, 1f);
+            }
+            else
+            {
+                // Мгновенно включена (штыки торчат)
+                animator.Play("Active_Idle", 0, 1f);
+            }
+        }
+    }
 }
