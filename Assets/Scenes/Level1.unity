@@ -59405,13 +59405,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 974476810}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.36719212, y: -0.93014514, z: 0, w: 0}
-  m_LocalPosition: {x: 14.4, y: 18, z: 0}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_LocalRotation: {x: 0.18731776, y: -0.9822994, z: -0, w: 0}
+  m_LocalPosition: {x: 16.2, y: 23.5, z: 0}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1356482597}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -180, z: -21.593}
 --- !u!95 &974476812
 Animator:
   serializedVersion: 7
@@ -59479,8 +59479,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -851716425
-  m_SortingLayer: 7
+  m_SortingLayerID: -162347607
+  m_SortingLayer: 14
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -7970444984222722774, guid: eeb20f2c0df4c4a258362180be22badb, type: 3}
@@ -100704,8 +100704,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -1596936751
-  m_SortingLayer: 10
+  m_SortingLayerID: -205779017
+  m_SortingLayer: 13
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 1994334063498918648, guid: 83e15b73932674bc78d59a09f8d0ac5b, type: 3}
@@ -101562,13 +101562,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1484628786}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.36719212, y: -0.93014514, z: 0, w: 0}
-  m_LocalPosition: {x: -19.2, y: 2.9, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalRotation: {x: 0.5004197, y: -0.865783, z: -0, w: 0}
+  m_LocalPosition: {x: -16.9, y: 0.4, z: 0}
+  m_LocalScale: {x: 0.45, y: 0.45, z: 0.45}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1356482597}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -180, z: -60.056}
 --- !u!95 &1484628788
 Animator:
   serializedVersion: 7
