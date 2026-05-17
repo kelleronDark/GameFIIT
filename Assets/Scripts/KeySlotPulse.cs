@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class KeySlotPulse : MonoBehaviour
 {
-    public float pulseScale = 1.15f; // Насколько сильно увеличивается (1.15 = +15%)
-    public float pulseDuration = 0.3f; // Как долго длится анимация
+    public float pulseScale = 4f; // Насколько сильно увеличивается (1.15 = +15%)
+    public float pulseDuration = 0.4f; // Как долго длится анимация
     
     private Vector3 originalScale;
     private bool isPulsing = false;

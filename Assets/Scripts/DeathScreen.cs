@@ -18,10 +18,13 @@ public class DeathScreen : MonoBehaviour
     public string hintMessage = "Нажмите F, чтобы возродиться"; // <-- Новое поле
     public float typeSpeed = 0.05f;
     public float fadeDuration = 1.5f;
+    
     private bool isDead = false;
-
     private bool isTyping = false;
     private bool canRestart = false;
+    
+    private Coroutine sequenceCoroutine;
+    private Coroutine typingCoroutine;
 
     void Start()
     {
@@ -56,7 +59,7 @@ public class DeathScreen : MonoBehaviour
 
         Time.timeScale = 0f;
 
-        StartCoroutine(ShowDeathSequence());
+        sequenceCoroutine = StartCoroutine(ShowDeathSequence());
     }
 
     private IEnumerator ShowDeathSequence()
@@ -66,14 +69,15 @@ public class DeathScreen : MonoBehaviour
 
         // 2. Печатаем главный текст
         isTyping = true;
-        yield return StartCoroutine(TypeText(mainText, fullMessage));
+        typingCoroutine = StartCoroutine(TypeText(mainText, fullMessage));
         isTyping = false;
 
         // 3. Печатаем подсказку
         yield return new WaitForSecondsRealtime(0.3f); // Небольшая пауза для эффекта
-        yield return StartCoroutine(TypeText(hintText, hintMessage));
-
-        // 4. Разрешаем рестарт
+        typingCoroutine = StartCoroutine(TypeText(hintText, hintMessage));
+        yield return typingCoroutine;
+        
+        isTyping = false;
         canRestart = true;
     }
 
@@ -111,10 +115,38 @@ public class DeathScreen : MonoBehaviour
 
     void Update()
     {
-        if (canRestart && Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
+        if (!isDead) return;
+
+        // Если игрок нажал F
+        if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
         {
-            RestartGame();
+            // Скип во время печати текста
+            if (isTyping)
+            {
+                SkipTyping();
+            }
+            else if (canRestart)
+            {
+                RestartGame();
+            }
         }
+    }
+    
+    private void SkipTyping()
+    {
+        // Насильно останавливаем корутины вывода текста
+        if (sequenceCoroutine != null) StopCoroutine(sequenceCoroutine);
+        if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+
+        // Мгновенно заполняем весь текст
+        if (mainText != null) mainText.text = fullMessage;
+        if (hintText != null) hintText.text = hintMessage;
+
+        // Насильно выставляем альфу панели на максимум (на случай, если скипнули во время фейда)
+        if (canvasGroup != null) canvasGroup.alpha = 1f;
+
+        isTyping = false;
+        canRestart = true; // Теперь можно рестартить следующим нажатием
     }
 
     public void RestartGame()
