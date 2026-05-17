@@ -1,11 +1,22 @@
 fileFormatVersion: 2
-guid: 0ba4a264508284a5cbbc4f49db6ddbdf
+guid: eeb20f2c0df4c4a258362180be22badb
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 372513094830244957
-    second: 1601.m00.i104.n011.P.c25.259592084 Pixel art smoke animation vector frames
-      for game design_0
+      213: -7970444984222722774
+    second: smoke_2_0
+  - first:
+      213: -3088165066425216869
+    second: smoke_2_1
+  - first:
+      213: 2886468441035535860
+    second: smoke_2_2
+  - first:
+      213: 8423746421971748902
+    second: smoke_2_3
+  - first:
+      213: 1456196105764521009
+    second: smoke_2_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -101,24 +112,111 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 1601.m00.i104.n011.P.c25.259592084 Pixel art smoke animation vector frames
-        for game design_0
+      name: smoke_2_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 2048
-        height: 1592
+        x: 169
+        y: 1057
+        width: 436
+        height: 354
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 187345aa9512a4d29bea57e837bcb718
-      internalID: 372513094830244957
+      spriteID: a255c9d148a436190800000000000000
+      internalID: -7970444984222722774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoke_2_1
+      rect:
+        serializedVersion: 2
+        x: 937
+        y: 1057
+        width: 507
+        height: 559
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9054ffdb32a425d0800000000000000
+      internalID: -3088165066425216869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoke_2_2
+      rect:
+        serializedVersion: 2
+        x: 1673
+        y: 1057
+        width: 644
+        height: 667
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f57c4301cbce0820800000000000000
+      internalID: 2886468441035535860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoke_2_3
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 135
+        width: 681
+        height: 799
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62808976db827e470800000000000000
+      internalID: 8423746421971748902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoke_2_4
+      rect:
+        serializedVersion: 2
+        x: 918
+        y: 462
+        width: 508
+        height: 432
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 134c66794a2753410800000000000000
+      internalID: 1456196105764521009
       vertices: []
       indices: 
       edges: []
@@ -127,7 +225,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 70ded559d7a7b4d35a585b4b4b22996e
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,13 +233,13 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceOnImport
-        value: True
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      1601.m00.i104.n011.P.c25.259592084 Pixel art smoke animation vector frames for game design_0: 372513094830244957
+      smoke_2_0: -7970444984222722774
+      smoke_2_1: -3088165066425216869
+      smoke_2_2: 2886468441035535860
+      smoke_2_3: 8423746421971748902
+      smoke_2_4: 1456196105764521009
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
