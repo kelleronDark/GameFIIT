@@ -14,12 +14,27 @@ public enum MerchantStoryState
 
 public class MerchantAI : MonoBehaviour
 {
+    public enum Speaker
+    {
+        Merchant,
+        Hero
+    }
+    
+    [System.Serializable]
+    public struct DialogueLine
+    {
+        public Speaker speaker;       // Выпадающий список: Merchant или Hero
+        [TextArea(2, 4)]
+        public string text;           // Просто чистый текст реплики
+    }
+    
     [Header("Настройки движения")]
     public float speed = 2f;
     public float walkDistance = 3f;
 
     [Header("Настройки диалога")]
     public GameObject dialoguePanel;       // Панель для текста (можно без фона)
+    public TextMeshProUGUI nameText;
     public TextMeshProUGUI dialogueText;   // Текст TMP
     public float typingSpeed = 0.04f;      // Скорость печати
     public AudioClip typeSound;            // Звук клика при печати (опционально)
@@ -27,69 +42,77 @@ public class MerchantAI : MonoBehaviour
     [Header("Настройки Сюжета & Камеры")]
     public Transform submarineTransform;   // Ссылка на объект подлодки на сцене
     public float cameraPanSpeed = 3f;      // Скорость полета камеры к лодке
-    public float submarineViewDuration = 4f; // Сколько секунд показываем лодку игроку
+    public float submarineViewDuration = 2.5f; // Сколько секунд показываем лодку игроку
+    private bool isExternalMovementLock = false;
     
     [Header("Настройки Инвентаря")]
     [Tooltip("Имена спрайтов деталей в инвентаре, которые нужно собрать (например, engine, propeller, battery)")]
     public string[] partItemNames = new string[] { "Part1", "Part2", "Part3", "Part4" };
 
     [Header("Диалоговые ветки (Реплики)")]
-    [TextArea(2, 4)]
-    public string[] introPhrases = new string[]
-    {
-        "Лавочник: Добрый день! Добро пожаловать в мою лавку! Желаешь прикупить свежих... а, стоп.",
-        "Лавочник: Тьфу ты, привычка. Я ж уже лет двести ничем не торгую. Да и некому.",
-        "Лавочник: Погоди-ка... Так это ты сейчас так знатно громыхнул на всю округу?",
-        "Герой: (Молча смотрит на Лавочника)",
-        "Лавочник: Молчишь? Ну, логично. Пойдем-ка глянем, обо что ты там врезался..."
-    };
+    public DialogueLine[] introPhrases;
+    public DialogueLine[] repairOfferPhrases;
+    public DialogueLine[] tutorialPhrases;
+    public DialogueLine[] idleNoPartsPhrases;
+    public DialogueLine[] idleWithPartsPhrases;
+    public DialogueLine[] finalPhrases;
     
-    [TextArea(2, 4)]
-    public string[] repairOfferPhrases = new string[]
-    {
-        "Лавочник: Да уж... Твоя жестянка знатно пострадала. Сама она никуда не поплывет.",
-        "Герой: (Молча смотрит на Лавочника)",
-        "Лавочник: Не смотри так. Не буду чинить",
-        "Лавочник: Хотя руки помнят! Ладно уж, починю. Но заранее говорю, запчастей нет",
-        "Лавочник: Все они остались в городе. А там, понимаешь, случилась кошмарная беда! Армагедон!",
-        "Лавочник: Все жители озверели, стали мутантами. Так что тебе там трындец будет.",
-        "Лавочник: Короче, если пойдешь, будь осторожнее. Можешь поспрашивать меня, я подскажу, как устроен этот город."
-    };
-    
-    [TextArea(2, 4)]
-    public string[] tutorialPhrases = new string[]
-    {
-        "Лавочник: Как тут выживать? Слушай внимательно.",
-        "Лавочник: Во-первых, двери. Железные двери открываются рычагами, дёрни со всей дури по рычагу, железо откроется.",
-        "Лавочник: Деревянные открываются ключами, найди их где-нибудь. И ключ в дверь засунь.",
-        "Лавочник: Обычно мой народ хранил ключи в сундуках, потому что так весело. Только дурак будет хранить ключ не в сундуке",
-        "Лавочник: Во-вторых, обращай внимание на интерактивные штуки - они слегка светятся, если подойти.",
-        "лавочник: Мой народ их красил блёстками, чтобы понимать что трогать можно. Ящики всякие, которые швырять можно в кого-то, например.",
-        "Лавочник: Ну и в-третьих, если найдешь детали для лодки - тащи их мне да поживей!"
-    };
-    
-    [TextArea(2, 4)]
-    public string[] idleNoPartsPhrases = new string[]
-    {
-        "Лавочник: Эх, как же хочется продать что-нибудь кому-нибудь...",
-        "Лавочник: Я знаю кучу секретов этого места, но бесплатно их не раздам! Шучу, раздам, мне просто скучно.",
-        "Лавочник: Подводный мир красив, если не обращать внимания на мутантов вокруг."
-    };
-    
-    [TextArea(2, 4)]
-    public string[] idleWithPartsPhrases = new string[]
-    {
-        "Лавочник: Ого! Я гляжу, ты уже раздобыл какую-то железку! Тащи ее сюда!",
-        "Лавочник: Прогресс налицо. Еще немного - и мы заставим эту ванну плавать."
-    };
-    
-    [TextArea(2, 4)]
-    public string[] finalPhrases = new string[]
-    {
-        "Лавочник: Невероятно! Ты собрал все запчасти!",
-        "Лавочник: Ну что, юнга, отходи в сторону. Сейчас старый мастер покажет класс! Любуйся давай",
-        "Лавочник: Руки щас покрутят тут с душой конкретно. Задраить люки! Мы отплываем из этого проклятого места!"
-    };
+    // [TextArea(2, 4)]
+    // public string[] introPhrases = new string[]
+    // {
+    //     "Лавочник: Добрый день! Добро пожаловать в мою лавку! Желаешь прикупить свежих... а, стоп.",
+    //     "Лавочник: Тьфу ты, привычка. Я ж уже лет двести ничем не торгую. Да и некому.",
+    //     "Лавочник: Погоди-ка... Так это ты сейчас так знатно громыхнул на всю округу?",
+    //     "Герой: (Молча смотрит на Лавочника)",
+    //     "Лавочник: Молчишь? Ну, логично. Пойдем-ка глянем, обо что ты там врезался..."
+    // };
+    //
+    // [TextArea(2, 4)]
+    // public string[] repairOfferPhrases = new string[]
+    // {
+    //     "Лавочник: Да уж... Твоя жестянка знатно пострадала. Сама она никуда не поплывет.",
+    //     "Герой: (Молча смотрит на Лавочника)",
+    //     "Лавочник: Не смотри так. Не буду чинить",
+    //     "Лавочник: Хотя руки помнят! Ладно уж, починю. Но заранее говорю, запчастей нет",
+    //     "Лавочник: Все они остались в городе. А там, понимаешь, случилась кошмарная беда! Армагедон!",
+    //     "Лавочник: Все жители озверели, стали мутантами. Так что тебе там трындец будет.",
+    //     "Лавочник: Короче, если пойдешь, будь осторожнее. Можешь поспрашивать меня, я подскажу, как устроен этот город."
+    // };
+    //
+    // [TextArea(2, 4)]
+    // public string[] tutorialPhrases = new string[]
+    // {
+    //     "Лавочник: Как тут выживать? Слушай внимательно.",
+    //     "Лавочник: Во-первых, двери. Железные двери открываются рычагами, дёрни со всей дури по рычагу, железо откроется.",
+    //     "Лавочник: Деревянные открываются ключами, найди их где-нибудь. И ключ в дверь засунь.",
+    //     "Лавочник: Обычно мой народ хранил ключи в сундуках, потому что так весело. Только дурак будет хранить ключ не в сундуке",
+    //     "Лавочник: Во-вторых, обращай внимание на интерактивные штуки - они слегка светятся, если подойти.",
+    //     "Лавочник: Мой народ их красил блёстками, чтобы понимать что трогать можно. Ящики всякие, которые швырять можно в кого-то, например.",
+    //     "Лавочник: Ну и в-третьих, если найдешь детали для лодки - тащи их мне да поживей!"
+    // };
+    //
+    // [TextArea(2, 4)]
+    // public string[] idleNoPartsPhrases = new string[]
+    // {
+    //     "Лавочник: Эх, как же хочется продать что-нибудь кому-нибудь...",
+    //     "Лавочник: Я знаю кучу секретов этого места, но бесплатно их не раздам! Шучу, раздам, мне просто скучно.",
+    //     "Лавочник: Подводный мир красив, если не обращать внимания на мутантов вокруг."
+    // };
+    //
+    // [TextArea(2, 4)]
+    // public string[] idleWithPartsPhrases = new string[]
+    // {
+    //     "Лавочник: Ого! Я гляжу, ты уже раздобыл какую-то железку! Тащи ее сюда!",
+    //     "Лавочник: Прогресс налицо. Еще немного - и мы заставим эту ванну плавать."
+    // };
+    //
+    // [TextArea(2, 4)]
+    // public string[] finalPhrases = new string[]
+    // {
+    //     "Лавочник: Невероятно! Ты собрал все запчасти!",
+    //     "Лавочник: Ну что, юнга, отходи в сторону. Сейчас старый мастер покажет класс! Любуйся давай",
+    //     "Лавочник: Руки щас покрутят тут с душой конкретно. Задраить люки! Мы отплываем из этого проклятого места!"
+    // };
 
     [Header("UI Hint")]
     public GameObject hintPrefab;          // Префаб подсказки "Нажмите F"
@@ -103,7 +126,8 @@ public class MerchantAI : MonoBehaviour
     private bool isPlayerNearby = false;
     private Coroutine typingCoroutine;
     private int currentPhraseIndex = 0;
-    private string[] currentActivePhrases; // Ссылка на текущую активную ветку диалога
+    
+    private DialogueLine[] currentActivePhrases;
 
     private AudioSource audioSource;
     private GameObject currentHint;
@@ -114,6 +138,11 @@ public class MerchantAI : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         startPos = transform.position;
         mainCamera = Camera.main;
+        
+        if (SaveManager.Instance != null)
+        {
+            storyState = (MerchantStoryState)SaveManager.Instance.GetMerchantState();
+        }
 
         if (rb != null)
         {
@@ -136,6 +165,11 @@ public class MerchantAI : MonoBehaviour
 
     void Update()
     {
+        if (storyState == MerchantStoryState.LookingAtSubmarine && !isTalking)
+        {
+            return; 
+        }
+        
         // Игрок нажимает F рядом с Лавочником
         if (isPlayerNearby && Keyboard.current.fKey.wasPressedThisFrame)
         {
@@ -150,7 +184,9 @@ public class MerchantAI : MonoBehaviour
         {
             StopCoroutine(typingCoroutine);
             typingCoroutine = null;
-            dialogueText.text = currentActivePhrases[currentPhraseIndex];
+            
+            // Сразу выводим чистый текст текущей реплики
+            dialogueText.text = currentActivePhrases[currentPhraseIndex].text;
             return;
         }
 
@@ -165,7 +201,7 @@ public class MerchantAI : MonoBehaviour
             currentPhraseIndex++;
             if (currentPhraseIndex < currentActivePhrases.Length)
             {
-                typingCoroutine = StartCoroutine(TypeText(currentActivePhrases[currentPhraseIndex]));
+                SetupDialogueLine(currentActivePhrases[currentPhraseIndex]);
             }
             else
             {
@@ -180,8 +216,20 @@ public class MerchantAI : MonoBehaviour
         isTalking = true;
         if (dialoguePanel != null) dialoguePanel.SetActive(true);
         currentPhraseIndex = 0;
-
-        if (storyState == MerchantStoryState.NotMet)
+        
+        if (CheckPlayerHasAllParts() && storyState != MerchantStoryState.NotMet && storyState != MerchantStoryState.LookingAtSubmarine)
+        {
+            storyState = MerchantStoryState.ReadyToRepair;
+            
+            if (SaveManager.Instance != null)
+            {
+                SaveManager.Instance.SetMerchantState((int)storyState);
+                SaveManager.Instance.QuickSave();
+            }
+            
+            currentActivePhrases = finalPhrases;
+        }
+        else if (storyState == MerchantStoryState.NotMet)
         {
             currentActivePhrases = introPhrases;
         }
@@ -200,6 +248,13 @@ public class MerchantAI : MonoBehaviour
             if (hasAllParts)
             {
                 storyState = MerchantStoryState.ReadyToRepair;
+                
+                if (SaveManager.Instance != null)
+                {
+                    SaveManager.Instance.SetMerchantState((int)storyState);
+                    SaveManager.Instance.QuickSave();
+                }
+                
                 currentActivePhrases = finalPhrases;
             }
             else if (hasAnyParts)
@@ -211,11 +266,15 @@ public class MerchantAI : MonoBehaviour
                 if (idleNoPartsPhrases != null && idleNoPartsPhrases.Length > 0)
                 {
                     int randomIndex = Random.Range(0, idleNoPartsPhrases.Length);
-                    currentActivePhrases = new string[] { idleNoPartsPhrases[randomIndex] };
+                    currentActivePhrases = new DialogueLine[] { idleNoPartsPhrases[randomIndex] };
                 }
                 else
                 {
-                    currentActivePhrases = new string[] { "Лавочник: Мне оень нравится, когда нажимают клавишу F. Смак" };
+                    DialogueLine defaultLine = new DialogueLine { speaker = Speaker.Merchant, text = "Эх, скукотища..." };
+                    if (currentActivePhrases != null && currentPhraseIndex < currentActivePhrases.Length)
+                    {
+                        dialogueText.text = currentActivePhrases[currentPhraseIndex].text;
+                    }
                 }
             }
         }
@@ -224,7 +283,10 @@ public class MerchantAI : MonoBehaviour
             currentActivePhrases = finalPhrases;
         }
 
-        typingCoroutine = StartCoroutine(TypeText(currentActivePhrases[currentPhraseIndex]));
+        if (currentActivePhrases != null && currentActivePhrases.Length > 0)
+        {
+            SetupDialogueLine(currentActivePhrases[currentPhraseIndex]);
+        }
     }
     
     private void EndDialogueBranch()
@@ -243,13 +305,44 @@ public class MerchantAI : MonoBehaviour
         {
             // Шаг 3: Игрок дослушал туториал "Как тут выживать?" до конца -> отправляем искать детали
             storyState = MerchantStoryState.PostSubmarineOffer;
+            
+            if (SaveManager.Instance != null)
+            {
+                SaveManager.Instance.SetMerchantState((int)storyState);
+                SaveManager.Instance.QuickSave();
+            }
+            
             Debug.Log("[MerchantAI] Сюжет обновлен: Лавочник ждет детали, туториал пройден.");
         }
         else if (storyState == MerchantStoryState.PostSubmarineOffer)
         {
             storyState = MerchantStoryState.SearchingForParts;
+            
+            if (SaveManager.Instance != null)
+            {
+                SaveManager.Instance.SetMerchantState((int)storyState);
+                SaveManager.Instance.QuickSave();
+            }
+            
             // Debug.Log("[MerchantAI] Инструкция прослушана. Переход в режим случайных фраз.");
         }
+    }
+    
+    private void SetupDialogueLine(DialogueLine line)
+    {
+        // Никакого парсинга строк! Просто смотрим на enum говорящего
+        if (line.speaker == Speaker.Hero)
+        {
+            if (nameText != null) nameText.text = "Герой";
+        }
+        else
+        {
+            if (nameText != null) nameText.text = "Лавочник";
+        }
+
+        // Запускаем печать абсолютно чистой строки
+        if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+        typingCoroutine = StartCoroutine(TypeText(line.text));
     }
     
     private IEnumerator CutsceneLookAtSubmarine()
@@ -311,7 +404,8 @@ public class MerchantAI : MonoBehaviour
         isTalking = true;
         if (dialoguePanel != null) dialoguePanel.SetActive(true);
         currentPhraseIndex = 0;
-        typingCoroutine = StartCoroutine(TypeText(currentActivePhrases[currentPhraseIndex]));
+        
+        SetupDialogueLine(currentActivePhrases[currentPhraseIndex]);
         
         ShowHint();
     }
@@ -348,7 +442,7 @@ public class MerchantAI : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isTalking || storyState == MerchantStoryState.LookingAtSubmarine)
+        if (isTalking || storyState == MerchantStoryState.LookingAtSubmarine || isExternalMovementLock)
         {
             rb.linearVelocity = Vector2.zero; 
             return;
@@ -436,5 +530,13 @@ public class MerchantAI : MonoBehaviour
             Destroy(currentHint);
             currentHint = null;
         }
+    }
+    
+    public MerchantStoryState GetStoryState() => storyState;
+    public void SetStoryState(MerchantStoryState newState) => storyState = newState;
+    
+    public void SetMovementLocked(bool locked)
+    {
+        isExternalMovementLock = locked;
     }
 }
