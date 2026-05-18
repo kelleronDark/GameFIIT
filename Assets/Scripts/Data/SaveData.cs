@@ -10,4 +10,6 @@ public class SaveData
     public int keyCount;
     public List<string> activatedCheckpoints = new List<string>();
     public bool isBayonetTrapDeactivated;
+    public int merchantStoryStateInt;
+    public int boothmanStoryStateInt;
 }

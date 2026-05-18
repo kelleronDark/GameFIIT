@@ -97,3 +97,14 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# Игнорируем папку автовосстановления Unity после крашей
+/[R_r]ecovery/
+_Recovery/
+
+# Игнорируем служебные файлы macOS (системные свойства папок)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes

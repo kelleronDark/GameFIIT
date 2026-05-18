@@ -9,6 +9,8 @@ public class SaveManager : MonoBehaviour
     private Transform player;
     private List<string> activeCheckpointsList = new List<string>();
     private bool bayonetTrapDeactivated = false;
+    private int savedMerchantState = 0;
+    private int savedBoothmanState = 0;
 
     void Awake()
     {
@@ -58,6 +60,20 @@ public class SaveManager : MonoBehaviour
         data.activatedCheckpoints = new List<string>(activeCheckpointsList);
         
         data.isBayonetTrapDeactivated = bayonetTrapDeactivated;
+        
+        MerchantAI merchant = Object.FindFirstObjectByType<MerchantAI>();
+        if (merchant != null)
+        {
+            savedMerchantState = (int)merchant.GetStoryState();
+        }
+        data.merchantStoryStateInt = savedMerchantState;
+        
+        BoothmanAI boothman = Object.FindFirstObjectByType<BoothmanAI>();
+        if (boothman != null)
+        {
+            savedBoothmanState = (int)boothman.GetStoryState();
+        }
+        data.boothmanStoryStateInt = savedBoothmanState;
         
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(filePath, json);
@@ -122,6 +138,20 @@ public class SaveManager : MonoBehaviour
             }
             
             Debug.Log("Позиция игрока восстановлена.");
+        }
+        
+        savedMerchantState = data.merchantStoryStateInt;
+        MerchantAI targetMerchant = Object.FindFirstObjectByType<MerchantAI>();
+        if (targetMerchant != null)
+        {
+            targetMerchant.SetStoryState((MerchantStoryState)savedMerchantState);
+        }
+        
+        savedBoothmanState = data.boothmanStoryStateInt;
+        BoothmanAI targetBoothman = Object.FindFirstObjectByType<BoothmanAI>();
+        if (targetBoothman != null)
+        {
+            targetBoothman.SetStoryState((BoothKeeperStoryState)savedBoothmanState);
         }
     }
     
@@ -203,5 +233,25 @@ public class SaveManager : MonoBehaviour
     public bool IsBayonetTrapDeactivated()
     {
         return bayonetTrapDeactivated;
+    }
+    
+    public void SetMerchantState(int state)
+    {
+        savedMerchantState = state;
+    }
+
+    public int GetMerchantState()
+    {
+        return savedMerchantState;
+    }
+    
+    public void SetBoothmanState(int state)
+    {
+        savedBoothmanState = state;
+    }
+
+    public int GetBoothmanState()
+    {
+        return savedBoothmanState;
     }
 }

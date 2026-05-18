@@ -1,10 +1,22 @@
 fileFormatVersion: 2
-guid: 1d0e9a57244199c45bb92429e3641d57
+guid: eeb20f2c0df4c4a258362180be22badb
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2190777075525122867
-    second: skeleton2_v2_4_0
+      213: -7970444984222722774
+    second: smoke_2_0
+  - first:
+      213: -3088165066425216869
+    second: smoke_2_1
+  - first:
+      213: 2886468441035535860
+    second: smoke_2_2
+  - first:
+      213: 8423746421971748902
+    second: smoke_2_3
+  - first:
+      213: 1456196105764521009
+    second: smoke_2_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,30 +108,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: skeleton2_v2_4_0
+      name: smoke_2_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 16
-        height: 16
+        x: 169
+        y: 1057
+        width: 436
+        height: 354
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +127,96 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 33b7eb89424376e10800000000000000
-      internalID: 2190777075525122867
+      spriteID: a255c9d148a436190800000000000000
+      internalID: -7970444984222722774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoke_2_1
+      rect:
+        serializedVersion: 2
+        x: 937
+        y: 1057
+        width: 507
+        height: 559
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9054ffdb32a425d0800000000000000
+      internalID: -3088165066425216869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoke_2_2
+      rect:
+        serializedVersion: 2
+        x: 1673
+        y: 1057
+        width: 644
+        height: 667
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f57c4301cbce0820800000000000000
+      internalID: 2886468441035535860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoke_2_3
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 135
+        width: 681
+        height: 799
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62808976db827e470800000000000000
+      internalID: 8423746421971748902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoke_2_4
+      rect:
+        serializedVersion: 2
+        x: 918
+        y: 462
+        width: 508
+        height: 432
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 134c66794a2753410800000000000000
+      internalID: 1456196105764521009
       vertices: []
       indices: 
       edges: []
@@ -148,7 +235,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      skeleton2_v2_4_0: 2190777075525122867
+      smoke_2_0: -7970444984222722774
+      smoke_2_1: -3088165066425216869
+      smoke_2_2: 2886468441035535860
+      smoke_2_3: 8423746421971748902
+      smoke_2_4: 1456196105764521009
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

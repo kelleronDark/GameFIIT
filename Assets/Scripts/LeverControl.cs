@@ -25,17 +25,21 @@ public class LeverControl : MonoBehaviour
     {
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
-
-        bool isAlreadyDeactivated = SaveManager.Instance != null && SaveManager.Instance.IsBayonetTrapDeactivated();
-
-        if (isAlreadyDeactivated)
+        
+        if (bayonetTrap != null)
         {
-            ApplyState(true); // Принудительно открываем/выключаем
+            // Только в этом случае спрашиваем у SaveManager её состояние
+            bool isAlreadyDeactivated = SaveManager.Instance != null && SaveManager.Instance.IsBayonetTrapDeactivated();
+
+            if (isAlreadyDeactivated)
+            {
+                ApplyState(true); // Отключаем ловушку и поворачиваем рычаг навсегда
+                return; // Выходим из метода, настройки по умолчанию нам не нужны
+            }
         }
-        else if (startsOpened)
-        {
-            ApplyState(true); // Настройки уровня по умолчанию
-        }
+
+        ApplyState(startsOpened); // Настройка уровня по умолчанию (если дверь изначально должна быть открыта)
+        // Железно закрываем дверь и выключаем рычаг при загрузке сцены
     }
     
     private void ApplyState(bool isOpen)

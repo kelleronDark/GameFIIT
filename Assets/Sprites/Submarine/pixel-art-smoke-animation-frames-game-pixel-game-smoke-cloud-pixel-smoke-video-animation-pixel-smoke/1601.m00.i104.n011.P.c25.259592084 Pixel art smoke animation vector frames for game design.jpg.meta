@@ -1,10 +1,11 @@
 fileFormatVersion: 2
-guid: 1d0e9a57244199c45bb92429e3641d57
+guid: 0ba4a264508284a5cbbc4f49db6ddbdf
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2190777075525122867
-    second: skeleton2_v2_4_0
+      213: 372513094830244957
+    second: 1601.m00.i104.n011.P.c25.259592084 Pixel art smoke animation vector frames
+      for game design_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,40 +97,28 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: skeleton2_v2_4_0
+      name: 1601.m00.i104.n011.P.c25.259592084 Pixel art smoke animation vector frames
+        for game design_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 16
-        height: 16
+        width: 2048
+        height: 1592
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 33b7eb89424376e10800000000000000
-      internalID: 2190777075525122867
+      spriteID: 187345aa9512a4d29bea57e837bcb718
+      internalID: 372513094830244957
       vertices: []
       indices: 
       edges: []
@@ -138,7 +127,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 70ded559d7a7b4d35a585b4b4b22996e
     internalID: 0
     vertices: []
     indices: 
@@ -146,9 +135,13 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      skeleton2_v2_4_0: 2190777075525122867
+      1601.m00.i104.n011.P.c25.259592084 Pixel art smoke animation vector frames for game design_0: 372513094830244957
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

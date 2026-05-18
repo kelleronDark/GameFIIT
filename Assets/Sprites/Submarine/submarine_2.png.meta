@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1d0e9a57244199c45bb92429e3641d57
+guid: 83e15b73932674bc78d59a09f8d0ac5b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2190777075525122867
-    second: skeleton2_v2_4_0
+      213: 1994334063498918648
+    second: submarine_2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,30 +96,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: skeleton2_v2_4_0
+      name: submarine_2_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 16
-        height: 16
+        width: 1408
+        height: 768
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 33b7eb89424376e10800000000000000
-      internalID: 2190777075525122867
+      spriteID: 8fa705aa34c4dab10800000000000000
+      internalID: 1994334063498918648
       vertices: []
       indices: 
       edges: []
@@ -148,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      skeleton2_v2_4_0: 2190777075525122867
+      submarine_2_0: 1994334063498918648
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
