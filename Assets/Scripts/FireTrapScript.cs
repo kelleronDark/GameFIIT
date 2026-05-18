@@ -2,11 +2,26 @@ using UnityEngine;
 
 public class FireTrap : MonoBehaviour
 {
-    public int damagePerTick = 10; // Урон за каждый "тик" (можно сделать периодическим)
-    public float damageInterval = 0.5f; // Интервал между нанесениями урона (если хотим повторять)
+    public int damagePerTick = 10;
+    public float damageInterval = 0.5f;
+
+    [Header("Audio")]
+    public AudioSource audioSource; // 1. Ссылка на звук
 
     private bool isPlayerInside = false;
     private float nextDamageTime = 0f;
+
+    void Start()
+    {
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+        
+        // 2. Запускаем звук сразу при старте (ловушка всегда "гудит")
+        if (audioSource != null)
+        {
+            audioSource.Play(); 
+        }
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -28,9 +43,9 @@ public class FireTrap : MonoBehaviour
 
     void Update()
     {
+        // Логика урона БЕЗ ИЗМЕНЕНИЙ (работает только внутри маленького триггера)
         if (isPlayerInside && Time.time >= nextDamageTime)
         {
-            // Проверяем, есть ли у объекта PlayerController
             PlayerController player = FindObjectOfType<PlayerController>();
             if (player != null)
             {
