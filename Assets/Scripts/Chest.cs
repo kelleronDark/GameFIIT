@@ -10,7 +10,8 @@ public class Chest : MonoBehaviour
     [Header("References")]
     public Animator animator;
     public GameObject hintPrefab;
-    public AudioSource audioSource; // 1. Источник звука
+    public AudioSource audioSource;
+    public GameObject sparklesEffect; // <-- НОВОЕ: ссылка на блёстки
 
     private GameObject currentHint;
     private bool playerInRange = false;
@@ -19,10 +20,20 @@ public class Chest : MonoBehaviour
     {
         if (animator == null)
             animator = GetComponent<Animator>();
-        
-        // Если не назначили вручную, ищем на объекте
+    
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
+    
+        // АВТОМАТИЧЕСКОЕ СОЗДАНИЕ БЛЁСТОК
+        if (sparklesEffect != null)
+        {
+            // Создаём копию префаба прямо на сцене
+            GameObject instance = Instantiate(sparklesEffect, transform.position + Vector3.up, Quaternion.identity);
+            instance.transform.SetParent(transform); // Делаем дочерним
+            sparklesEffect = instance; // Заменяем ссылку на префаб ссылкой на объект
+        }
+    
+        UpdateSparkles();
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -50,11 +61,8 @@ public class Chest : MonoBehaviour
         isOpened = true;
         Debug.Log("Сундук открыт!");
 
-        // 2. Воспроизводим звук
         if (audioSource != null)
-        {
             audioSource.Play();
-        }
 
         if (animator != null)
             animator.SetBool("IsOpen", true);
@@ -66,7 +74,30 @@ public class Chest : MonoBehaviour
             else Debug.LogWarning("Инвентарь полон! Ключ не подобран.");
         }
 
+        // Скрываем подсказку и блёстки после открытия
         HideHint();
+        UpdateSparkles();
+    }
+
+    // --- НОВЫЙ МЕТОД: Управление блёстками ---
+    
+    private void UpdateSparkles()
+    {
+        if (sparklesEffect != null)
+        {
+            // Показываем блёстки только если сундук ещё НЕ открыт
+            sparklesEffect.SetActive(!isOpened);
+            
+            // Если это Particle System, можно управлять воспроизведением
+            var particle = sparklesEffect.GetComponent<ParticleSystem>();
+            if (particle != null)
+            {
+                if (!isOpened && !particle.isPlaying)
+                    particle.Play();
+                else if (isOpened && particle.isPlaying)
+                    particle.Stop();
+            }
+        }
     }
 
     void ShowHint()
@@ -81,16 +112,12 @@ public class Chest : MonoBehaviour
         {
             Camera mainCamera = Camera.main;
             if (mainCamera != null)
-            {
                 canvas.worldCamera = mainCamera;
-            }
         }
 
         TextMeshProUGUI hintText = currentHint.GetComponentInChildren<TextMeshProUGUI>();
         if (hintText != null)
-        {
             hintText.text = "Нажмите F";
-        }
     }
 
     void HideHint()
