@@ -10,7 +10,8 @@ public class Door : MonoBehaviour
     [Header("References")]
     public Animator animator;
     public GameObject hintPrefab;
-    public AudioSource audioSource; // 1. Ссылка на источник звука
+    public AudioSource audioSource;
+    public GameObject sparklesEffect; // <-- НОВОЕ: блёстки для двери
 
     private GameObject currentHint;
     private bool playerInRange = false;
@@ -19,10 +20,21 @@ public class Door : MonoBehaviour
     {
         if (animator == null)
             animator = GetComponent<Animator>();
-        
-        // Если AudioSource не назначен вручную, пробуем взять компонент с этого же объекта
+    
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
+    
+        // АВТОМАТИЧЕСКОЕ СОЗДАНИЕ БЛЁСТОК ДЛЯ ДВЕРИ
+        if (sparklesEffect != null)
+        {
+            // Создаём копию префаба прямо на сцене
+            GameObject instance = Instantiate(sparklesEffect, transform.position + Vector3.up * 1.2f, Quaternion.identity);
+            instance.transform.SetParent(transform); // Делаем дочерним
+            instance.transform.localPosition = Vector3.up * 1.2f; // Позиционируем над дверью
+            sparklesEffect = instance; // Заменяем ссылку на префаб ссылкой на объект
+        }
+    
+        UpdateSparkles();
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -31,6 +43,7 @@ public class Door : MonoBehaviour
         {
             playerInRange = true;
             ShowHint();
+            UpdateSparkles(); // Показываем блёстки, когда игрок рядом
         }
     }
 
@@ -40,6 +53,7 @@ public class Door : MonoBehaviour
         {
             playerInRange = false;
             HideHint();
+            UpdateSparkles(); // Скрываем, когда игрок ушёл
         }
     }
 
@@ -89,11 +103,8 @@ public class Door : MonoBehaviour
         isOpened = true;
         Debug.Log("Дверь открыта!");
 
-        // 2. Воспроизводим звук, если источник есть
         if (audioSource != null)
-        {
             audioSource.Play();
-        }
 
         if (animator != null)
             animator.SetBool("IsOpen", true);
@@ -103,6 +114,28 @@ public class Door : MonoBehaviour
             doorCollider.enabled = false;
 
         HideHint();
+        UpdateSparkles(); // Скрываем блёстки после открытия
+    }
+
+    // --- НОВЫЙ МЕТОД: Управление блёстками ---
+    
+    private void UpdateSparkles()
+    {
+        if (sparklesEffect != null)
+        {
+            // Показываем блёстки, если дверь ЗАКРЫТА (независимо от игрока!)
+            bool shouldShow = !isOpened;
+            sparklesEffect.SetActive(shouldShow);
+        
+            var particle = sparklesEffect.GetComponent<ParticleSystem>();
+            if (particle != null)
+            {
+                if (shouldShow && !particle.isPlaying)
+                    particle.Play();
+                else if (!shouldShow && particle.isPlaying)
+                    particle.Stop();
+            }
+        }
     }
 
     void ShowHint()
@@ -117,22 +150,16 @@ public class Door : MonoBehaviour
         {
             Camera mainCamera = Camera.main;
             if (mainCamera != null)
-            {
                 canvas.worldCamera = mainCamera;
-            }
         }
 
         TextMeshProUGUI hintText = currentHint.GetComponentInChildren<TextMeshProUGUI>();
         if (hintText != null)
         {
             if (requiresKey && !KeyInventory.Instance.HasKeys())
-            {
                 hintText.text = "Требуется ключ";
-            }
             else
-            {
                 hintText.text = "Нажмите F";
-            }
         }
     }
 
