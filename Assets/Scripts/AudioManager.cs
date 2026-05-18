@@ -18,6 +18,8 @@ public class AudioManager : MonoBehaviour
     public float musicVolume = 0.7f;
     public float sfxVolume = 1f;
     public float fadeDuration = 2f; // Длительность плавного перехода
+    
+    private Coroutine musicFadeCoroutine;
 
     private void Awake()
     {
@@ -43,23 +45,49 @@ public class AudioManager : MonoBehaviour
         // Настройка AudioSource для музыки
         musicSource.loop = true;
         musicSource.volume = 0f; // Начинаем с тишины (плавное появление)
-        musicSource.Play();
-        
-        // Настройка AudioSource для звуков
         sfxSource.volume = sfxVolume;
-
-        // Запускаем плавное появление музыки
-        StartCoroutine(FadeMusic(musicVolume, fadeDuration));
     }
 
     // Метод для воспроизведения музыки с плавным переходом
     public void PlayMusic(AudioClip clip, float fadeTime = 2f)
     {
-        StartCoroutine(FadeAndSwitchMusic(clip, fadeTime));
+        if (clip == null) return;
+
+        // Если этот трек УЖЕ играет, ничего не переключаем, просто проверяем громкость
+        if (musicSource.clip == clip && musicSource.isPlaying)
+        {
+            if (musicSource.volume < musicVolume)
+            {
+                if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
+                musicFadeCoroutine = StartCoroutine(FadeMusicCoroutine(musicVolume, fadeTime));
+            }
+            return;
+        }
+
+        // Если играет другой трек — плавно меняем. Если ничего не играет — просто плавно включаем.
+        if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
+        
+        if (musicSource.isPlaying)
+        {
+            musicFadeCoroutine = StartCoroutine(FadeAndSwitchMusic(clip, fadeTime));
+        }
+        else
+        {
+            musicSource.clip = clip;
+            musicSource.volume = 0f;
+            musicSource.Play();
+            musicFadeCoroutine = StartCoroutine(FadeMusicCoroutine(musicVolume, fadeTime));
+        }
+    }
+    
+    public void StopMusicWithFade(float fadeTime)
+    {
+        if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
+        musicFadeCoroutine = StartCoroutine(FadeOutAndStopCoroutine(fadeTime));
     }
 
     // Плавная смена музыки
-    IEnumerator FadeAndSwitchMusic(AudioClip newClip, float fadeTime)
+    private IEnumerator FadeAndSwitchMusic(AudioClip newClip, float fadeTime)
     {
         // Плавно уменьшаем громкость до 0
         float startVolume = musicSource.volume;
@@ -68,38 +96,54 @@ public class AudioManager : MonoBehaviour
             musicSource.volume -= startVolume / fadeTime * Time.deltaTime;
             yield return null;
         }
+        
+        musicSource.Stop();
+        musicSource.clip = newClip;
 
         // Меняем трек
         if (newClip != null)
         {
-            musicSource.clip = newClip;
             musicSource.Play();
+            while (musicSource.volume < musicVolume)
+            {
+                musicSource.volume += (musicVolume / fadeTime) * Time.unscaledDeltaTime;
+                yield return null;
+            }
+            musicSource.volume = musicVolume;
         }
-
-        // Плавно увеличиваем громкость
-        while (musicSource.volume < musicVolume)
-        {
-            musicSource.volume += musicVolume / fadeTime * Time.deltaTime;
-            yield return null;
-        }
-
-        musicSource.volume = musicVolume;
     }
 
     // Плавное изменение громкости
-    IEnumerator FadeMusic(float targetVolume, float fadeTime)
+    private IEnumerator FadeMusicCoroutine(float targetVolume, float fadeTime)
     {
         float startVolume = musicSource.volume;
         float elapsed = 0f;
 
         while (elapsed < fadeTime)
         {
+            elapsed += Time.unscaledDeltaTime;
             musicSource.volume = Mathf.Lerp(startVolume, targetVolume, elapsed / fadeTime);
-            elapsed += Time.deltaTime;
             yield return null;
         }
 
         musicSource.volume = targetVolume;
+    }
+    
+    // Коruтина затухания и остановки
+    private IEnumerator FadeOutAndStopCoroutine(float fadeTime)
+    {
+        float startVolume = musicSource.volume;
+        float elapsed = 0f;
+
+        while (elapsed < fadeTime)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            musicSource.volume = Mathf.Lerp(startVolume, 0f, elapsed / fadeTime);
+            yield return null;
+        }
+
+        musicSource.volume = 0f;
+        musicSource.Stop();
     }
 
     // Воспроизвести звук (SFX)

@@ -53,6 +53,11 @@ public class DeathScreen : MonoBehaviour
 
         if (deathPanel != null)
             deathPanel.SetActive(true);
+        
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopMusicWithFade(fadeDuration);
+        }
 
         if (deathSound != null)
             deathSound.Play();
