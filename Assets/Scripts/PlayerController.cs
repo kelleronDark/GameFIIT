@@ -227,6 +227,10 @@ public class PlayerController : MonoBehaviour
             if (hit.gameObject != gameObject && hit.CompareTag("Item"))
             {
                 carriedItem = hit.gameObject;
+
+                // ДИНАМИЧЕСКИЙ А*: Запоминаем границы коробки ДО того, как отключим её коллайдер
+                Bounds boxBounds = carriedItem.GetComponent<Collider2D>().bounds;
+
                 carriedItem.transform.SetParent(holdPoint);
                 carriedItem.transform.localPosition = Vector3.zero;
 
@@ -238,6 +242,12 @@ public class PlayerController : MonoBehaviour
                 Collider2D col = carriedItem.GetComponent<Collider2D>();
                 if (col != null) col.enabled = false;
 
+                // ДИНАМИЧЕСКИЙ А*: Освобождаем сетку на месте, где коробка только что лежала
+                if (AstarPath.active != null)
+                {
+                    AstarPath.active.UpdateGraphs(boxBounds);
+                }
+
                 break;
             }
         }
@@ -245,6 +255,8 @@ public class PlayerController : MonoBehaviour
 
     void DropItem()
     {
+        if (carriedItem == null) return;
+
         // Включаем коллайдер обратно перед тем как бросить под ноги
         Collider2D col = carriedItem.GetComponent<Collider2D>();
         if (col != null) col.enabled = true;
@@ -254,6 +266,14 @@ public class PlayerController : MonoBehaviour
         if (carriedItem.GetComponent<Rigidbody2D>())
             carriedItem.GetComponent<Rigidbody2D>().simulated = true;
 
+        // ДИНАМИЧЕСКИЙ А*: Пересчитываем сетку в месте падения коробки (чтобы враг её обходил)
+        // Делаем это ДО того, как сотрем ссылку в carriedItem = null;
+        if (col != null && AstarPath.active != null)
+        {
+            AstarPath.active.UpdateGraphs(col.bounds);
+        }
+
+        // Теперь, когда граф обновился, можно смело очищать ссылку
         carriedItem = null;
     }
 
