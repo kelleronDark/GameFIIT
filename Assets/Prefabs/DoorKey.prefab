@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1326417141930154142}
   - component: {fileID: 7638167924540664607}
   - component: {fileID: 7826471771407733238}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: DoorKey
   m_TagString: Interactable
   m_Icon: {fileID: 0}

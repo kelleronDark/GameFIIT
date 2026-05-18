@@ -845,7 +845,7 @@ CompositeCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_GeometryType: 0
+  m_GeometryType: 1
   m_GenerationType: 0
   m_EdgeRadius: 0
   m_ColliderPaths:
@@ -1697,25 +1697,25 @@ CompositeCollider2D:
       - {x: 6.125, y: -13.3125105}
       - {x: 6.1250076, y: -21.43751}
       - {x: 6.375011, y: -21.687502}
-    - - {x: 15.999971, y: -3}
-      - {x: 15.999971, y: -2}
-      - {x: 11, y: -2.0000293}
-      - {x: 11.00003, y: -3}
     - - {x: 8.99997, y: -3}
       - {x: 8.99997, y: -2}
       - {x: 7, y: -2.0000293}
       - {x: 7.000008, y: -2.7500076}
       - {x: 7.2500114, y: -3}
-    - - {x: -3.2500107, y: -9}
-      - {x: -3, y: -8.749989}
-      - {x: -3.0000293, y: -8}
-      - {x: -5, y: -8.00003}
-      - {x: -4.999971, y: -9}
+    - - {x: 15.999971, y: -3}
+      - {x: 15.999971, y: -2}
+      - {x: 11, y: -2.0000293}
+      - {x: 11.00003, y: -3}
     - - {x: -7.0000296, y: -9}
       - {x: -7.0000296, y: -8}
       - {x: -9, y: -8.00003}
       - {x: -8.999992, y: -8.750008}
       - {x: -8.749989, y: -9}
+    - - {x: -3.2500107, y: -9}
+      - {x: -3, y: -8.749989}
+      - {x: -3.0000293, y: -8}
+      - {x: -5, y: -8.00003}
+      - {x: -4.999971, y: -9}
     - - {x: 15.999971, y: -9.5}
       - {x: 15.999971, y: -9}
       - {x: 15.562499, y: -9.00003}
@@ -18961,7 +18961,7 @@ GameObject:
   m_Component:
   - component: {fileID: 70776407}
   - component: {fileID: 70776408}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19429,7 +19429,7 @@ GameObject:
   m_Component:
   - component: {fileID: 176151123}
   - component: {fileID: 176151124}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20346,7 +20346,7 @@ GameObject:
   m_Component:
   - component: {fileID: 240201077}
   - component: {fileID: 240201078}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21660,7 +21660,7 @@ CompositeCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_GeometryType: 0
+  m_GeometryType: 1
   m_GenerationType: 0
   m_EdgeRadius: 0
   m_ColliderPaths:
@@ -22178,7 +22178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 395658815}
   - component: {fileID: 395658816}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23478,6 +23478,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Box (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 75073350173162547, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 12.89
@@ -23517,6 +23521,10 @@ PrefabInstance:
     - target: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7586880323912101574, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -23679,7 +23687,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 7.546875
+  orthographic size: 6.4895835
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -23805,12 +23813,12 @@ MonoBehaviour:
   maxAcceleration: -2.5
   rotationSpeed: 360
   slowdownDistance: 0.6
-  pickNextWaypointDist: 3
+  pickNextWaypointDist: 0.3
   endReachedDistance: 0.2
   alwaysDrawGizmos: 0
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
-  constrainInsideGraph: 0
+  constrainInsideGraph: 1
 --- !u!114 &520480159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23867,7 +23875,7 @@ MonoBehaviour:
   playerDistError: 1.1
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 72
   anim: {fileID: 188326847}
 --- !u!70 &520480161
 CapsuleCollider2D:
@@ -31912,7 +31920,7 @@ CompositeCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_GeometryType: 0
+  m_GeometryType: 1
   m_GenerationType: 0
   m_EdgeRadius: 0
   m_ColliderPaths:
@@ -34643,7 +34651,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: DoorKey
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 6140784661599174080, guid: 5e213037f01b04dc294a8837b6d1a621, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8482493082968184074, guid: 5e213037f01b04dc294a8837b6d1a621, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 7638167924540664607, guid: 5e213037f01b04dc294a8837b6d1a621, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -35142,7 +35159,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 744402989}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Box_L1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35465,7 +35482,7 @@ GameObject:
   - component: {fileID: 785111709}
   - component: {fileID: 785111711}
   - component: {fileID: 785111710}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Floor_L2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47646,7 +47663,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: AstarPathfindingProject::AstarPath
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAAAoIexkQb/kfAIAADYFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFlVE1z2jAQ/SuMzoWxTTC4t9YhpIckTGknF18Ue401yJJHHwGS4b93JdvYoSfEe/vx9mnlT8KEbiA3Um0UK55kAeT7hLgz+TYZyEc40b0UO/YBfcwrK0zlgqiP+U0Nk4iHLk3LGoxi+Q+x5y44QNAKVkpVr4s9pFIbjXBJuQaklDQuWyD0OSEn/JkmLuWMp2jpTh94SoLJBY85CANqFBpGs7vFPIjiVZcyjeazMEriJAq71Gk0Wy7DOFwtw/U0iH0dK3JO6wYKN9RQbrmaLbo68coHChy4iwk8l0vOme70EnNuvB8pbbTFaTGgYBTn9yKdggrYvjJulnHyS1lqMJ05ip7vmUIb26rkp2y9rak+tNreKbeuT6upLfn0HzsNPV0qWT/2XcPAdTAVyw+/6Tmn2oysH8P3X2VbcaT8QN84vFYgnuVGSSsKJI2yLtVqiO6Hv9fB0gryw4C3Um9A2wyO9zfd37Ob4eJnP6Wc1W/e97sW2HHp3fbrAQpv5hcK9sujuxKIOhV/Nfyh+/GWdcQDU9og1U0pnLw3aZULJWvvmZvGmlQqAR7uRDcgKDfnLZYxtxd4w43a3jAP1L2nrnnH9c/kJsXDQ3wQ3FBbebxelq7k8Ql09WINZwIG0Y54Rp9SKUS7X2NP+rSdVSXNR2l7y4qvq0VWSyiiKFgt4rgMkziYhjnAAmgwh3kS0yghfveYwDkp37ZCO3vw1sRQXOCe9Z+ZyUbRxu96oehxwz5qObKciVLucgUgXtoKV+GgsAm+ymJdMDRoB8Yw4e+bfGaEy/wARXYtlPlJ1yejaDZUyUjD3qVxSEZS/13JiIOvu7xV8M7g6Jr3xS7k8g9QSwMEFAAACAgAACgh7AN25uFtAAAAeAAAAAkAJABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGrVipLLSrOzM9TslIw0TPSMzTXUVBKL0osyCgGihiCOKWZKSB2tJKFeWqKkZGBhamZWZqhpZmBrmFyaqppaqKBcaqxpVmikaVSLFB9SWVBql9ibipET0BiSUZaZl5KZl66nntRZoo7yGil2FoAUEsBAi0AFAAACAgAACgh7GRBv+R8AgAANgUAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAACgh7AN25uFtAAAAeAAAAAkAJAAAAAAAAAAAAAAAyQIAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAACBAwAAAAA=
+    dataString: UEsDBBQAAAgIAAAoIexRxq+lfQIAADgFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VE1z2jAQ/SuMzoWxTbBxb61DSA9JmNBOLr4Ia401yJJHHwGS4b9Xkm3s0OkJ8Xb3ad/blT8R5aqBQgu5lpQ8CQLo+wS5M/o2GYKPcMJ7wbf0A/qcN0p05ZKwz3nFmgqLh65MiRq0pMUPvmcuObCg4bQUsl6RPWRCaWXhEjMFNiSFdtXcQp8TdLI/09SVnO0pStzpw57SYHKxxwK4BjlKDaPZ3WIeRPGyK5lG81kYpXEahV3pNJolSRiHyyRcTYPY8xheMFw3QJyogS5ZzhYdT7z0idwK7nICHysEY1R1/SJ9brwfGW6UsWptAqHY6vdNug4qoPtKOy3j4peyVKA7cyQ+31NpbWxZ0U/ReltjdWh7e8fMuHuSyDfVcj79E56GPlxKUT/214aBu0JXtDi84nOBlR55P4bvv/Zt+BGzA94xeKuAP4u1FIYTG9TSuFKjILof/l6VZRUUhwFvW70BTTNY3o+6H7TTcPHiTxmj9c4bf9cCWya83X4/QNrR/LIN++1RHYVFXRd/FPzG+/GadYEHKpW2oU4ld+3thJEuFa28Z06N0ZmQHOSYoQGOmT5vLI++HeFN7P9VD9i9qO72LtY/lJsSDw/5QXAT2ojjdVqqEscnUNWL0YxyGKx2gWdrVCY4bzdsLKkv2xpZ4mJUtjeUfN0ttEyARFGwXMRxGaZxMA0LgAXgYA7zNMZRivzyUW51YrZpG+3ssWPjAzm3i9Z/aCZriRu/7UTi45p+1EINmZSXYltIAP7SMlwbB2kvse+SrAi1Bm1Ba8r9wNFnjpgoDkDyK1Hula5OWuJ8YMlRQ9+FdkiOMv9lyZGDr8u8kfBO4egu78ku6PIXUEsDBBQAAAgIAAAoIewDdubhbQAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz0jM011FQSi9KLMgoBooYgjilmSkgdrSShXlqipGRgYWpmVmaoaWZga5hcmqqaWqigXGqsaVZopGlUixQfUllQapfYm4qRE9AYklGWmZeSmZeup57UWaKO8hopdhaAFBLAQItABQAAAgIAAAoIexRxq+lfQIAADgFAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAAAoIewDdubhbQAAAHgAAAAJACQAAAAAAAAAAAAAAMoCAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAAggMAAAAA
     upgradeData: 
     file_cachedStartup: {fileID: 0}
     data_cachedStartup: 
@@ -48143,7 +48160,7 @@ GameObject:
   m_Component:
   - component: {fileID: 905759873}
   - component: {fileID: 905759874}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48678,7 +48695,7 @@ GameObject:
   m_Component:
   - component: {fileID: 945424786}
   - component: {fileID: 945424787}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48943,7 +48960,7 @@ GameObject:
   m_Component:
   - component: {fileID: 950967253}
   - component: {fileID: 950967254}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -49080,6 +49097,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Box
       objectReference: {fileID: 0}
+    - target: {fileID: 75073350173162547, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5576407376876305921, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
       propertyPath: m_Size.x
       value: 1.9704037
@@ -49134,6 +49155,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7586880323912101574, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8258021055311979087, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
@@ -49304,7 +49329,7 @@ CompositeCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_GeometryType: 0
+  m_GeometryType: 1
   m_GenerationType: 0
   m_EdgeRadius: 0
   m_ColliderPaths:
@@ -61411,7 +61436,7 @@ CompositeCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_GeometryType: 0
+  m_GeometryType: 1
   m_GenerationType: 0
   m_EdgeRadius: 0
   m_ColliderPaths: []
@@ -61508,6 +61533,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Box (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 75073350173162547, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.1
@@ -61547,6 +61576,10 @@ PrefabInstance:
     - target: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7586880323912101574, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -61777,7 +61810,7 @@ GameObject:
   m_Component:
   - component: {fileID: 997556973}
   - component: {fileID: 997556974}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (13)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70076,7 +70109,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1070794377}
   - component: {fileID: 1070794378}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70258,6 +70291,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DoorKey (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7638167924540664607, guid: 5e213037f01b04dc294a8837b6d1a621, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -70275,7 +70312,7 @@ GameObject:
   - component: {fileID: 1082378366}
   - component: {fileID: 1082378365}
   - component: {fileID: 1082378367}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Floor_L1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76404,7 +76441,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1092955432}
   - component: {fileID: 1092955433}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76993,7 +77030,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1176015611}
   - component: {fileID: 1176015612}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100293,7 +100330,7 @@ CompositeCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_GeometryType: 0
+  m_GeometryType: 1
   m_GenerationType: 0
   m_EdgeRadius: 0
   m_ColliderPaths:
@@ -101407,6 +101444,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gate (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 9124112052873377057, guid: b0f1e03137897481daedd50bd8b911cd, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -101656,6 +101697,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6140784661599174080, guid: 5e213037f01b04dc294a8837b6d1a621, type: 3}
       propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7638167924540664607, guid: 5e213037f01b04dc294a8837b6d1a621, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -102429,7 +102474,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1432547823}
   - component: {fileID: 1432547824}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102663,7 +102708,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1467789981}
   - component: {fileID: 1467789982}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122302,7 +122347,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1535422178}
   - component: {fileID: 1535422179}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (12)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124052,7 +124097,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1661406710}
   - component: {fileID: 1661406711}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124380,6 +124425,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Box (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 75073350173162547, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.39
@@ -124419,6 +124468,10 @@ PrefabInstance:
     - target: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7586880323912101574, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -125105,6 +125158,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Box
       objectReference: {fileID: 0}
+    - target: {fileID: 75073350173162547, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.82
@@ -125144,6 +125201,10 @@ PrefabInstance:
     - target: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7586880323912101574, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -131772,7 +131833,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1953661340}
   - component: {fileID: 1953661341}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -132943,7 +133004,7 @@ CompositeCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_GeometryType: 0
+  m_GeometryType: 1
   m_GenerationType: 0
   m_EdgeRadius: 0
   m_ColliderPaths: []
@@ -142442,7 +142503,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2064639142}
   - component: {fileID: 2064639143}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InvisibleWall (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142522,6 +142583,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Box (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 75073350173162547, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.96
@@ -142561,6 +142626,10 @@ PrefabInstance:
     - target: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7586880323912101574, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -143241,11 +143310,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6140784661599174080, guid: 5e213037f01b04dc294a8837b6d1a621, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7638167924540664607, guid: 5e213037f01b04dc294a8837b6d1a621, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8482493082968184074, guid: 5e213037f01b04dc294a8837b6d1a621, type: 3}
       propertyPath: m_Enabled
