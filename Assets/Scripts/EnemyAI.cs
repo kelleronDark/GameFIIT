@@ -4,12 +4,14 @@ using System.Collections; // Обязательно для корутин!
 
 public class EnemyAI : MonoBehaviour
 {
-    // Добавили состояние Stun
     public enum State { Patrol, Chase, Search, Stun }
+    [Header("AI State")]
     public State currentState = State.Patrol;
 
+    [Header("References")]
     public Transform player;
     public Transform[] waypoints;
+    public Animator anim;
 
     [Header("Attack Settings")]
     public int damageAmount = 20;
@@ -21,7 +23,9 @@ public class EnemyAI : MonoBehaviour
     public float stopChaseDistance = 8f;
     public float playerDistError = 1.1f;
     public LayerMask obstacleMask;
-    public Animator anim;
+
+    [Header("VFX References")]
+    public GameObject stunEffectObject; // Сюда перетаскиваем объект StunEffects из иерархии
 
     private IAstarAI ai;
     private int currentWaypointIndex = 0;
@@ -31,30 +35,48 @@ public class EnemyAI : MonoBehaviour
     void Start()
     {
         ai = GetComponent<IAstarAI>();
+
+        // На всякий случай подстрахуемся: если забыли перетащить аниматор руками, попробуем найти его сами
+        if (anim == null)
+        {
+            anim = GetComponent<Animator>();
+        }
+
+        // При старте игры визуальный эффект оглушения должен быть гарантированно выключен
+        if (stunEffectObject != null)
+        {
+            stunEffectObject.SetActive(false);
+        }
     }
 
     void Update()
     {
-        // Если монстр оглушен, мы пропускаем всю логику преследования и поиска
+        // Если монстр оглушен, мы полностью пропускаем всю логику преследования и поиска
         if (currentState == State.Stun)
         {
-            UpdateAnimation(); // Чтобы анимация переключилась в Idle
+            UpdateAnimation();
             return;
         }
 
         switch (currentState)
         {
             case State.Patrol:
-                ai.destination = waypoints[currentWaypointIndex].position;
-                if (ai.reachedDestination)
-                    currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
+                if (waypoints.Length > 0 && waypoints[currentWaypointIndex] != null)
+                {
+                    ai.destination = waypoints[currentWaypointIndex].position;
+                    if (ai.reachedDestination)
+                        currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
+                }
 
                 CheckForPlayer();
                 break;
 
             case State.Chase:
-                ai.destination = player.position;
-                ChaseLogic();
+                if (player != null)
+                {
+                    ai.destination = player.position;
+                    ChaseLogic();
+                }
                 break;
 
             case State.Search:
@@ -67,28 +89,52 @@ public class EnemyAI : MonoBehaviour
         UpdateAnimation();
     }
 
-    // Метод, который вызывает коробка
+    // Метод оглушения, который вызывается при попадании коробки
     public IEnumerator BecomeStunned(float duration)
     {
-        State previousState = currentState; // Запоминаем, что он делал
+        State previousState = currentState; // Запоминаем текущее состояние
         currentState = State.Stun;
-        ai.isStopped = true; // Останавливаем движение плагина A*
+        ai.isStopped = true; // Принудительно останавливаем движение плагина A*
+
+        // Включаем визуальные эффекты оглушения
+        if (anim != null)
+        {
+            anim.SetBool("IsStunned", true);
+        }
+
+        if (stunEffectObject != null)
+        {
+            stunEffectObject.SetActive(true); // Зажигаем звездочки/искры над головой
+        }
 
         Debug.Log("Монстр оглушен!");
 
         yield return new WaitForSeconds(duration);
 
-        ai.isStopped = false; // Разрешаем ходить
-        currentState = State.Patrol; // Возвращаем в патруль (или previousState)
+        // Отключаем визуальные эффекты оглушения
+        if (anim != null)
+        {
+            anim.SetBool("IsStunned", false);
+        }
+
+        if (stunEffectObject != null)
+        {
+            stunEffectObject.SetActive(false); // Тушим звездочки/искры
+        }
+
+        ai.isStopped = false; // Разрешаем плагину А* снова ходить
+        currentState = previousState; // Возвращаем монстра к тому, чем он занимался до удара (например, Chase или Patrol)
         Debug.Log("Монстр пришел в себя");
     }
 
     void UpdateAnimation()
     {
+        if (anim == null) return;
+
         Vector2 velocity = ai.velocity;
         float speed = velocity.magnitude;
 
-        // Если монстр оглушен или просто стоит
+        // Если монстр движется и НЕ оглушен
         if (speed > 0.1f && currentState != State.Stun)
         {
             Vector2 dir = velocity.normalized;
@@ -102,7 +148,6 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // ... (остальные методы ChaseLogic, CheckForPlayer, SearchLogic остаются без изменений)
     void ChaseLogic()
     {
         float distance = Vector2.Distance(transform.position, player.position);
@@ -116,12 +161,18 @@ public class EnemyAI : MonoBehaviour
 
     void CheckForPlayer()
     {
+        if (player == null) return;
+
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
         if (distanceToPlayer < chaseDistance)
         {
             Vector2 directionToPlayer = (player.position - transform.position).normalized;
             RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, distanceToPlayer, obstacleMask);
-            if (hit.collider == null) currentState = State.Chase;
+
+            if (hit.collider == null)
+            {
+                currentState = State.Chase;
+            }
         }
     }
 
@@ -131,7 +182,10 @@ public class EnemyAI : MonoBehaviour
         if (distToLastPlayerPos < playerDistError)
         {
             searchTimer -= Time.deltaTime;
-            if (searchTimer <= 0) currentState = State.Patrol;
+            if (searchTimer <= 0)
+            {
+                currentState = State.Patrol;
+            }
         }
     }
 
@@ -145,19 +199,22 @@ public class EnemyAI : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
+        // Если монстр в отключке, он не может атаковать игрока
+        if (currentState == State.Stun) return;
+
         // Проверяем, что коснулись игрока
         if (collision.gameObject.CompareTag("Player"))
         {
-            // Проверяем, прошло ли достаточно времени с прошлой атаки
+            // Проверяем Кулдаун атаки
             if (Time.time >= lastAttackTime + attackCooldown)
             {
-                PlayerController player = collision.gameObject.GetComponent<PlayerController>();
-                if (player != null)
+                PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
+                if (playerController != null)
                 {
-                    player.TakeDamage(damageAmount);
+                    playerController.TakeDamage(damageAmount);
                     lastAttackTime = Time.time;
 
-                    // Здесь можно запустить анимацию атаки, если она есть
+                    // Если у тебя появится триггер анимации атаки, сними коммент ниже:
                     // anim.SetTrigger("Attack"); 
                 }
             }
