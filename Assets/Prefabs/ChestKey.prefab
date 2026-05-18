@@ -158,6 +158,7 @@ MonoBehaviour:
   animator: {fileID: 0}
   hintPrefab: {fileID: 4752718864435063218, guid: 1f9599001008b5641951f4ed6855b215, type: 3}
   audioSource: {fileID: 0}
+  sparklesEffect: {fileID: 5584143674442292749, guid: 06d300b436d6d454187cc46548b4d699, type: 3}
 --- !u!61 &5876510918210402833
 BoxCollider2D:
   m_ObjectHideFlags: 0
