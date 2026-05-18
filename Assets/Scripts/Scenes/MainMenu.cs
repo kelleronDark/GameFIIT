@@ -7,7 +7,6 @@ public class MainMenu : MonoBehaviour
     public Button continueButton;
     
     [Header("Audio Settings")]
-    public AudioSource musicSource; // Ссылка на источник музыки
     public AudioSource sfxSource;   // Ссылка на источник звуков (кликов)
     public AudioClip clickSound;    // Сам файл звука клика
 
