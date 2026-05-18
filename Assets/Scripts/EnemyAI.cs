@@ -6,7 +6,7 @@ public class EnemyAI : MonoBehaviour
 {
     public enum State { Patrol, Chase, Search, Stun }
     [Header("AI State")]
-    public State currentState = State.Patrol;
+    public State currentState = State.Patrol;   
 
     [Header("References")]
     public Transform player;
@@ -214,8 +214,11 @@ public class EnemyAI : MonoBehaviour
                     playerController.TakeDamage(damageAmount);
                     lastAttackTime = Time.time;
 
-                    // Если у тебя появится триггер анимации атаки, сними коммент ниже:
-                    // anim.SetTrigger("Attack"); 
+                    // === ВОТ ЭТУ СТРОКУ МЫ АКТИВИРОВАЛИ: ===
+                    if (anim != null)
+                    {
+                        anim.SetTrigger("Attack");
+                    }
                 }
             }
         }
