@@ -15,6 +15,7 @@ public class HealthPotion : MonoBehaviour
     
     void Update()
     {
+        if (isUsed) return;
         // Проверяем нажатие кнопки F, если игрок рядом и хилка еще не использована
         if (playerInRange && !isUsed && Keyboard.current.fKey.wasPressedThisFrame)
         {
@@ -22,9 +23,12 @@ public class HealthPotion : MonoBehaviour
         }
     }
     
-    void UsePotion()
+    public void UsePotion()
     {
+        if (isUsed) return;
+        
         isUsed = true; // Сразу блокируем повторное нажатие
+        playerInRange = false;
 
         // Ищем скрипт здоровья на игроке (замени PlayerHealth на имя своего скрипта)
         PlayerController player = FindFirstObjectByType<PlayerController>();
@@ -32,6 +36,16 @@ public class HealthPotion : MonoBehaviour
         {
             player.Heal(healAmount); // Лечим через метод игрока
         }
+        
+        Collider2D potionCollider = GetComponent<Collider2D>();
+        if (potionCollider != null) 
+        {
+            potionCollider.enabled = false;
+        }
+        
+        if (GetComponent<SpriteRenderer>() != null) GetComponent<SpriteRenderer>().enabled = false;
+        
+        HideHint();
 
         AudioSource audio = GetComponent<AudioSource>();
         float delay = 0.1f;
@@ -40,10 +54,6 @@ public class HealthPotion : MonoBehaviour
             audio.Play();
             delay = audio.clip.length;
         }
-        
-        HideHint();
-        if (GetComponent<Collider2D>() != null) GetComponent<Collider2D>().enabled = false;
-        if (GetComponent<SpriteRenderer>() != null) GetComponent<SpriteRenderer>().enabled = false;
 
         // Удаляем объект после того как доиграет звук
         Destroy(gameObject, delay + 0.1f);
@@ -51,6 +61,8 @@ public class HealthPotion : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (isUsed) return;
+        
         if (other.CompareTag("Player"))
         {
             playerInRange = true;

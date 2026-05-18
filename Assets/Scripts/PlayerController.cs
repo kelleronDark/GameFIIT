@@ -115,26 +115,17 @@ public class PlayerController : MonoBehaviour
 
             foreach (var hit in nearbyObjects)
             {
-                // --- ПРОВЕРКА НА ЗЕЛЬЕ (Новое) ---
+                // --- ОБНОВЛЕННАЯ ПРОВЕРКА НА ЗЕЛЬЕ ---
                 HealthPotion potion = hit.GetComponent<HealthPotion>();
                 if (potion != null)
                 {
-                    // Лечим игрока
-                    Heal(potion.healAmount);
-
-                    // Играем звук (если есть AudioSource на самом зелье)
-                    AudioSource audio = hit.GetComponent<AudioSource>();
-                    if (audio != null)
-                        audio.Play();
-
-                    // Удаляем зелье со сцены
-                    float clipLength = audio.clip.length;
-                    Destroy(hit.gameObject, clipLength + 0.1f); // +0.1 сек запаса
-
+                    // Просто отдаем команду самой хилке. 
+                    // Метод UsePotion сам проверит флаг isUsed, выключит коллайдер и полечит игрока!
+                    potion.UsePotion(); 
                     interactedWithObject = true;
-                    break; // Важно: прерываем цикл, чтобы не нажать F дважды
+                    break; 
                 }
-
+                
                 // Проверяем на сундук
                 Chest chest = hit.GetComponent<Chest>();
                 if (chest != null && !chest.isOpened)
