@@ -13,12 +13,15 @@ public class LeverControl : MonoBehaviour
     public bool startsOpened = false; 
 
     [Header("Audio")]
-    public AudioSource audioSource; // 1. Источник звука
+    public AudioSource audioSource;
 
     [Header("UI Hint")]
     public GameObject hintPrefab;
-    private GameObject currentHint;
+    
+    [Header("Sparkles")] // <-- НОВОЕ: поле для блёсток
+    public GameObject sparklesEffect;
 
+    private GameObject currentHint;
     private bool isPlayerNearby = false;
 
     void Start()
@@ -26,20 +29,27 @@ public class LeverControl : MonoBehaviour
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
         
+        // АВТОМАТИЧЕСКОЕ СОЗДАНИЕ БЛЁСТОК ДЛЯ РЫЧАГА
+        if (sparklesEffect != null)
+        {
+            GameObject instance = Instantiate(sparklesEffect, transform.position + Vector3.up * 0.8f, Quaternion.identity);
+            instance.transform.SetParent(transform);
+            instance.transform.localPosition = Vector3.up * 0.8f;
+            sparklesEffect = instance;
+        }
+        
         if (bayonetTrap != null)
         {
-            // Только в этом случае спрашиваем у SaveManager её состояние
             bool isAlreadyDeactivated = SaveManager.Instance != null && SaveManager.Instance.IsBayonetTrapDeactivated();
-
             if (isAlreadyDeactivated)
             {
-                ApplyState(true); // Отключаем ловушку и поворачиваем рычаг навсегда
-                return; // Выходим из метода, настройки по умолчанию нам не нужны
+                ApplyState(true);
+                return;
             }
         }
 
-        ApplyState(startsOpened); // Настройка уровня по умолчанию (если дверь изначально должна быть открыта)
-        // Железно закрываем дверь и выключаем рычаг при загрузке сцены
+        ApplyState(startsOpened);
+        UpdateSparkles(); // Инициализация состояния блёсток
     }
     
     private void ApplyState(bool isOpen)
@@ -54,7 +64,6 @@ public class LeverControl : MonoBehaviour
 
         if (bayonetTrap != null)
         {
-            // Используем SetState, чтобы не крутить логику Toggle по кругу
             bayonetTrap.SetState(isOpen); 
         }
 
@@ -75,49 +84,38 @@ public class LeverControl : MonoBehaviour
 
     private void ToggleGate()
     {
-        // 2. Воспроизводим звук переключения
         if (audioSource != null)
             audioSource.Play();
 
-        // Если есть дверь — работаем с дверью
         if (doorAnimator != null)
         {
             bool newState = !doorAnimator.GetBool("isOpen");
-
             doorAnimator.SetBool("isOpen", newState);
 
             if (doorCollider != null)
-            {
                 doorCollider.enabled = !newState;
-            }
 
             if (leverAnimator != null)
-            {
                 leverAnimator.SetBool("isActivated", newState);
-            }
 
             Debug.Log("Рычаг и дверь переключены. Состояние открыто: " + newState);
         }
 
-        // Если есть ловушка — выключаем её
         if (bayonetTrap != null)
         {
             bayonetTrap.ToggleTrap();
 
             if (leverAnimator != null)
-            {
                 leverAnimator.SetBool("isActivated", !bayonetTrap.IsActive);
-            }
             
             if (SaveManager.Instance != null)
-            {
                 SaveManager.Instance.SetBayonetTrapState(!bayonetTrap.IsActive);
-            }
 
             Debug.Log("Ловушка переключена.");
         }
 
         HideHint();
+        UpdateSparkles(); // Обновляем блёстки после переключения
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -138,6 +136,27 @@ public class LeverControl : MonoBehaviour
         }
     }
 
+    // --- НОВЫЙ МЕТОД: Управление блёстками (субтильными!) ---
+    
+    private void UpdateSparkles()
+    {
+        if (sparklesEffect != null)
+        {
+            // Показываем блёстки ВСЕГДА, пока рычаг НЕ активирован (независимо от игрока!)
+            bool shouldShow = !leverAnimator.GetBool("isActivated");
+            sparklesEffect.SetActive(shouldShow);
+        
+            var particle = sparklesEffect.GetComponent<ParticleSystem>();
+            if (particle != null)
+            {
+                if (shouldShow && !particle.isPlaying)
+                    particle.Play();
+                else if (!shouldShow && particle.isPlaying)
+                    particle.Stop();
+            }
+        }
+    }
+
     void ShowHint()
     {
         if (currentHint != null) return;
@@ -150,16 +169,12 @@ public class LeverControl : MonoBehaviour
         {
             Camera mainCamera = Camera.main;
             if (mainCamera != null)
-            {
                 canvas.worldCamera = mainCamera;
-            }
         }
 
         TextMeshProUGUI hintText = currentHint.GetComponentInChildren<TextMeshProUGUI>();
         if (hintText != null)
-        {
             hintText.text = "Нажмите F";
-        }
     }
 
     void HideHint()

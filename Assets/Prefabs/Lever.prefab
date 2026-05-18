@@ -161,6 +161,7 @@ MonoBehaviour:
   startsOpened: 0
   audioSource: {fileID: 0}
   hintPrefab: {fileID: 4752718864435063218, guid: 1f9599001008b5641951f4ed6855b215, type: 3}
+  sparklesEffect: {fileID: 1660958631073814164, guid: 7886850316e37a54aa1d741f691bede9, type: 3}
 --- !u!95 &7431992126600269849
 Animator:
   serializedVersion: 7
