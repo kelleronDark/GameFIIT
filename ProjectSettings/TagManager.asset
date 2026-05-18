@@ -14,7 +14,7 @@ TagManager:
   - Obstacles
   - Water
   - UI
-  - 
+  - DynamicObstacles
   - 
   - 
   - 
@@ -85,6 +85,9 @@ TagManager:
     locked: 0
   - name: Cursor
     uniqueID: 4132619689
+    locked: 0
+  - name: Trajectory
+    uniqueID: 2597334987
     locked: 0
   m_RenderingLayers:
   - Default

@@ -1,17 +1,18 @@
 using UnityEngine;
 using TMPro;
+using Pathfinding; // ОБЯЗАТЕЛЬНО: Подключаем пространство имен A* Pathfinding
 
 public class Door : MonoBehaviour
 {
     [Header("Settings")]
     public bool isOpened = false;
     public bool requiresKey = true;
-    
+
     [Header("References")]
     public Animator animator;
     public GameObject hintPrefab;
     public AudioSource audioSource;
-    public GameObject sparklesEffect; // <-- НОВОЕ: блёстки для двери
+    public GameObject sparklesEffect; // блёстки для двери
 
     private GameObject currentHint;
     private bool playerInRange = false;
@@ -20,10 +21,10 @@ public class Door : MonoBehaviour
     {
         if (animator == null)
             animator = GetComponent<Animator>();
-    
+
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
-    
+
         // АВТОМАТИЧЕСКОЕ СОЗДАНИЕ БЛЁСТОК ДЛЯ ДВЕРИ
         if (sparklesEffect != null)
         {
@@ -33,8 +34,12 @@ public class Door : MonoBehaviour
             instance.transform.localPosition = Vector3.up * 1.2f; // Позиционируем над дверью
             sparklesEffect = instance; // Заменяем ссылку на префаб ссылкой на объект
         }
-    
+
         UpdateSparkles();
+
+        // ДИНАМИЧЕСКИЙ А*: При старте игры принудительно обновляем сетку вокруг закрытой двери,
+        // чтобы монстр точно знал, что здесь сейчас проходить нельзя
+        UpdateAstarGraph();
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -61,17 +66,23 @@ public class Door : MonoBehaviour
     {
         if (currentHint != null && playerInRange)
         {
-            TextMeshProUGUI hintText = currentHint.GetComponentInChildren<TextMeshProUGUI>();
-            if (hintText != null)
+            StringUpdateHint();
+        }
+    }
+
+    // Вынесли логику обновления текста подсказки для чистоты кода
+    private void StringUpdateHint()
+    {
+        TextMeshProUGUI hintText = currentHint.GetComponentInChildren<TextMeshProUGUI>();
+        if (hintText != null)
+        {
+            if (requiresKey && !KeyInventory.Instance.HasKeys())
             {
-                if (requiresKey && !KeyInventory.Instance.HasKeys())
-                {
-                    hintText.text = "Требуется ключ";
-                }
-                else
-                {
-                    hintText.text = "Нажмите F";
-                }
+                hintText.text = "Требуется ключ";
+            }
+            else
+            {
+                hintText.text = "Нажмите F";
             }
         }
     }
@@ -109,24 +120,45 @@ public class Door : MonoBehaviour
         if (animator != null)
             animator.SetBool("IsOpen", true);
 
+        // Отключаем физический коллайдер двери
         Collider2D doorCollider = GetComponent<Collider2D>();
         if (doorCollider != null)
             doorCollider.enabled = false;
+
+        // ДИНАМИЧЕСКИЙ А*: Обновляем сетку путей после отключения коллайдера, 
+        // чтобы открыть проход для монстра
+        UpdateAstarGraph();
 
         HideHint();
         UpdateSparkles(); // Скрываем блёстки после открытия
     }
 
-    // --- НОВЫЙ МЕТОД: Управление блёстками ---
-    
+    /// <summary>
+    /// Вспомогательный метод для обновления графа путей вокруг двери
+    /// </summary>
+    private void UpdateAstarGraph()
+    {
+        Collider2D doorCollider = GetComponent<Collider2D>();
+        if (doorCollider != null && AstarPath.active != null)
+        {
+            // Вместо точных границ коллайдера, создаём новые границы (Bounds)
+            // Мы берём центр двери, но принудительно задаём размер зоны обновления,
+            // например, 2.5 единицы в ширину и высоту, чтобы зацепить соседние клетки сетки
+            Bounds customBounds = new Bounds(transform.position, new Vector3(2.5f, 2.5f, 2.5f));
+
+            // Просим А* пересчитать эту расширенную область
+            AstarPath.active.UpdateGraphs(customBounds);
+        }
+    }
+
+    // --- Управление блёстками ---
     private void UpdateSparkles()
     {
         if (sparklesEffect != null)
         {
-            // Показываем блёстки, если дверь ЗАКРЫТА (независимо от игрока!)
             bool shouldShow = !isOpened;
             sparklesEffect.SetActive(shouldShow);
-        
+
             var particle = sparklesEffect.GetComponent<ParticleSystem>();
             if (particle != null)
             {

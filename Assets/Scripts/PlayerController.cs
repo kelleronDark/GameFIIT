@@ -15,9 +15,9 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     public Transform holdPoint;
     private GameObject carriedItem;
-    
+
     public HealthBarController healthBar; // Назначь в инспекторе
-    
+
     // [Header("UI")]
     // public UnityEngine.UI.Slider healthSlider; // <-- сюда перетащишь Slider из Unity
     private Vector3 lastCheckpointPos;
@@ -29,6 +29,10 @@ public class PlayerController : MonoBehaviour
     public float throwSpeed = 2f;  // Время полета (сек)
     private bool isAiming = false;
 
+    [Header("Arc Visualization")]
+    private LineRenderer lineRenderer;
+    public int arcResolution = 15; // Количество точек дуги (чем больше, тем плавнее)
+
     [Header("Death Screen")]
     public DeathScreen deathScreen; // Назначь в инспекторе
 
@@ -37,29 +41,29 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         currentHealth = maxHealth;
-        
+
         Debug.Log($"Здоровье игрока: {currentHealth}/{maxHealth}");
-        
+
         lastCheckpointPos = transform.position;
-        
+
         if (SaveManager.Instance != null && SaveManager.Instance.HasSaveFile())
         {
             Vector3 cpPos = SaveManager.Instance.GetSavedCheckpointPosition();
-        
+
             // Телепортируем игрока
             transform.position = cpPos;
             lastCheckpointPos = cpPos; // Обновляем локальную переменную
-        
+
             Debug.Log($"Игрок возродился на чекпоинте: {cpPos}");
         }
         else
         {
             lastCheckpointPos = transform.position;
         }
-        
+
         CameraFollow cam = FindFirstObjectByType<CameraFollow>();
         if (cam != null) cam.Warp();
-        
+
         if (healthBar != null)
         {
             healthBar.SetHealth(currentHealth, maxHealth);
@@ -68,10 +72,18 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("❌ HealthBar не назначен в PlayerController!");
         }
-        
+
+        // Находим или добавляем Line Renderer на ходу
+        lineRenderer = GetComponent<LineRenderer>();
+        if (lineRenderer != null)
+        {
+            lineRenderer.positionCount = arcResolution;
+            lineRenderer.enabled = false; // Выключен по умолчанию
+        }
+
         // UpdateHealthUI(); // <-- ДОБАВЬ ЭТУ СТРОКУ
     }
-    
+
     public void SetCheckpoint(Vector3 newPosition)
     {
         lastCheckpointPos = newPosition;
@@ -121,11 +133,11 @@ public class PlayerController : MonoBehaviour
                 {
                     // Просто отдаем команду самой хилке. 
                     // Метод UsePotion сам проверит флаг isUsed, выключит коллайдер и полечит игрока!
-                    potion.UsePotion(); 
+                    potion.UsePotion();
                     interactedWithObject = true;
-                    break; 
+                    break;
                 }
-                
+
                 // Проверяем на сундук
                 Chest chest = hit.GetComponent<Chest>();
                 if (chest != null && !chest.isOpened)
@@ -165,6 +177,9 @@ public class PlayerController : MonoBehaviour
             isAiming = true;
             throwCursor.SetActive(true);
 
+            // Включаем отображение линии траектории
+            if (lineRenderer != null) lineRenderer.enabled = true;
+
             // Получаем позицию мыши в мире
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             mousePos.z = 0;
@@ -178,9 +193,16 @@ public class PlayerController : MonoBehaviour
 
             throwCursor.transform.position = mousePos;
 
+            // Строим дугу от точки HoldPoint до курсора прицела
+            if (lineRenderer != null)
+            {
+                DrawTrajectoryArc(holdPoint.position, mousePos);
+            }
+
             // БРОСОК (ЛКМ во время прицеливания)
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
+                if (lineRenderer != null) lineRenderer.enabled = false; // Отключаем линию
                 StartCoroutine(ThrowItem(carriedItem, mousePos));
                 carriedItem = null; // Ссылка в руках обнуляется сразу
                 isAiming = false;
@@ -191,6 +213,8 @@ public class PlayerController : MonoBehaviour
         {
             isAiming = false;
             if (throwCursor != null) throwCursor.SetActive(false);
+            // Прячем линию, если не целимся
+            if (lineRenderer != null) lineRenderer.enabled = false;
         }
     }
 
@@ -203,6 +227,10 @@ public class PlayerController : MonoBehaviour
             if (hit.gameObject != gameObject && hit.CompareTag("Item"))
             {
                 carriedItem = hit.gameObject;
+
+                // ДИНАМИЧЕСКИЙ А*: Запоминаем границы коробки ДО того, как отключим её коллайдер
+                Bounds boxBounds = carriedItem.GetComponent<Collider2D>().bounds;
+
                 carriedItem.transform.SetParent(holdPoint);
                 carriedItem.transform.localPosition = Vector3.zero;
 
@@ -214,6 +242,12 @@ public class PlayerController : MonoBehaviour
                 Collider2D col = carriedItem.GetComponent<Collider2D>();
                 if (col != null) col.enabled = false;
 
+                // ДИНАМИЧЕСКИЙ А*: Освобождаем сетку на месте, где коробка только что лежала
+                if (AstarPath.active != null)
+                {
+                    AstarPath.active.UpdateGraphs(boxBounds);
+                }
+
                 break;
             }
         }
@@ -221,6 +255,8 @@ public class PlayerController : MonoBehaviour
 
     void DropItem()
     {
+        if (carriedItem == null) return;
+
         // Включаем коллайдер обратно перед тем как бросить под ноги
         Collider2D col = carriedItem.GetComponent<Collider2D>();
         if (col != null) col.enabled = true;
@@ -230,7 +266,32 @@ public class PlayerController : MonoBehaviour
         if (carriedItem.GetComponent<Rigidbody2D>())
             carriedItem.GetComponent<Rigidbody2D>().simulated = true;
 
+        // ДИНАМИЧЕСКИЙ А*: Пересчитываем сетку в месте падения коробки (чтобы враг её обходил)
+        // Делаем это ДО того, как сотрем ссылку в carriedItem = null;
+        if (col != null && AstarPath.active != null)
+        {
+            AstarPath.active.UpdateGraphs(col.bounds);
+        }
+
+        // Теперь, когда граф обновился, можно смело очищать ссылку
         carriedItem = null;
+    }
+
+    void DrawTrajectoryArc(Vector3 startPos, Vector3 targetPos)
+    {
+        for (int i = 0; i < arcResolution; i++)
+        {
+            float t = (float)i / (arcResolution - 1);
+
+            // Прямая линия между игроком и целью
+            Vector3 currentPos = Vector3.Lerp(startPos, targetPos, t);
+
+            // Искривление вверх по синусоиде (точно такая же парабола, как при броске)
+            float height = Mathf.Sin(t * Mathf.PI) * throwHeight;
+            currentPos.y += height;
+
+            lineRenderer.SetPosition(i, currentPos);
+        }
     }
 
     IEnumerator ThrowItem(GameObject item, Vector3 targetPos)
@@ -270,12 +331,6 @@ public class PlayerController : MonoBehaviour
         impact.ActivateImpact();
     }
 
-    // private void OnDrawGizmosSelected()
-    // {
-    //     Gizmos.color = Color.red;
-    //     Gizmos.DrawWireSphere(transform.position, 1.5f);
-    // }
-
     void FixedUpdate()
     {
         if (moveInput.magnitude > 0)
@@ -285,28 +340,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // private void UpdateHealthUI()
-    // {
-    //     if (healthSlider != null)
-    //     {
-    //         // Рассчитываем процент здоровья (от 0 до 1)
-    //         float healthPercent = (float)currentHealth / maxHealth;
-    //         healthSlider.value = healthPercent;
-    //
-    //         // Меняем цвет заполнения: зелёный → жёлтый → красный
-    //         Image fillImage = healthSlider.fillRect.GetComponent<Image>();
-    //         if (fillImage != null)
-    //         {
-    //             if (healthPercent > 0.6f)
-    //                 fillImage.color = Color.green;
-    //             else if (healthPercent > 0.3f)
-    //                 fillImage.color = Color.yellow;
-    //             else
-    //                 fillImage.color = Color.red;
-    //         }
-    //     }
-    // }
-
     /// <summary>
     /// Получить урон
     /// </summary>
@@ -314,7 +347,7 @@ public class PlayerController : MonoBehaviour
     {
         currentHealth -= damage;
         if (currentHealth < 0) currentHealth = 0;
-        
+
         healthBar.SetHealth(currentHealth, maxHealth);
 
         Debug.Log($"Игрок получил {damage} урона. Здоровье: {currentHealth}/{maxHealth}");
@@ -349,7 +382,6 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Игрок погиб! Показываем экран смерти...");
 
-        // Показываем экран смерти
         if (deathScreen != null)
         {
             deathScreen.ShowDeathScreen();
@@ -357,23 +389,19 @@ public class PlayerController : MonoBehaviour
         else
         {
             Debug.LogWarning("️ DeathScreen не назначен в PlayerController!");
-            // Фоллбек: сразу перезагружаем сцену
             string currentSceneName = SceneManager.GetActiveScene().name;
             SceneManager.LoadScene(currentSceneName);
         }
     }
-    
+
     public void ForceDropItem()
     {
         if (carriedItem != null)
         {
-            // Просто уничтожаем предмет или вызываем DropItem()
-            DropItem(); 
-            // Если это квестовый предмет, который должен вернуться на спавн, 
-            // лучше его уничтожить, а система спавна его создаст заново
+            DropItem();
         }
     }
-    
+
     public Vector3 GetLastCheckpointPos()
     {
         return lastCheckpointPos;
