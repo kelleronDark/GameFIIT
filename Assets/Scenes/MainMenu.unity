@@ -334,7 +334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MainMenu
   continueButton: {fileID: 326482154}
   sfxSource: {fileID: 0}
-  clickSound: {fileID: 0}
+  clickSound: {fileID: 8300000, guid: 4f55b39a310e4424b8392bcd03fdd1ff, type: 3}
 --- !u!114 &286227644
 MonoBehaviour:
   m_ObjectHideFlags: 0
