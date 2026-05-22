@@ -168,6 +168,8 @@ public class SaveManager : MonoBehaviour
             File.Delete(filePath);
             Debug.Log("<color=red>Файл сохранения удален для новой игры.</color>");
         }
+        
+        ResetInMemoryData();
     }
     
     private void OnEnable()
@@ -253,5 +255,16 @@ public class SaveManager : MonoBehaviour
     public int GetBoothmanState()
     {
         return savedBoothmanState;
+    }
+    
+    public void ResetInMemoryData()
+    {
+        activeCheckpointsList.Clear();
+        bayonetTrapDeactivated = false;
+        savedMerchantState = 0;
+        savedBoothmanState = 0;
+        player = null; // Сбрасываем ссылку на старого уничтоженного игрока
+    
+        Debug.Log("<color=cyan>Данные сохранения в RAM успешно сброшены к начальным значениям.</color>");
     }
 }
