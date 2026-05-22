@@ -12,6 +12,12 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
+        if (AudioManager.Instance != null && AudioManager.Instance.mainMenuMusic != null)
+        {
+            float currentFadeDuration = AudioManager.Instance.fadeDuration;
+            AudioManager.Instance.PlayMusic(AudioManager.Instance.mainMenuMusic, currentFadeDuration);
+        }
+        
         if (continueButton != null)
         {
             continueButton.interactable = SaveManager.Instance != null && SaveManager.Instance.HasSaveFile();
@@ -21,15 +27,21 @@ public class MainMenu : MonoBehaviour
     // Универсальный метод для проигрывания звука кнопки
     public void PlayClickSound()
     {
-        if (sfxSource != null && clickSound != null)
+        if (AudioManager.Instance != null && AudioManager.Instance.sfxSource != null && clickSound != null)
         {
-            sfxSource.PlayOneShot(clickSound);
+            AudioManager.Instance.sfxSource.PlayOneShot(clickSound);
         }
     }
 
     public void StartGame()
     {
         PlayClickSound();
+        
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopMusicWithFade(0.5f);
+        }
+        
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.DeleteSaveFile(); 
@@ -40,7 +52,25 @@ public class MainMenu : MonoBehaviour
     public void ContinueGame()
     {
         PlayClickSound();
-        SceneManager.LoadScene(1);
+        
+        StartCoroutine(FadeAndContinue());
+    }
+    
+    private System.Collections.IEnumerator FadeAndContinue()
+    {
+        if (continueButton != null) continueButton.interactable = false; // Защита от спама кнопкой
+
+        if (AudioManager.Instance != null)
+        {
+            // Плавно гасим музыку меню за 0.6 секунды
+            AudioManager.Instance.StopMusicWithFade(0.6f);
+        }
+
+        // Ждем, пока музыка затихнет
+        yield return new WaitForSecondsRealtime(0.6f);
+
+        // Загружаем сцену самой игры
+        SceneManager.LoadScene(2);
     }
 
     public void ExitGame()

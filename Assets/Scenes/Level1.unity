@@ -19350,57 +19350,6 @@ Transform:
   - {fileID: 12821361}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &174094388
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 174094390}
-  - component: {fileID: 174094389}
-  m_Layer: 0
-  m_Name: AuidioManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &174094389
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 174094388}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc5633436dc400642a568a0946a52087, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
-  musicSource: {fileID: 0}
-  sfxSource: {fileID: 0}
-  mainMenuMusic: {fileID: 8300000, guid: a4796da8467b6174fa678d06e57674fb, type: 3}
-  gameSceneMusic: {fileID: 8300000, guid: d20ca41ce1ea61c4ab515f9c4b90fedb, type: 3}
-  musicVolume: 0.528
-  sfxVolume: 1
-  fadeDuration: 4
---- !u!4 &174094390
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 174094388}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.49642, y: -7.35226, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &176151122
 GameObject:
   m_ObjectHideFlags: 0
@@ -22425,6 +22374,9 @@ GameObject:
   - component: {fileID: 403801753}
   - component: {fileID: 403801755}
   - component: {fileID: 403801754}
+  - component: {fileID: 403801758}
+  - component: {fileID: 403801757}
+  - component: {fileID: 403801756}
   m_Layer: 3
   m_Name: Designer_Start
   m_TagString: Untagged
@@ -22575,6 +22527,116 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!66 &403801756
+CompositeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403801752}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_GeometryType: 0
+  m_GenerationType: 0
+  m_EdgeRadius: 0
+  m_ColliderPaths: []
+  m_CompositePaths:
+    m_Paths: []
+  m_VertexDistance: 0.0005
+  m_OffsetDistance: 0.00005
+  m_UseDelaunayMesh: 0
+  m_CompositeGameObject: {fileID: 606447401}
+--- !u!50 &403801757
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403801752}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!19719996 &403801758
+TilemapCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403801752}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_MaximumTileChangeCount: 1000
+  m_ExtrusionFactor: 0
+  m_UseDelaunayMesh: 0
 --- !u!1 &406953262
 GameObject:
   m_ObjectHideFlags: 0
@@ -22956,10 +23018,7 @@ MonoBehaviour:
     text: "\u041D\u0443 \u0447\u0442\u043E, \u044E\u043D\u0433\u0430, \u043E\u0442\u0445\u043E\u0434\u0438
       \u0432 \u0441\u0442\u043E\u0440\u043E\u043D\u0443. \u0421\u0435\u0439\u0447\u0430\u0441
       \u0441\u0442\u0430\u0440\u044B\u0439 \u043C\u0430\u0441\u0442\u0435\u0440 \u043F\u043E\u043A\u0430\u0436\u0435\u0442
-      \u043A\u043B\u0430\u0441\u0441. \u0421\u043C\u043E\u0442\u0440\u0438! \u0411\u0443\u0434\u0443
-      \u0448\u0442\u043E\u043F\u0430\u0442\u044C \u0438 \u0441\u0432\u0435\u0440\u043B\u0438\u0442\u044C,
-      \u0430 \u0442\u044B \u0444\u043E\u043D\u0430\u0440\u0438\u043A\u043E\u043C
-      \u0441\u0432\u0435\u0442\u0438."
+      \u043A\u043B\u0430\u0441\u0441. \u0421\u043C\u043E\u0442\u0440\u0438!"
   hintPrefab: {fileID: 0}
 --- !u!61 &433423222
 BoxCollider2D:
@@ -33124,6 +33183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cc24e5d8552f0b45be975d1a77870bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  audioManagerPrefab: {fileID: 7910646360078584443, guid: 7d87e3de6200f41b1b0dd305b42e28a1, type: 3}
 --- !u!4 &578328967
 Transform:
   m_ObjectHideFlags: 0
@@ -149010,4 +149070,3 @@ SceneRoots:
   - {fileID: 1356482597}
   - {fileID: 221710095}
   - {fileID: 578328967}
-  - {fileID: 174094390}

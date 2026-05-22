@@ -60,7 +60,22 @@ public class MenuScreen : MonoBehaviour
     public void LoadMainMenu(string mainMenuSceneName)
     {
         Time.timeScale = 1f; // ОБЯЗАТЕЛЬНО возвращаем время в 1 перед сменой сцены!
-        SceneManager.LoadScene(mainMenuSceneName);
+        StartCoroutine(WaitAndLoadMenu(mainMenuSceneName));
+    }
+    
+    private System.Collections.IEnumerator WaitAndLoadMenu(string sceneName)
+    {
+        if (AudioManager.Instance != null)
+        {
+            // Быстро тушим музыку уровня за 0.3 секунды
+            AudioManager.Instance.StopMusicWithFade(0.3f);
+        }
+
+        // Ждем эти 0.3 секунды, пока музыка затихает
+        yield return new WaitForSecondsRealtime(0.3f);
+
+        // И только теперь меняем сцену
+        SceneManager.LoadScene(sceneName);
     }
 
     // 3. Выйти из игры

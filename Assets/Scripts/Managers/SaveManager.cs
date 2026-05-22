@@ -185,7 +185,7 @@ public class SaveManager : MonoBehaviour
     private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
     {
         // Проверяем: если это сцена игры (индекс 1) и у нас есть что загружать
-        if (scene.buildIndex == 1 && HasSaveFile())
+        if (scene.buildIndex != 0 && HasSaveFile())
         {
             Debug.Log("Игровая сцена загружена, восстанавливаем данные...");
             LoadGame(); // Твой метод загрузки
