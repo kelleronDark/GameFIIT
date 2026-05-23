@@ -35,6 +35,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Death Screen")]
     public DeathScreen deathScreen; // Назначь в инспекторе
+    
+    private int originalItemLayer;
 
     void Start()
     {
@@ -227,6 +229,7 @@ public class PlayerController : MonoBehaviour
             if (hit.gameObject != gameObject && hit.CompareTag("Item"))
             {
                 carriedItem = hit.gameObject;
+                originalItemLayer = carriedItem.layer;
 
                 // ДИНАМИЧЕСКИЙ А*: Запоминаем границы коробки ДО того, как отключим её коллайдер
                 Bounds boxBounds = carriedItem.GetComponent<Collider2D>().bounds;
@@ -241,6 +244,8 @@ public class PlayerController : MonoBehaviour
                 // 2. ОТКЛЮЧАЕМ КОЛЛАЙДЕР, чтобы игрок не становился широким
                 Collider2D col = carriedItem.GetComponent<Collider2D>();
                 if (col != null) col.enabled = false;
+                
+                SetLayerRecursively(carriedItem, 2);
 
                 // ДИНАМИЧЕСКИЙ А*: Освобождаем сетку на месте, где коробка только что лежала
                 if (AstarPath.active != null)
@@ -260,6 +265,8 @@ public class PlayerController : MonoBehaviour
         // Включаем коллайдер обратно перед тем как бросить под ноги
         Collider2D col = carriedItem.GetComponent<Collider2D>();
         if (col != null) col.enabled = true;
+        
+        SetLayerRecursively(carriedItem, originalItemLayer);
 
         carriedItem.transform.SetParent(null);
 
@@ -325,6 +332,8 @@ public class PlayerController : MonoBehaviour
 
         if (itemRb) itemRb.simulated = true;
         if (itemCol) itemCol.isTrigger = false; // Возвращаем обычную физику
+        
+        SetLayerRecursively(item, originalItemLayer);
 
         BoxImpact impact = item.GetComponent<BoxImpact>();
         if (impact == null) impact = item.AddComponent<BoxImpact>();
@@ -337,6 +346,15 @@ public class PlayerController : MonoBehaviour
         {
             Vector2 movement = moveInput.normalized * speed * Time.fixedDeltaTime;
             rb.MovePosition(rb.position + movement);
+        }
+    }
+    
+    void SetLayerRecursively(GameObject obj, int newLayer)
+    {
+        obj.layer = newLayer;
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerRecursively(child.gameObject, newLayer);
         }
     }
 
