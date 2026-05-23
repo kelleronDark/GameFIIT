@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7028310460742765895
+--- !u!1 &7910646360078584443
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6194715375300129522}
-  - component: {fileID: 4059911417560455060}
+  - component: {fileID: 3786180504897934530}
+  - component: {fileID: 6810374838407953708}
   m_Layer: 0
-  m_Name: AuidioManager
+  m_Name: AudioManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6194715375300129522
+--- !u!4 &3786180504897934530
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7028310460742765895}
+  m_GameObject: {fileID: 7910646360078584443}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -14.49642, y: -7.35226, z: 0}
@@ -32,22 +32,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4059911417560455060
+--- !u!114 &6810374838407953708
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7028310460742765895}
+  m_GameObject: {fileID: 7910646360078584443}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fc5633436dc400642a568a0946a52087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  hatchOpenSound: {fileID: 8300000, guid: 7a7765dd41dc6484f9cb1915d1fe0ead, type: 3}
   musicSource: {fileID: 0}
   sfxSource: {fileID: 0}
   mainMenuMusic: {fileID: 8300000, guid: a4796da8467b6174fa678d06e57674fb, type: 3}
   gameSceneMusic: {fileID: 8300000, guid: d20ca41ce1ea61c4ab515f9c4b90fedb, type: 3}
   musicVolume: 0.617
   sfxVolume: 1
-  fadeDuration: 4
+  fadeDuration: 1.5

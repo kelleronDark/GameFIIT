@@ -37,9 +37,15 @@ public class MenuScreen : MonoBehaviour
         Time.timeScale = 1f; // Возвращаем нормальное время
         isPaused = false;
 
-        // Прячем курсор обратно (если в игре он не нужен)
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        if (CursorManager.Instance != null)
+        {
+            CursorManager.Instance.ShowCursor(false);
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     // Активация паузы
@@ -51,16 +57,37 @@ public class MenuScreen : MonoBehaviour
         Time.timeScale = 0f; // Замораживаем физику и Update'ы
         isPaused = true;
 
-        // Показываем курсор, чтобы кликать по кнопкам
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        if (CursorManager.Instance != null)
+        {
+            CursorManager.Instance.ShowCursor(true);
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
     // 2. Выйти в главное меню
     public void LoadMainMenu(string mainMenuSceneName)
     {
         Time.timeScale = 1f; // ОБЯЗАТЕЛЬНО возвращаем время в 1 перед сменой сцены!
-        SceneManager.LoadScene(mainMenuSceneName);
+        StartCoroutine(WaitAndLoadMenu(mainMenuSceneName));
+    }
+    
+    private System.Collections.IEnumerator WaitAndLoadMenu(string sceneName)
+    {
+        if (AudioManager.Instance != null)
+        {
+            // Быстро тушим музыку уровня за 0.3 секунды
+            AudioManager.Instance.StopMusicWithFade(0.3f);
+        }
+
+        // Ждем эти 0.3 секунды, пока музыка затихает
+        yield return new WaitForSecondsRealtime(0.3f);
+
+        // И только теперь меняем сцену
+        SceneManager.LoadScene(sceneName);
     }
 
     // 3. Выйти из игры

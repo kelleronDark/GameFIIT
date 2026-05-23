@@ -12,4 +12,5 @@ public class SaveData
     public bool isBayonetTrapDeactivated;
     public int merchantStoryStateInt;
     public int boothmanStoryStateInt;
+    public bool playFinalCutsceneNext;
 }

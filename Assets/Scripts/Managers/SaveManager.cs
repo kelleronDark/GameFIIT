@@ -11,6 +11,8 @@ public class SaveManager : MonoBehaviour
     private bool bayonetTrapDeactivated = false;
     private int savedMerchantState = 0;
     private int savedBoothmanState = 0;
+    
+    [HideInInspector] public bool playFinalCutsceneNext = false;
 
     void Awake()
     {
@@ -74,6 +76,8 @@ public class SaveManager : MonoBehaviour
             savedBoothmanState = (int)boothman.GetStoryState();
         }
         data.boothmanStoryStateInt = savedBoothmanState;
+        
+        data.playFinalCutsceneNext = playFinalCutsceneNext;
         
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(filePath, json);
@@ -153,6 +157,8 @@ public class SaveManager : MonoBehaviour
         {
             targetBoothman.SetStoryState((BoothKeeperStoryState)savedBoothmanState);
         }
+        
+        playFinalCutsceneNext = data.playFinalCutsceneNext;
     }
     
     public bool HasSaveFile()
@@ -168,6 +174,8 @@ public class SaveManager : MonoBehaviour
             File.Delete(filePath);
             Debug.Log("<color=red>Файл сохранения удален для новой игры.</color>");
         }
+        
+        ResetInMemoryData();
     }
     
     private void OnEnable()
@@ -185,7 +193,7 @@ public class SaveManager : MonoBehaviour
     private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
     {
         // Проверяем: если это сцена игры (индекс 1) и у нас есть что загружать
-        if (scene.buildIndex == 1 && HasSaveFile())
+        if (scene.buildIndex != 0 && scene.name != "Cutscenes" && HasSaveFile())
         {
             Debug.Log("Игровая сцена загружена, восстанавливаем данные...");
             LoadGame(); // Твой метод загрузки
@@ -253,5 +261,17 @@ public class SaveManager : MonoBehaviour
     public int GetBoothmanState()
     {
         return savedBoothmanState;
+    }
+    
+    public void ResetInMemoryData()
+    {
+        activeCheckpointsList.Clear();
+        bayonetTrapDeactivated = false;
+        playFinalCutsceneNext = false;
+        savedMerchantState = 0;
+        savedBoothmanState = 0;
+        player = null; // Сбрасываем ссылку на старого уничтоженного игрока
+    
+        Debug.Log("<color=cyan>Данные сохранения в RAM успешно сброшены к начальным значениям.</color>");
     }
 }

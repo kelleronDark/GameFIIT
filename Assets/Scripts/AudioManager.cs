@@ -4,6 +4,9 @@ using System.Collections;
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
+    
+    [Header("Special SFX")]
+    public AudioClip hatchOpenSound;
 
     [Header("Audio Sources")]
     public AudioSource musicSource;
@@ -17,10 +20,11 @@ public class AudioManager : MonoBehaviour
     [Range(0f, 1f)]
     public float musicVolume = 0.7f;
     public float sfxVolume = 1f;
-    public float fadeDuration = 2f; // Длительность плавного перехода
+    public float fadeDuration = 1.5f; // Длительность плавного перехода
     
     private Coroutine musicFadeCoroutine;
-
+    public bool isPlayingHatch = false;
+    
     private void Awake()
     {
         // Singleton - чтобы был только один AudioManager
@@ -147,10 +151,10 @@ public class AudioManager : MonoBehaviour
     }
 
     // Воспроизвести звук (SFX)
-    public void PlaySFX(AudioClip clip)
+    public void PlaySFX(AudioClip clip, float volume = 1f)
     {
         if (sfxSource != null && clip != null)
-            sfxSource.PlayOneShot(clip);
+            sfxSource.PlayOneShot(clip, volume);
     }
 
     // Установить громкость музыки
