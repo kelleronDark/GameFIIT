@@ -7,18 +7,52 @@ using UnityEngine.InputSystem;
 public class CutsceneController : MonoBehaviour
 {
     public VideoPlayer videoPlayer;
-    public int nextSceneIndex = 2; // Индекс сцены самой игры
+    
+    [Header("Настройки Начальной Катсцены")]
+    public VideoClip introVideoClip;
+    public int introNextSceneIndex = 2; // Индекс сцены самой игры
+
+    [Header("Настройки Финальной Катсцены")]
+    public VideoClip finalVideoClip;
+    public int finalNextSceneIndex = 0; // Индекс Главного меню
     
     [Header("Delay Settings")]
     [SerializeField] private float delayBeforeLoad = 1.3f; // <--- ЗАДЕРЖКА В СЕКУНДАХ (настрой в инспекторе)
 
     private bool isTransitioning = false; // Защита от двойного срабатывания кнопки пропуска
-
+    private int sceneToLoadIndex;
+    private bool isFinalCutscene = false; // Флаг, чтобы разделять логику переходов
+    
     void Start()
     {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopMusicWithFade(0.5f);
+        }
+        
         if (videoPlayer == null)
             videoPlayer = GetComponent<VideoPlayer>();
-
+        
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.LoadGame();
+        }
+        
+        if (SaveManager.Instance != null && SaveManager.Instance.playFinalCutsceneNext)
+        {
+            isFinalCutscene = true;
+            if (finalVideoClip != null) videoPlayer.clip = finalVideoClip;
+            sceneToLoadIndex = finalNextSceneIndex;
+        }
+        else
+        {
+            isFinalCutscene = false;
+            if (introVideoClip != null) videoPlayer.clip = introVideoClip;
+            sceneToLoadIndex = introNextSceneIndex;
+        }
+        
+        videoPlayer.audioOutputMode = VideoAudioOutputMode.Direct;
+        
         videoPlayer.loopPointReached += OnVideoFinished;
         videoPlayer.Play();
     }
@@ -57,15 +91,30 @@ public class CutsceneController : MonoBehaviour
 
     private IEnumerator WaitAndLoadRoutine()
     {
-        if (AudioManager.Instance != null && AudioManager.Instance.hatchOpenSound != null)
+        if (!isFinalCutscene)
         {
-            AudioManager.Instance.isPlayingHatch = true; 
-            AudioManager.Instance.PlaySFX(AudioManager.Instance.hatchOpenSound, 0.5f); // Твоя громкость 50%
+            if (AudioManager.Instance != null && AudioManager.Instance.hatchOpenSound != null)
+            {
+                AudioManager.Instance.isPlayingHatch = true; 
+                AudioManager.Instance.PlaySFX(AudioManager.Instance.hatchOpenSound, 0.5f); 
+            }
         }
         
-        yield return new WaitForSeconds(delayBeforeLoad);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneToLoadIndex);
+        asyncLoad.allowSceneActivation = false;
+        
+        float elapsed = 0f;
+        while (elapsed < delayBeforeLoad)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        
+        if (isFinalCutscene && SaveManager.Instance != null)
+        {
+            SaveManager.Instance.DeleteSaveFile();
+        }
 
-        // 3. И только после этого Unity начинает грузить уровень
-        SceneManager.LoadScene(nextSceneIndex);
+        asyncLoad.allowSceneActivation = true;
     }
 }

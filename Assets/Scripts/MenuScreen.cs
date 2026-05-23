@@ -37,9 +37,15 @@ public class MenuScreen : MonoBehaviour
         Time.timeScale = 1f; // Возвращаем нормальное время
         isPaused = false;
 
-        // Прячем курсор обратно (если в игре он не нужен)
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        if (CursorManager.Instance != null)
+        {
+            CursorManager.Instance.ShowCursor(false);
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     // Активация паузы
@@ -51,9 +57,15 @@ public class MenuScreen : MonoBehaviour
         Time.timeScale = 0f; // Замораживаем физику и Update'ы
         isPaused = true;
 
-        // Показываем курсор, чтобы кликать по кнопкам
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        if (CursorManager.Instance != null)
+        {
+            CursorManager.Instance.ShowCursor(true);
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
     // 2. Выйти в главное меню
