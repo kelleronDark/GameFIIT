@@ -20571,6 +20571,10 @@ PrefabInstance:
       propertyPath: doorCollider
       value: 
       objectReference: {fileID: 1858602294}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: doorSpriteRenderer
+      value: 
+      objectReference: {fileID: 1858602296}
     - target: {fileID: 8707986643684785950, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
       propertyPath: m_Name
       value: Lever (1)
@@ -22881,6 +22885,10 @@ PrefabInstance:
       propertyPath: doorCollider
       value: 
       objectReference: {fileID: 246161423}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: doorSpriteRenderer
+      value: 
+      objectReference: {fileID: 749719275}
     - target: {fileID: 8707986643684785950, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
       propertyPath: m_Name
       value: Lever (1)
@@ -23541,9 +23549,25 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 897245693}
     - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.b
+      value: 0.058823586
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
       propertyPath: startsOpened
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: doorSpriteRenderer
+      value: 
+      objectReference: {fileID: 897245695}
     - target: {fileID: 8707986643684785950, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
       propertyPath: m_Name
       value: Lever (2)
@@ -23873,7 +23897,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 6.40625
+  orthographic size: 6.6145835
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -34271,6 +34295,7 @@ GameObject:
   - component: {fileID: 648504250}
   - component: {fileID: 648504249}
   - component: {fileID: 648504254}
+  - component: {fileID: 648504255}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -34571,6 +34596,23 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &648504255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648504247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c84588311e9a7af42990ccf6734f9c5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BoxTutorialManager
+  dialoguePanel: {fileID: 1089862263}
+  nameText: {fileID: 1788553459}
+  dialogueText: {fileID: 357952785}
+  prefsKey: HasSeenBoxTutorial
+  typingSpeed: 0.03
 --- !u!1001 &653917095
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35626,6 +35668,11 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!212 &749719275 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3022776933931122233, guid: b0f1e03137897481daedd50bd8b911cd, type: 3}
+  m_PrefabInstance: {fileID: 371097889}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &759032893
 GameObject:
   m_ObjectHideFlags: 0
@@ -48396,6 +48443,11 @@ BoxCollider2D:
 --- !u!95 &897245694 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 6793231636179252912, guid: b0f1e03137897481daedd50bd8b911cd, type: 3}
+  m_PrefabInstance: {fileID: 230647640}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &897245695 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3022776933931122233, guid: b0f1e03137897481daedd50bd8b911cd, type: 3}
   m_PrefabInstance: {fileID: 230647640}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &900864922
@@ -130118,6 +130170,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Trap
   activeTime: 2
   idleTime: 3
+--- !u!212 &1750266815 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3022776933931122233, guid: b0f1e03137897481daedd50bd8b911cd, type: 3}
+  m_PrefabInstance: {fileID: 3754058793956316063}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1772482254
 GameObject:
   m_ObjectHideFlags: 0
@@ -136806,6 +136863,11 @@ BoxCollider2D:
 --- !u!95 &1858602295 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 6793231636179252912, guid: b0f1e03137897481daedd50bd8b911cd, type: 3}
+  m_PrefabInstance: {fileID: 1246312398}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &1858602296 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3022776933931122233, guid: b0f1e03137897481daedd50bd8b911cd, type: 3}
   m_PrefabInstance: {fileID: 1246312398}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1861381010
@@ -148970,20 +149032,20 @@ PrefabInstance:
       objectReference: {fileID: 577946027}
     - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
       propertyPath: flashColor.b
-      value: 0.033709526
-      objectReference: {fileID: 0}
-    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
-      propertyPath: flashColor.g
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.g
+      value: 0.5773585
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
       propertyPath: flashColor.r
-      value: 1
+      value: 0.20061533
       objectReference: {fileID: 0}
     - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
       propertyPath: doorSpriteRenderer
       value: 
-      objectReference: {fileID: 1276627322}
+      objectReference: {fileID: 1750266815}
     - target: {fileID: 8707986643684785950, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
       propertyPath: m_Name
       value: Lever

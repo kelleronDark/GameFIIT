@@ -69,7 +69,6 @@ public class BoxImpact : MonoBehaviour
         // Обновляем свечение каждый кадр (если включено)
         if (enableGlow && sr != null)
         {
-            Debug.Log($"🔦 Коробка: col.enabled={col.enabled}, isRecentlyThrown={isRecentlyThrown}");
             UpdateGlow();
         }
     }

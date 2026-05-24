@@ -246,7 +246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoxImpact
   enableGlow: 1
-  glowColor: {r: 1, g: 0.8440553, b: 0, a: 1}
+  glowColor: {r: 1, g: 0.5019608, b: 0, a: 1}
   pulseSpeed: 1.1
   pulseIntensity: 1.2
   throwCooldown: 5

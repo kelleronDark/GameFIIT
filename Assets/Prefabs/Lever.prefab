@@ -164,7 +164,7 @@ MonoBehaviour:
   sparklesEffect: {fileID: 1660958631073814164, guid: 7886850316e37a54aa1d741f691bede9, type: 3}
   doorSpriteRenderer: {fileID: 3022776933931122233, guid: b0f1e03137897481daedd50bd8b911cd, type: 3}
   doorOpenParticles: {fileID: 429992887615291498, guid: c982db8f37c83b94593655e201dfc439, type: 3}
-  flashColor: {r: 1, g: 0, b: 0.058430195, a: 1}
+  flashColor: {r: 0, g: 1, b: 0.8660536, a: 1}
   flashDuration: 1
 --- !u!95 &7431992126600269849
 Animator:
