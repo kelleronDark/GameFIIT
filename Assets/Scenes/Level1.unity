@@ -20634,6 +20634,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Invenory
   partIndex: 0
   partSprite: {fileID: -6387210722906142475, guid: 410d99bd3c4fee5429865d283ec5b8ff, type: 3}
+  auraGlowPrefab: {fileID: 0}
 --- !u!61 &257151094
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -20767,6 +20768,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemHint
   hintPrefab: {fileID: 4752718864435063218, guid: 1f9599001008b5641951f4ed6855b215, type: 3}
+  offset: {x: 0, y: 1.5, z: 0}
 --- !u!4 &264426467 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
@@ -20829,9 +20831,33 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 320842170}
     - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.b
+      value: 0.013642311
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
       propertyPath: startsOpened
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashDuration
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: doorSpriteRenderer
+      value: 
+      objectReference: {fileID: 868634329}
     - target: {fileID: 8707986643684785950, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
       propertyPath: m_Name
       value: Lever
@@ -22834,6 +22860,7 @@ GameObject:
   - component: {fileID: 433423224}
   - component: {fileID: 433423222}
   - component: {fileID: 433423221}
+  - component: {fileID: 433423227}
   m_Layer: 0
   m_Name: 'Merchant '
   m_TagString: Untagged
@@ -23188,6 +23215,20 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &433423227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433423219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ec4982f5634f78488dc336b45006397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemHint
+  hintPrefab: {fileID: 4752718864435063218, guid: 1f9599001008b5641951f4ed6855b215, type: 3}
+  offset: {x: 0, y: 1.5, z: 0}
 --- !u!1 &446863069
 GameObject:
   m_ObjectHideFlags: 0
@@ -23850,7 +23891,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 6.703125
+  orthographic size: 6.40625
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -48087,6 +48128,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 8471868931713187446, guid: 8ed913e86c1e6412aa0c035c46fed2aa, type: 3}
   m_PrefabInstance: {fileID: 861629822}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &868634329 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3022776933931122233, guid: b0f1e03137897481daedd50bd8b911cd, type: 3}
+  m_PrefabInstance: {fileID: 1517611982}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &876488979
 GameObject:
@@ -101635,61 +101681,6 @@ CompositeCollider2D:
       - {x: -19.000029, y: -33}
       - {x: -33, y: -33.00003}
       - {x: -32.999973, y: -71}
-    - - {x: 5.687489, y: -51.6875}
-      - {x: 5.9375, y: -51.437492}
-      - {x: 5.9375014, y: -48.999996}
-      - {x: 6, y: -48.812496}
-      - {x: 6.0000296, y: -48.6875}
-      - {x: 7, y: -48.687473}
-      - {x: 7.0000296, y: -48.5}
-      - {x: 7.5, y: -48.499973}
-      - {x: 7.4999704, y: -48}
-      - {x: 7, y: -47.999973}
-      - {x: 6.9999704, y: -46.0625}
-      - {x: 5.999993, y: -46.062492}
-      - {x: 5.9375, y: -45.999992}
-      - {x: 5.9374924, y: -42.312492}
-      - {x: 5.687489, y: -42.0625}
-      - {x: -11.000008, y: -42.062492}
-      - {x: -11.0625, y: -41.999992}
-      - {x: -11.062498, y: -31.999998}
-      - {x: -11, y: -31.812496}
-      - {x: -10.99997, y: -31.687502}
-      - {x: -8, y: -31.687473}
-      - {x: -7.9999704, y: -31.5}
-      - {x: -7.5, y: -31.499971}
-      - {x: -7.5000296, y: -31}
-      - {x: -8, y: -30.999971}
-      - {x: -8.00003, y: -29.0625}
-      - {x: -19, y: -29.062529}
-      - {x: -18.999971, y: -31.687502}
-      - {x: -12, y: -31.68753}
-      - {x: -11.999998, y: -31.750008}
-      - {x: -11.875, y: -32.000008}
-      - {x: -11.87503, y: -36}
-      - {x: -11.937508, y: -36.000008}
-      - {x: -12.000011, y: -36.0625}
-      - {x: -16, y: -36.062527}
-      - {x: -16.000029, y: -38}
-      - {x: -16.437502, y: -38.00003}
-      - {x: -16.437471, y: -38.5}
-      - {x: -16, y: -38.50003}
-      - {x: -15.999971, y: -38.6875}
-      - {x: -12, y: -38.68753}
-      - {x: -11.999998, y: -38.750008}
-      - {x: -11.875, y: -39.000008}
-      - {x: -11.874992, y: -44.437508}
-      - {x: -11.624989, y: -44.6875}
-      - {x: 5, y: -44.68753}
-      - {x: 5.000003, y: -44.750008}
-      - {x: 5.125, y: -45.000008}
-      - {x: 5.1249704, y: -49}
-      - {x: 5.0624924, y: -49.000008}
-      - {x: 4.999989, y: -49.0625}
-      - {x: -0.1250076, y: -49.062508}
-      - {x: -0.375, y: -49.312508}
-      - {x: -0.3749924, y: -51.437508}
-      - {x: -0.124989204, y: -51.6875}
     - - {x: 10.749989, y: -51.375004}
       - {x: 10.9375, y: -51.187492}
       - {x: 10.937502, y: -48.999996}
@@ -101809,6 +101800,61 @@ CompositeCollider2D:
       - {x: 10.125, y: -49.000008}
       - {x: 10.125009, y: -51.187508}
       - {x: 10.3125105, y: -51.375004}
+    - - {x: 5.687489, y: -51.6875}
+      - {x: 5.9375, y: -51.437492}
+      - {x: 5.9375014, y: -48.999996}
+      - {x: 6, y: -48.812496}
+      - {x: 6.0000296, y: -48.6875}
+      - {x: 7, y: -48.687473}
+      - {x: 7.0000296, y: -48.5}
+      - {x: 7.5, y: -48.499973}
+      - {x: 7.4999704, y: -48}
+      - {x: 7, y: -47.999973}
+      - {x: 6.9999704, y: -46.0625}
+      - {x: 5.999993, y: -46.062492}
+      - {x: 5.9375, y: -45.999992}
+      - {x: 5.9374924, y: -42.312492}
+      - {x: 5.687489, y: -42.0625}
+      - {x: -11.000008, y: -42.062492}
+      - {x: -11.0625, y: -41.999992}
+      - {x: -11.062498, y: -31.999998}
+      - {x: -11, y: -31.812496}
+      - {x: -10.99997, y: -31.687502}
+      - {x: -8, y: -31.687473}
+      - {x: -7.9999704, y: -31.5}
+      - {x: -7.5, y: -31.499971}
+      - {x: -7.5000296, y: -31}
+      - {x: -8, y: -30.999971}
+      - {x: -8.00003, y: -29.0625}
+      - {x: -19, y: -29.062529}
+      - {x: -18.999971, y: -31.687502}
+      - {x: -12, y: -31.68753}
+      - {x: -11.999998, y: -31.750008}
+      - {x: -11.875, y: -32.000008}
+      - {x: -11.87503, y: -36}
+      - {x: -11.937508, y: -36.000008}
+      - {x: -12.000011, y: -36.0625}
+      - {x: -16, y: -36.062527}
+      - {x: -16.000029, y: -38}
+      - {x: -16.437502, y: -38.00003}
+      - {x: -16.437471, y: -38.5}
+      - {x: -16, y: -38.50003}
+      - {x: -15.999971, y: -38.6875}
+      - {x: -12, y: -38.68753}
+      - {x: -11.999998, y: -38.750008}
+      - {x: -11.875, y: -39.000008}
+      - {x: -11.874992, y: -44.437508}
+      - {x: -11.624989, y: -44.6875}
+      - {x: 5, y: -44.68753}
+      - {x: 5.000003, y: -44.750008}
+      - {x: 5.125, y: -45.000008}
+      - {x: 5.1249704, y: -49}
+      - {x: 5.0624924, y: -49.000008}
+      - {x: 4.999989, y: -49.0625}
+      - {x: -0.1250076, y: -49.062508}
+      - {x: -0.375, y: -49.312508}
+      - {x: -0.3749924, y: -51.437508}
+      - {x: -0.124989204, y: -51.6875}
     - - {x: 2.7499893, y: -40}
       - {x: 3, y: -39.749992}
       - {x: 2.9999924, y: -35.062492}
@@ -107151,6 +107197,11 @@ Transform:
 Transform:
   m_CorrespondingSourceObject: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
   m_PrefabInstance: {fileID: 1195011635}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &1276627322 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3022776933931122233, guid: b0f1e03137897481daedd50bd8b911cd, type: 3}
+  m_PrefabInstance: {fileID: 3754058793956316063}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1282374377
 GameObject:
@@ -130315,6 +130366,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Invenory
   partIndex: 3
   partSprite: {fileID: -4687768404907821816, guid: 410d99bd3c4fee5429865d283ec5b8ff, type: 3}
+  auraGlowPrefab: {fileID: 0}
 --- !u!61 &1772482257
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -130433,6 +130485,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemHint
   hintPrefab: {fileID: 4752718864435063218, guid: 1f9599001008b5641951f4ed6855b215, type: 3}
+  offset: {x: 0, y: 1.5, z: 0}
 --- !u!1 &1775517570
 GameObject:
   m_ObjectHideFlags: 0
@@ -138832,6 +138885,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Invenory
   partIndex: 2
   partSprite: {fileID: -3269744660803888725, guid: 410d99bd3c4fee5429865d283ec5b8ff, type: 3}
+  auraGlowPrefab: {fileID: 0}
 --- !u!61 &1982842048
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -138870,7 +138924,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.34, y: 0.34}
+    oldSize: {x: 0.33, y: 0.34}
     newSize: {x: 1.625, y: 1.6875}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -138950,6 +139004,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemHint
   hintPrefab: {fileID: 4752718864435063218, guid: 1f9599001008b5641951f4ed6855b215, type: 3}
+  offset: {x: 0, y: 1.5, z: 0}
 --- !u!1 &1986901491
 GameObject:
   m_ObjectHideFlags: 0
@@ -147469,6 +147524,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Invenory
   partIndex: 1
   partSprite: {fileID: -4911629187046143550, guid: 410d99bd3c4fee5429865d283ec5b8ff, type: 3}
+  auraGlowPrefab: {fileID: 0}
 --- !u!61 &2006335216
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -147602,6 +147658,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemHint
   hintPrefab: {fileID: 4752718864435063218, guid: 1f9599001008b5641951f4ed6855b215, type: 3}
+  offset: {x: 0, y: 1.5, z: 0}
 --- !u!1 &2007628077
 GameObject:
   m_ObjectHideFlags: 0
@@ -147671,6 +147728,7 @@ GameObject:
   - component: {fileID: 2020854890}
   - component: {fileID: 2020854889}
   - component: {fileID: 2020854891}
+  - component: {fileID: 2020854892}
   m_Layer: 0
   m_Name: Boothman
   m_TagString: Untagged
@@ -147873,6 +147931,20 @@ MonoBehaviour:
       \u0447\u0442\u043E \u0431\u0435\u0434\u043D\u044B\u0439 \u0411\u0443\u0434\u043E\u0447\u043D\u0438\u043A
       \u0437\u0430\u0431\u044B\u043B \u043A\u0430\u043A \u0440\u0430\u0437\u0433\u043E\u0432\u0430\u0440\u0438\u0432\u0430\u0442\u044C..."
   hintPrefab: {fileID: 0}
+--- !u!114 &2020854892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020854884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ec4982f5634f78488dc336b45006397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemHint
+  hintPrefab: {fileID: 4752718864435063218, guid: 1f9599001008b5641951f4ed6855b215, type: 3}
+  offset: {x: 0, y: 1.5, z: 0}
 --- !u!1 &2024965925
 GameObject:
   m_ObjectHideFlags: 0
@@ -149064,6 +149136,22 @@ PrefabInstance:
       propertyPath: doorCollider
       value: 
       objectReference: {fileID: 577946027}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.b
+      value: 0.033709526
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: doorSpriteRenderer
+      value: 
+      objectReference: {fileID: 1276627322}
     - target: {fileID: 8707986643684785950, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
       propertyPath: m_Name
       value: Lever
