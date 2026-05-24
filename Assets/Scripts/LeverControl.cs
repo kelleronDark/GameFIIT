@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.InputSystem; 
 using TMPro;
 
 public class LeverControl : MonoBehaviour
@@ -19,16 +19,13 @@ public class LeverControl : MonoBehaviour
     [Header("UI Hint")]
     public GameObject hintPrefab;
     
-    [Header("Sparkles")] // <-- НОВОЕ: поле для блёсток
-    public GameObject sparklesEffect;
+    [Header("Sparkles (Lever)")] 
+    public GameObject sparklesEffect; // Префаб блёсток рычага
     
-    // <-- НОВОЕ: Визуальный отклик двери
     [Header("Door Feedback")]
-    public SpriteRenderer doorSpriteRenderer; // Перетащи сюда SpriteRenderer двери
-    public GameObject doorOpenParticles;      // Префаб частиц для вспышки
-    public Color flashColor = new Color(1f, 1f, 1f, 0.8f); // Цвет вспышки
-    public float flashDuration = 0.2f;        // Длительность вспышки
+    public GameObject doorOpenParticles;      // Префаб блёсток/частиц двери
 
+    private GameObject leverSparklesInstance; // Храним инстанс отдельно, не ломая префаб
     private GameObject currentHint;
     private bool isPlayerNearby = false;
 
@@ -36,28 +33,32 @@ public class LeverControl : MonoBehaviour
     {
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
-        
-        // АВТОМАТИЧЕСКОЕ СОЗДАНИЕ БЛЁСТОК ДЛЯ РЫЧАГА
+    
+        // 1. Создаем блёстки для РЫЧАГА
         if (sparklesEffect != null)
         {
-            GameObject instance = Instantiate(sparklesEffect, transform.position + Vector3.up * 0.8f, Quaternion.identity);
-            instance.transform.SetParent(transform);
-            instance.transform.localPosition = Vector3.up * 0.8f;
-            sparklesEffect = instance;
+            leverSparklesInstance = Instantiate(sparklesEffect, transform.position + Vector3.up * 0.8f, Quaternion.identity);
+            leverSparklesInstance.transform.SetParent(transform);
+            leverSparklesInstance.transform.localPosition = Vector3.up * 0.8f;
         }
-        
+    
+        // 2. Определяем начальное состояние
+        bool targetState = startsOpened; 
+
         if (bayonetTrap != null)
         {
             bool isAlreadyDeactivated = SaveManager.Instance != null && SaveManager.Instance.IsBayonetTrapDeactivated();
             if (isAlreadyDeactivated)
             {
-                ApplyState(true);
-                return;
+                targetState = true; 
             }
         }
 
-        ApplyState(startsOpened);
-        UpdateSparkles(); // Инициализация состояния блёсток
+        // 3. Применяем состояние
+        ApplyState(targetState);
+    
+        // 4. Обновляем видимость блесток рычага
+        UpdateSparkles(); 
     }
     
     private void ApplyState(bool isOpen)
@@ -95,9 +96,11 @@ public class LeverControl : MonoBehaviour
         if (audioSource != null)
             audioSource.Play();
 
+        bool newState = false;
+
         if (doorAnimator != null)
         {
-            bool newState = !doorAnimator.GetBool("isOpen");
+            newState = !doorAnimator.GetBool("isOpen");
             doorAnimator.SetBool("isOpen", newState);
 
             if (doorCollider != null)
@@ -106,88 +109,64 @@ public class LeverControl : MonoBehaviour
             if (leverAnimator != null)
                 leverAnimator.SetBool("isActivated", newState);
 
-            // <-- НОВОЕ: Визуальный отклик при открытии двери
-            if (newState) // Только при открытии, не при закрытии
-            {
-                PlayDoorOpenFeedback();
-            }
-            
             Debug.Log("Рычаг и дверь переключены. Состояние открыто: " + newState);
         }
 
         if (bayonetTrap != null)
         {
             bayonetTrap.ToggleTrap();
+            newState = !bayonetTrap.IsActive; 
 
             if (leverAnimator != null)
-                leverAnimator.SetBool("isActivated", !bayonetTrap.IsActive);
+                leverAnimator.SetBool("isActivated", newState);
             
             if (SaveManager.Instance != null)
-                SaveManager.Instance.SetBayonetTrapState(!bayonetTrap.IsActive);
+                SaveManager.Instance.SetBayonetTrapState(newState);
 
             Debug.Log("Ловушка переключена.");
         }
 
+        // Вызываем визуальный отклик двери (только блёстки), если она ОТКРЫЛАСЬ
+        if (newState) 
+        {
+            PlayDoorOpenFeedback();
+        }
+
         HideHint();
-        UpdateSparkles(); // Обновляем блёстки после переключения
+        UpdateSparkles(); 
     }
     
-    // <-- НОВЫЙ МЕТОД: Визуальный отклик двери
     private void PlayDoorOpenFeedback()
     {
-        Debug.Log("🚪 [FEEDBACK] Door open feedback triggered!");
-    
-        // 1. Вспышка цвета на спрайте двери
-        if (doorSpriteRenderer != null)
+        Debug.Log("🚪 [FEEDBACK] Spawning door sparkles!");
+
+        // Спавн частиц блёсток около двери
+        if (doorOpenParticles != null)
         {
-            Debug.Log("✨ [FEEDBACK] SpriteRenderer found: " + doorSpriteRenderer.name);
-            Debug.Log("🎨 [FEEDBACK] Original color: " + doorSpriteRenderer.color);
-            StartCoroutine(FlashDoorSprite());
+            // Позиция спавна: если есть doorAnimator, берем его позицию, иначе позицию самого рычага
+            Vector3 spawnPosition = (doorAnimator != null) ? doorAnimator.transform.position : transform.position;
+            spawnPosition += Vector3.up * 1f; // Смещение чуть выше центра двери
+
+            GameObject particlesInstance = Instantiate(doorOpenParticles, spawnPosition, Quaternion.identity);
+            
+            // Запускаем систему частиц, если она не стартует сама
+            ParticleSystem ps = particlesInstance.GetComponentInChildren<ParticleSystem>();
+            if (ps != null)
+            {
+                ps.Play();
+                // Автоматически удаляем объект из сцены, как только частицы догорят
+                Destroy(particlesInstance, ps.main.duration + ps.main.startLifetime.constantMax);
+            }
+            else
+            {
+                // Резервный таймер удаления для обычных объектов
+                Destroy(particlesInstance, 2f); 
+            }
         }
         else
         {
-            Debug.LogWarning("❌ [FEEDBACK] doorSpriteRenderer is NULL!");
+            Debug.LogWarning("❌ [FEEDBACK] doorOpenParticles (префаб блёсток двери) не задан в инспекторе!");
         }
-
-        // 2. Частицы в позиции двери
-        if (doorOpenParticles != null && doorAnimator != null)
-        {
-            Debug.Log("💥 [FEEDBACK] Spawning particles at: " + (doorAnimator.transform.position + Vector3.up * 1f));
-            Instantiate(doorOpenParticles, doorAnimator.transform.position + Vector3.up * 1f, Quaternion.identity);
-        }
-        else
-        {
-            if (doorOpenParticles == null) Debug.LogWarning("❌ [FEEDBACK] doorOpenParticles is NULL!");
-            if (doorAnimator == null) Debug.LogWarning("❌ [FEEDBACK] doorAnimator is NULL!");
-        }
-    }
-    
-    // <-- Корутина для вспышки спрайта
-    private IEnumerator FlashDoorSprite()
-    {
-        Color originalColor = doorSpriteRenderer.color;
-        Debug.Log($"[FLASH] Start: {originalColor} → Target: {flashColor}");
-        
-        float elapsed = 0f;
-
-        // Быстрое появление вспышки
-        while (elapsed < flashDuration / 2f)
-        {
-            doorSpriteRenderer.color = Color.Lerp(originalColor, flashColor, elapsed / (flashDuration / 2f));
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        // Плавное затухание обратно
-        elapsed = 0f;
-        while (elapsed < flashDuration / 2f)
-        {
-            doorSpriteRenderer.color = Color.Lerp(flashColor, originalColor, elapsed / (flashDuration / 2f));
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        doorSpriteRenderer.color = originalColor;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -207,18 +186,16 @@ public class LeverControl : MonoBehaviour
             HideHint();
         }
     }
-
-    // --- НОВЫЙ МЕТОД: Управление блёстками (субтильными!) ---
     
     private void UpdateSparkles()
     {
-        if (sparklesEffect != null)
+        // ВАЖНО: проверяем leverSparklesInstance (созданную копию), а не префаб!
+        if (leverSparklesInstance != null && leverAnimator != null)
         {
-            // Показываем блёстки ВСЕГДА, пока рычаг НЕ активирован (независимо от игрока!)
             bool shouldShow = !leverAnimator.GetBool("isActivated");
-            sparklesEffect.SetActive(shouldShow);
-        
-            var particle = sparklesEffect.GetComponent<ParticleSystem>();
+            leverSparklesInstance.SetActive(shouldShow);
+    
+            var particle = leverSparklesInstance.GetComponentInChildren<ParticleSystem>();
             if (particle != null)
             {
                 if (shouldShow && !particle.isPlaying)
