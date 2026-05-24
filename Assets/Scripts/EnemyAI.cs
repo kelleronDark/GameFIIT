@@ -92,38 +92,31 @@ public class EnemyAI : MonoBehaviour
     // Метод оглушения, который вызывается при попадании коробки
     public IEnumerator BecomeStunned(float duration)
     {
+        // МУДРОЕ РЕШЕНИЕ: Если монстр УЖЕ находится в состоянии оглушения, 
+        // мы просто мгновенно выходим из метода и игнорируем новую коробку!
+        if (currentState == State.Stun)
+        {
+            yield break; // Прерывает выполнение корутины прямо здесь
+        }
+
         State previousState = currentState; // Запоминаем текущее состояние
         currentState = State.Stun;
         ai.isStopped = true; // Принудительно останавливаем движение плагина A*
 
         // Включаем визуальные эффекты оглушения
-        if (anim != null)
-        {
-            anim.SetBool("IsStunned", true);
-        }
-
-        if (stunEffectObject != null)
-        {
-            stunEffectObject.SetActive(true); // Зажигаем звездочки/искры над головой
-        }
+        if (anim != null) anim.SetBool("IsStunned", true);
+        if (stunEffectObject != null) stunEffectObject.SetActive(true);
 
         Debug.Log("Монстр оглушен!");
 
         yield return new WaitForSeconds(duration);
 
         // Отключаем визуальные эффекты оглушения
-        if (anim != null)
-        {
-            anim.SetBool("IsStunned", false);
-        }
-
-        if (stunEffectObject != null)
-        {
-            stunEffectObject.SetActive(false); // Тушим звездочки/искры
-        }
+        if (anim != null) anim.SetBool("IsStunned", false);
+        if (stunEffectObject != null) stunEffectObject.SetActive(false);
 
         ai.isStopped = false; // Разрешаем плагину А* снова ходить
-        currentState = previousState; // Возвращаем монстра к тому, чем он занимался до удара (например, Chase или Patrol)
+        currentState = State.Patrol; // Безопасно возвращаем в патруль
         Debug.Log("Монстр пришел в себя");
     }
 
@@ -167,11 +160,29 @@ public class EnemyAI : MonoBehaviour
         if (distanceToPlayer < chaseDistance)
         {
             Vector2 directionToPlayer = (player.position - transform.position).normalized;
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, distanceToPlayer, obstacleMask);
 
-            if (hit.collider == null)
+            // Настройка фильтра: игнорируем любые триггеры (зоны видимости, свет и т.д.)
+            ContactFilter2D filter = new ContactFilter2D();
+            filter.useTriggers = false;
+            filter.SetLayerMask(obstacleMask); // Луч будет реагировать ТОЛЬКО на стены из obstacleMask
+
+            // Создаем массив для результата (нам нужен только 1 хит — самое первое препятствие)
+            RaycastHit2D[] results = new RaycastHit2D[1];
+
+            // Пускаем луч от монстра к игроку, который проверяет ТОЛЬКО стены
+            int hitCount = Physics2D.Raycast(transform.position, directionToPlayer, filter, results, distanceToPlayer);
+
+            // ЕСЛИ на пути луча до игрока НЕ встретилось ни одной стены (hitCount == 0)
+            if (hitCount == 0)
             {
+                // Значит, между монстром и игроком чистый воздух! Монстр видит игрока.
                 currentState = State.Chase;
+            }
+            else
+            {
+                // Если луч во что-то попал, значит между ними стена. Монстр не видит игрока.
+                // Для теста можно вывести в консоль, что именно перекрыло обзор:
+                // Debug.Log($"Игрок скрыт за объектом: {results[0].collider.name}");
             }
         }
     }
@@ -199,14 +210,14 @@ public class EnemyAI : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        // Если монстр в отключке, он не может атаковать игрока
+        // Если монстр в отключке, он не может атаковать
         if (currentState == State.Stun) return;
 
-        // Проверяем, что коснулись игрока
-        if (collision.gameObject.CompareTag("Player"))
+        // Проверяем Кулдаун атаки (общий для игрока и для коробок)
+        if (Time.time >= lastAttackTime + attackCooldown)
         {
-            // Проверяем Кулдаун атаки
-            if (Time.time >= lastAttackTime + attackCooldown)
+            // 1. ЛОГИКА АТАКИ ИГРОКА
+            if (collision.gameObject.CompareTag("Player"))
             {
                 PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
                 if (playerController != null)
@@ -214,11 +225,21 @@ public class EnemyAI : MonoBehaviour
                     playerController.TakeDamage(damageAmount);
                     lastAttackTime = Time.time;
 
-                    // === ВОТ ЭТУ СТРОКУ МЫ АКТИВИРОВАЛИ: ===
-                    if (anim != null)
-                    {
-                        anim.SetTrigger("Attack");
-                    }
+                    if (anim != null) anim.SetTrigger("Attack");
+                }
+            }
+            // 2. НОВАЯ ЛОГИКА АТАКИ КОРОБКИ
+            else if (collision.gameObject.CompareTag("Item"))
+            {
+                BoxImpact box = collision.gameObject.GetComponent<BoxImpact>();
+                if (box != null)
+                {
+                    // Монстр наносит коробке 1 единицу урона (снимает 1 ХП ящика)
+                    box.TakeDamage(1);
+                    lastAttackTime = Time.time;
+
+                    // Запускаем ту же самую анимацию удара мечом/кулаком!
+                    if (anim != null) anim.SetTrigger("Attack");
                 }
             }
         }

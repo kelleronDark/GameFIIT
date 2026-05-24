@@ -4,6 +4,9 @@ using Pathfinding;
 
 public class BoxImpact : MonoBehaviour
 {
+    [Header("Destruction Settings")]
+    public int boxHealth = 3; // Сколько ударов выдерживает коробка
+
     private bool canStun = false;
     public float explosionRadius = 1.5f; // Радиус оглушения
 
@@ -78,15 +81,61 @@ public class BoxImpact : MonoBehaviour
         Collider2D col = GetComponent<Collider2D>();
         if (col != null && AstarPath.active != null)
         {
-            // Берем границы нашего коллайдера и просим А* пересчитать эту область
-            AstarPath.active.UpdateGraphs(col.bounds);
+            // Создаем объект обновления графа в границах коробки
+            GraphUpdateObject guo = new GraphUpdateObject(col.bounds);
+
+            // ЖЕЛЕЗНО ПРИКАЗЫВАЕМ А*: эта область ДОЛЖНА быть проходимой!
+            guo.modifyWalkability = true;
+            guo.setWalkability = true;
+
+            // Присваиваем узлам под коробкой штрафной тег 1
+            guo.modifyTag = true;
+            guo.setTag = 1;
+
+            // Обновляем сетку
+            AstarPath.active.UpdateGraphs(guo);
         }
-    }
+    }   
 
     // Визуализация радиуса в редакторе (для удобства)
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, explosionRadius);
+    }
+
+    /// <summary>
+    /// Метод получения урона коробкой от монстра
+    /// </summary>
+    public void TakeDamage(int damage)
+    {
+        boxHealth -= damage;
+
+        if (boxHealth <= 0)
+        {
+            DestroyBox();
+        }
+    }
+
+    private void DestroyBox()
+    {
+        Debug.Log($"📦 Коробка {gameObject.name} уничтожена!");
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null && AstarPath.active != null)
+        {
+            col.enabled = false; // Отключаем физику, чтобы монстр сразу прошел вперед
+
+            // Возвращаем узлы сетки в обычное состояние
+            GraphUpdateObject guo = new GraphUpdateObject(col.bounds);
+            guo.modifyWalkability = true;
+            guo.setWalkability = true;
+            guo.modifyTag = true;
+            guo.setTag = 0; // Возвращаем тег Basic (0)
+
+            AstarPath.active.UpdateGraphs(guo);
+        }
+
+        Destroy(gameObject);
     }
 }

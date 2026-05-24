@@ -1,8 +1,9 @@
+using System.Collections;
+using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System.Collections;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -228,6 +229,10 @@ public class PlayerController : MonoBehaviour
             {
                 carriedItem = hit.gameObject;
 
+                // === ИСПРАВЛЕНО: Меняем слой у КОРОБКИ (carriedItem), а не у игрока ===
+                // Переводим коробку на слой "Ignore Raycast", чтобы монстр не "спотыкался" об неё лучом
+                carriedItem.layer = LayerMask.NameToLayer("Ignore Raycast");
+
                 // ДИНАМИЧЕСКИЙ А*: Запоминаем границы коробки ДО того, как отключим её коллайдер
                 Bounds boxBounds = carriedItem.GetComponent<Collider2D>().bounds;
 
@@ -257,6 +262,10 @@ public class PlayerController : MonoBehaviour
     {
         if (carriedItem == null) return;
 
+        // === ИСПРАВЛЕНО: Возвращаем коробке её стандартный слой физических препятствий ===
+        // Если у тебя слой препятствий называется иначе (например, "DynamicObstacles"), замени "Default" на него
+        carriedItem.layer = LayerMask.NameToLayer("DynamicObstacles");
+
         // Включаем коллайдер обратно перед тем как бросить под ноги
         Collider2D col = carriedItem.GetComponent<Collider2D>();
         if (col != null) col.enabled = true;
@@ -267,7 +276,6 @@ public class PlayerController : MonoBehaviour
             carriedItem.GetComponent<Rigidbody2D>().simulated = true;
 
         // ДИНАМИЧЕСКИЙ А*: Пересчитываем сетку в месте падения коробки (чтобы враг её обходил)
-        // Делаем это ДО того, как сотрем ссылку в carriedItem = null;
         if (col != null && AstarPath.active != null)
         {
             AstarPath.active.UpdateGraphs(col.bounds);
@@ -325,6 +333,9 @@ public class PlayerController : MonoBehaviour
 
         if (itemRb) itemRb.simulated = true;
         if (itemCol) itemCol.isTrigger = false; // Возвращаем обычную физику
+
+        // === ИСПРАВЛЕНО: Коробка приземлилась, возвращаем ей слой обычного препятствия ===
+        item.layer = LayerMask.NameToLayer("DynamicObstacles");
 
         BoxImpact impact = item.GetComponent<BoxImpact>();
         if (impact == null) impact = item.AddComponent<BoxImpact>();
