@@ -5,6 +5,9 @@ public class ItemHint : MonoBehaviour
 {
     public GameObject hintPrefab;
     private GameObject currentHint;
+    
+    // Смещение подсказки относительно центра объекта
+    public Vector3 offset = new Vector3(0, 1.5f, 0);
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -22,10 +25,21 @@ public class ItemHint : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        // Если подсказка активна, двигаем её за объектом каждый кадр
+        if (currentHint != null)
+        {
+            currentHint.transform.position = transform.position + offset;
+        }
+    }
+
     void ShowHint()
     {
-        currentHint = Instantiate(hintPrefab, transform.position + Vector3.up * 1.5f, Quaternion.identity);
-        currentHint.transform.SetParent(transform);
+        // Создаем подсказку в мировой позиции (без родителя)
+        currentHint = Instantiate(hintPrefab, transform.position + offset, Quaternion.identity);
+        
+        // ВАЖНО: НЕ делаем SetParent! Оставляем в корне сцены или на слое UI.
 
         Canvas canvas = currentHint.GetComponentInChildren<Canvas>();
         if (canvas != null && Camera.main != null)

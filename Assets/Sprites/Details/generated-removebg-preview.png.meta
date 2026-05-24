@@ -1090,9 +1090,9 @@ TextureImporter:
       name: Part3
       rect:
         serializedVersion: 2
-        x: 0
+        x: 1
         y: 0
-        width: 34
+        width: 33
         height: 34
       alignment: 0
       pivot: {x: 0.5, y: 0.5}

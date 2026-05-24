@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
@@ -20,6 +21,13 @@ public class LeverControl : MonoBehaviour
     
     [Header("Sparkles")] // <-- НОВОЕ: поле для блёсток
     public GameObject sparklesEffect;
+    
+    // <-- НОВОЕ: Визуальный отклик двери
+    [Header("Door Feedback")]
+    public SpriteRenderer doorSpriteRenderer; // Перетащи сюда SpriteRenderer двери
+    public GameObject doorOpenParticles;      // Префаб частиц для вспышки
+    public Color flashColor = new Color(1f, 1f, 1f, 0.8f); // Цвет вспышки
+    public float flashDuration = 0.2f;        // Длительность вспышки
 
     private GameObject currentHint;
     private bool isPlayerNearby = false;
@@ -98,6 +106,12 @@ public class LeverControl : MonoBehaviour
             if (leverAnimator != null)
                 leverAnimator.SetBool("isActivated", newState);
 
+            // <-- НОВОЕ: Визуальный отклик при открытии двери
+            if (newState) // Только при открытии, не при закрытии
+            {
+                PlayDoorOpenFeedback();
+            }
+            
             Debug.Log("Рычаг и дверь переключены. Состояние открыто: " + newState);
         }
 
@@ -116,6 +130,64 @@ public class LeverControl : MonoBehaviour
 
         HideHint();
         UpdateSparkles(); // Обновляем блёстки после переключения
+    }
+    
+    // <-- НОВЫЙ МЕТОД: Визуальный отклик двери
+    private void PlayDoorOpenFeedback()
+    {
+        Debug.Log("🚪 [FEEDBACK] Door open feedback triggered!");
+    
+        // 1. Вспышка цвета на спрайте двери
+        if (doorSpriteRenderer != null)
+        {
+            Debug.Log("✨ [FEEDBACK] SpriteRenderer found: " + doorSpriteRenderer.name);
+            Debug.Log("🎨 [FEEDBACK] Original color: " + doorSpriteRenderer.color);
+            StartCoroutine(FlashDoorSprite());
+        }
+        else
+        {
+            Debug.LogWarning("❌ [FEEDBACK] doorSpriteRenderer is NULL!");
+        }
+
+        // 2. Частицы в позиции двери
+        if (doorOpenParticles != null && doorAnimator != null)
+        {
+            Debug.Log("💥 [FEEDBACK] Spawning particles at: " + (doorAnimator.transform.position + Vector3.up * 1f));
+            Instantiate(doorOpenParticles, doorAnimator.transform.position + Vector3.up * 1f, Quaternion.identity);
+        }
+        else
+        {
+            if (doorOpenParticles == null) Debug.LogWarning("❌ [FEEDBACK] doorOpenParticles is NULL!");
+            if (doorAnimator == null) Debug.LogWarning("❌ [FEEDBACK] doorAnimator is NULL!");
+        }
+    }
+    
+    // <-- Корутина для вспышки спрайта
+    private IEnumerator FlashDoorSprite()
+    {
+        Color originalColor = doorSpriteRenderer.color;
+        Debug.Log($"[FLASH] Start: {originalColor} → Target: {flashColor}");
+        
+        float elapsed = 0f;
+
+        // Быстрое появление вспышки
+        while (elapsed < flashDuration / 2f)
+        {
+            doorSpriteRenderer.color = Color.Lerp(originalColor, flashColor, elapsed / (flashDuration / 2f));
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Плавное затухание обратно
+        elapsed = 0f;
+        while (elapsed < flashDuration / 2f)
+        {
+            doorSpriteRenderer.color = Color.Lerp(flashColor, originalColor, elapsed / (flashDuration / 2f));
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        doorSpriteRenderer.color = originalColor;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
