@@ -367,6 +367,20 @@ public class PlayerController : MonoBehaviour
         {
             Die();
         }
+
+        // Добавь это в TakeDamage игрока:
+        StartCoroutine(FlashSpriteRed());
+
+        IEnumerator FlashSpriteRed()
+        {
+            SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+            if (sr != null)
+            {
+                sr.color = Color.red; // Делаем спрайт красным
+                yield return new WaitForSeconds(0.15f);
+                sr.color = Color.white; // Возвращаем обычный цвет
+            }
+        }
     }
 
     /// <summary>
