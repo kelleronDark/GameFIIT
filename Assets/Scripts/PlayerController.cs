@@ -221,12 +221,19 @@ public class PlayerController : MonoBehaviour
 
     void TryPickUp()
     {
+        Debug.Log("🔍 TryPickUp: Начало проверки...");
+    
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 1.5f);
+        Debug.Log($"🔍 TryPickUp: Найдено объектов в радиусе: {hits.Length}");
 
         foreach (var hit in hits)
         {
+            Debug.Log($"🔍 TryPickUp: Проверка объекта: {hit.gameObject.name}, Tag: {hit.gameObject.tag}");
+        
             if (hit.gameObject != gameObject && hit.CompareTag("Item"))
             {
+                Debug.Log("✅ TryPickUp: Найден предмет с тегом 'Item'!");
+            
                 carriedItem = hit.gameObject;
 
                 // === ИСПРАВЛЕНО: Меняем слой у КОРОБКИ (carriedItem), а не у игрока ===
@@ -239,18 +246,31 @@ public class PlayerController : MonoBehaviour
                 carriedItem.transform.SetParent(holdPoint);
                 carriedItem.transform.localPosition = Vector3.zero;
 
-                // 1. Отключаем физику движения
                 if (carriedItem.GetComponent<Rigidbody2D>())
                     carriedItem.GetComponent<Rigidbody2D>().simulated = false;
 
-                // 2. ОТКЛЮЧАЕМ КОЛЛАЙДЕР, чтобы игрок не становился широким
                 Collider2D col = carriedItem.GetComponent<Collider2D>();
                 if (col != null) col.enabled = false;
 
-                // ДИНАМИЧЕСКИЙ А*: Освобождаем сетку на месте, где коробка только что лежала
                 if (AstarPath.active != null)
                 {
                     AstarPath.active.UpdateGraphs(boxBounds);
+                }
+
+                // <-- НОВОЕ: Детальная отладка туториала
+                Debug.Log("🔍 Tutorial: Ищем BoxTutorialManager...");
+                BoxTutorialManager tutorial = FindObjectOfType<BoxTutorialManager>();
+            
+                if (tutorial == null)
+                {
+                    Debug.LogError("❌ Tutorial: BoxTutorialManager НЕ найден на сцене!");
+                }
+                else
+                {
+                    Debug.Log("✅ Tutorial: BoxTutorialManager найден!");
+                    Debug.Log($"✅ Tutorial: ShouldShowTutorial() = {BoxTutorialManager.ShouldShowTutorial()}");
+                
+                    tutorial.ShowBoxTutorial();
                 }
 
                 break;

@@ -17,6 +17,10 @@ public class InventoryManager : MonoBehaviour
     public int maxItems = 4; // Максимум предметов
     private Sprite[] collectedSprites = new Sprite[4]; // Храним спрайты подобранных предметов
     
+    [Header("Audio")]
+    public AudioSource pickupAudioSource; // Ссылка на источник звука
+    public AudioClip pickupClip; 
+    
     private int currentKeys = 0;      // Текущее кол-во ключей
     private int savedKeysSnapshot = 0; // Снимок для отката
 
@@ -29,6 +33,16 @@ public class InventoryManager : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
+    
+    private void PlayPickupSound()
+    {
+        if (pickupAudioSource != null && pickupClip != null)
+        {
+            // PlayOneShot позволяет звуку доиграть, даже если объект удалится или изменится состояние
+            pickupAudioSource.PlayOneShot(pickupClip);
+        }
+    }
+
     
     public void SaveInventoryState()
     {
@@ -112,6 +126,9 @@ public class InventoryManager : MonoBehaviour
                 slots[i].enabled = true; // Показываем иконку
 
                 Debug.Log($"Подобрана деталь в слот {i}: {itemSprite.name}");
+                
+                PlayPickupSound();
+                
                 return true;
             }
         }

@@ -5,16 +5,25 @@ using UnityEngine.InputSystem;
 public class PickupPart : MonoBehaviour
 {
     public int partIndex;        // ID детали (можно использовать для логики)
-    public Sprite partSprite;  
-
+    public Sprite partSprite;
     private InventoryManager inventory;
     private bool playerIsNear = false;
     private bool hasChecked = false;
 
+    [Header("Visual")]
+    public GameObject auraGlowPrefab; // Префаб с AuraGlow + AuraPulse
+    
     void Start()
     {
         inventory = InventoryManager.Instance;
         // Дублируем проверку через небольшую паузу для уверенности после загрузки JSON
+        if (auraGlowPrefab != null)
+        {
+            GameObject aura = Instantiate(auraGlowPrefab, transform);
+            aura.transform.localPosition = Vector3.zero;
+            aura.name = "AuraGlow_Instance";
+        }
+        
         Invoke(nameof(CheckIfAlreadyPicked), 0.15f);
     }
     
