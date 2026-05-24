@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 5794719447617720927}
   - component: {fileID: 1500789320959314503}
   m_Layer: 6
-  m_Name: Box 1
+  m_Name: Box
   m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -245,6 +245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d146b5d212d6b14f9dc834f9d02d1a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoxImpact
+  boxHealth: 2
   enableGlow: 1
   glowColor: {r: 1, g: 0.5019608, b: 0, a: 1}
   pulseSpeed: 1.1
