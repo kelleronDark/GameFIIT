@@ -13,4 +13,5 @@ public class SaveData
     public int merchantStoryStateInt;
     public int boothmanStoryStateInt;
     public bool playFinalCutsceneNext;
+    public bool hasSeenBoxTutorial;
 }

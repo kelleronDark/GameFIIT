@@ -115,6 +115,11 @@ public class BoxTutorialManager : MonoBehaviour
         
         Debug.Log("✅ Box tutorial saved");
         
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.SaveGame(); 
+        }
+        
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);
         

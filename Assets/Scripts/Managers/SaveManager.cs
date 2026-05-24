@@ -79,6 +79,8 @@ public class SaveManager : MonoBehaviour
         
         data.playFinalCutsceneNext = playFinalCutsceneNext;
         
+        data.hasSeenBoxTutorial = PlayerPrefs.GetInt("HasSeenBoxTutorial", 0) == 1;
+        
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(filePath, json);
         Debug.Log("Прогресс (чекпоинт) сохранен!");
@@ -159,6 +161,9 @@ public class SaveManager : MonoBehaviour
         }
         
         playFinalCutsceneNext = data.playFinalCutsceneNext;
+        
+        PlayerPrefs.SetInt("HasSeenBoxTutorial", data.hasSeenBoxTutorial ? 1 : 0);
+        PlayerPrefs.Save();
     }
     
     public bool HasSaveFile()
@@ -271,6 +276,9 @@ public class SaveManager : MonoBehaviour
         savedMerchantState = 0;
         savedBoothmanState = 0;
         player = null; // Сбрасываем ссылку на старого уничтоженного игрока
+        
+        PlayerPrefs.SetInt("HasSeenBoxTutorial", 0); 
+        PlayerPrefs.Save();
     
         Debug.Log("<color=cyan>Данные сохранения в RAM успешно сброшены к начальным значениям.</color>");
     }
