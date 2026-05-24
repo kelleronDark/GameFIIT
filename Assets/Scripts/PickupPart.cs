@@ -5,8 +5,7 @@ using UnityEngine.InputSystem;
 public class PickupPart : MonoBehaviour
 {
     public int partIndex;        // ID детали (можно использовать для логики)
-    public Sprite partSprite;  
-
+    public Sprite partSprite;
     private InventoryManager inventory;
     private bool playerIsNear = false;
     private bool hasChecked = false;

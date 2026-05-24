@@ -20612,6 +20612,7 @@ GameObject:
   - component: {fileID: 257151095}
   - component: {fileID: 257151094}
   - component: {fileID: 257151093}
+  - component: {fileID: 257151097}
   m_Layer: 0
   m_Name: Part1
   m_TagString: Untagged
@@ -20753,6 +20754,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1634696484}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &257151097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257151092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ec4982f5634f78488dc336b45006397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemHint
+  hintPrefab: {fileID: 4752718864435063218, guid: 1f9599001008b5641951f4ed6855b215, type: 3}
 --- !u!4 &264426467 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5949260372823646787, guid: d790f238a08b34f6b8a210a8169e63c3, type: 3}
@@ -23836,7 +23850,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5.625
+  orthographic size: 6.703125
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -49117,6 +49131,7 @@ GameObject:
   - component: {fileID: 948517690}
   - component: {fileID: 948517689}
   - component: {fileID: 948517693}
+  - component: {fileID: 948517694}
   m_Layer: 5
   m_Name: UI_HUD_Canvas
   m_TagString: Untagged
@@ -49228,7 +49243,106 @@ MonoBehaviour:
   - {fileID: 1211504099}
   - {fileID: 1288589362}
   maxItems: 4
+  pickupAudioSource: {fileID: 948517694}
+  pickupClip: {fileID: 8300000, guid: 2cea7e8c07690f740939861ca2d8f458, type: 3}
   isLoaded: 0
+--- !u!82 &948517694
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948517688}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &950967252
 GameObject:
   m_ObjectHideFlags: 0
@@ -130164,6 +130278,7 @@ GameObject:
   - component: {fileID: 1772482258}
   - component: {fileID: 1772482257}
   - component: {fileID: 1772482256}
+  - component: {fileID: 1772482259}
   m_Layer: 0
   m_Name: Part4
   m_TagString: Untagged
@@ -130305,6 +130420,19 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &1772482259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1772482254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ec4982f5634f78488dc336b45006397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemHint
+  hintPrefab: {fileID: 4752718864435063218, guid: 1f9599001008b5641951f4ed6855b215, type: 3}
 --- !u!1 &1775517570
 GameObject:
   m_ObjectHideFlags: 0
@@ -136990,6 +137118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4285c7d55e2c5410d90bc4920b900e90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveManager
+  playFinalCutsceneNext: 0
 --- !u!4 &1875464168
 Transform:
   m_ObjectHideFlags: 0
@@ -138666,6 +138795,7 @@ GameObject:
   - component: {fileID: 1982842049}
   - component: {fileID: 1982842048}
   - component: {fileID: 1982842047}
+  - component: {fileID: 1982842050}
   m_Layer: 0
   m_Name: Part3
   m_TagString: Untagged
@@ -138807,6 +138937,19 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &1982842050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982842045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ec4982f5634f78488dc336b45006397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemHint
+  hintPrefab: {fileID: 4752718864435063218, guid: 1f9599001008b5641951f4ed6855b215, type: 3}
 --- !u!1 &1986901491
 GameObject:
   m_ObjectHideFlags: 0
@@ -147304,6 +147447,7 @@ GameObject:
   - component: {fileID: 2006335217}
   - component: {fileID: 2006335216}
   - component: {fileID: 2006335215}
+  - component: {fileID: 2006335219}
   m_Layer: 0
   m_Name: Part2
   m_TagString: Untagged
@@ -147359,7 +147503,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.030421123, y: 0.00036014616}
+  m_Offset: {x: -0.02009949, y: -0.028728038}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -147369,7 +147513,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.51984787, y: 0.49010858}
+  m_Size: {x: 0.66435105, y: 0.59332496}
   m_EdgeRadius: 0
 --- !u!212 &2006335217
 SpriteRenderer:
@@ -147445,6 +147589,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1634696484}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2006335219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006335214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ec4982f5634f78488dc336b45006397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemHint
+  hintPrefab: {fileID: 4752718864435063218, guid: 1f9599001008b5641951f4ed6855b215, type: 3}
 --- !u!1 &2007628077
 GameObject:
   m_ObjectHideFlags: 0
