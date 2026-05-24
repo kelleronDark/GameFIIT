@@ -20883,9 +20883,33 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 320842170}
     - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.b
+      value: 0.013642311
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
       propertyPath: startsOpened
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashDuration
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: doorSpriteRenderer
+      value: 
+      objectReference: {fileID: 868634329}
     - target: {fileID: 8707986643684785950, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
       propertyPath: m_Name
       value: Lever
@@ -22883,6 +22907,7 @@ GameObject:
   - component: {fileID: 433423224}
   - component: {fileID: 433423222}
   - component: {fileID: 433423221}
+  - component: {fileID: 433423227}
   m_Layer: 0
   m_Name: 'Merchant '
   m_TagString: Untagged
@@ -23237,6 +23262,20 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &433423227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433423219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ec4982f5634f78488dc336b45006397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemHint
+  hintPrefab: {fileID: 4752718864435063218, guid: 1f9599001008b5641951f4ed6855b215, type: 3}
+  offset: {x: 0, y: 1.5, z: 0}
 --- !u!1 &446863069
 GameObject:
   m_ObjectHideFlags: 0
@@ -23834,7 +23873,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 6.703125
+  orthographic size: 6.40625
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -48133,6 +48172,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 8471868931713187446, guid: 8ed913e86c1e6412aa0c035c46fed2aa, type: 3}
   m_PrefabInstance: {fileID: 861629822}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &868634329 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3022776933931122233, guid: b0f1e03137897481daedd50bd8b911cd, type: 3}
+  m_PrefabInstance: {fileID: 1517611982}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &876488979
 GameObject:
@@ -147459,6 +147503,7 @@ GameObject:
   - component: {fileID: 2020854890}
   - component: {fileID: 2020854889}
   - component: {fileID: 2020854891}
+  - component: {fileID: 2020854892}
   m_Layer: 0
   m_Name: Boothman
   m_TagString: Untagged
@@ -147661,6 +147706,20 @@ MonoBehaviour:
       \u0447\u0442\u043E \u0431\u0435\u0434\u043D\u044B\u0439 \u0411\u0443\u0434\u043E\u0447\u043D\u0438\u043A
       \u0437\u0430\u0431\u044B\u043B \u043A\u0430\u043A \u0440\u0430\u0437\u0433\u043E\u0432\u0430\u0440\u0438\u0432\u0430\u0442\u044C..."
   hintPrefab: {fileID: 0}
+--- !u!114 &2020854892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020854884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ec4982f5634f78488dc336b45006397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemHint
+  hintPrefab: {fileID: 4752718864435063218, guid: 1f9599001008b5641951f4ed6855b215, type: 3}
+  offset: {x: 0, y: 1.5, z: 0}
 --- !u!1 &2024965925
 GameObject:
   m_ObjectHideFlags: 0
@@ -148909,6 +148968,22 @@ PrefabInstance:
       propertyPath: doorCollider
       value: 
       objectReference: {fileID: 577946027}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.b
+      value: 0.033709526
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: flashColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8389237108894247983, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
+      propertyPath: doorSpriteRenderer
+      value: 
+      objectReference: {fileID: 1276627322}
     - target: {fileID: 8707986643684785950, guid: 0c69c175a5ff844a5b080df2bc1d978f, type: 3}
       propertyPath: m_Name
       value: Lever
