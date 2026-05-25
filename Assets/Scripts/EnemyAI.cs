@@ -1,6 +1,6 @@
 using UnityEngine;
 using Pathfinding;
-using System.Collections; // Обязательно для корутин!
+using System.Collections;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -14,110 +14,286 @@ public class EnemyAI : MonoBehaviour
     public Animator anim;
 
     [Header("Attack Settings")]
-    public int damageAmount = 20;
-    public float attackCooldown = 1.5f; // Задержка между ударами
+    public int damageAmount = 30;
+    public float attackCooldown = 1.5f; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private float lastAttackTime;
 
     [Header("Detection Settings")]
-    public float chaseDistance = 5f;
+    [Tooltip("Р”РёСЃС‚Р°РЅС†РёСЏ Р·СЂРµРЅРёСЏ РїРµСЂРµРґ СЃРѕР±РѕР№")]
+    public float chaseDistance = 6f; 
+    [Tooltip("Р”РёСЃС‚Р°РЅС†РёСЏ СЃР»СѓС…Р°/Р·СЂРµРЅРёСЏ СЃР·Р°РґРё")]
+    public float backChaseDistance = 3.5f;
+    [Tooltip("Р”РёСЃС‚Р°РЅС†РёСЏ, РїСЂРё РєРѕС‚РѕСЂРѕР№ РјРѕРЅСЃС‚СЂ С‚РµСЂСЏРµС‚ РёРЅС‚РµСЂРµСЃ")]
     public float stopChaseDistance = 8f;
-    public float playerDistError = 1.1f;
+    public float playerDistError = 0.4f;
     public LayerMask obstacleMask;
+    
+    [Header("Layer Settings")]
+    public string doorLayerName = "DynamicObs";
+
+    [Header("Search Settings")]
+    public float searchWaitDuration = 3f;
+    public float predictionDistance = 2.5f;
 
     [Header("VFX References")]
-    public GameObject stunEffectObject; // Сюда перетаскиваем объект StunEffects из иерархии
+    public GameObject stunEffectObject; // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ StunEffects пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
     private IAstarAI ai;
     private int currentWaypointIndex = 0;
     private float searchTimer;
-    private Vector2 lastPlayerPosition;
+    private float stuckCheckTimer;
+    
+    private Vector2 searchTargetPosition;
+    private Vector2 lastKnownPlayerPosition;
+    
+    private Vector2 lastPlayerDirection = Vector2.zero;
+    private Vector3 lastPlayerPosTrack;
+    
+    private Vector2 lastFacingDirection = Vector2.down;
 
     void Start()
     {
         ai = GetComponent<IAstarAI>();
-
-        // На всякий случай подстрахуемся: если забыли перетащить аниматор руками, попробуем найти его сами
-        if (anim == null)
-        {
-            anim = GetComponent<Animator>();
-        }
-
-        // При старте игры визуальный эффект оглушения должен быть гарантированно выключен
-        if (stunEffectObject != null)
-        {
-            stunEffectObject.SetActive(false);
-        }
+        if (anim == null) anim = GetComponent<Animator>();
+        if (stunEffectObject != null) stunEffectObject.SetActive(false);
     }
 
     void Update()
     {
-        // Если монстр оглушен, мы полностью пропускаем всю логику преследования и поиска
+        TrackPlayerDirection();
+        
         if (currentState == State.Stun)
         {
             UpdateAnimation();
             return;
         }
+        
+        HandleAIBehavior();
+        UpdateAnimation();
+    }
+    
+    void TrackPlayerDirection()
+    {
+        if (player == null) return;
+
+        Vector2 currentFrameMovement = (player.position - lastPlayerPosTrack);
+        if (currentFrameMovement.magnitude > 0.005f)
+        {
+            lastPlayerDirection = currentFrameMovement.normalized;
+        }
+        lastPlayerPosTrack = player.position;
+    }
+    
+    void HandleAIBehavior()
+    {
+        float currentVisionRange = (currentState == State.Chase) ? stopChaseDistance : chaseDistance;
+        bool canSeePlayer = EvaluateLineOfSight(currentVisionRange, out RaycastHit2D hit);
+
+        // Р•СЃР»Рё РјС‹ РІ СЂРµР¶РёРјРµ РїР°С‚СЂСѓР»СЏ РёР»Рё РїРѕРёСЃРєР° Рё СѓРІРёРґРµР»Рё РёРіСЂРѕРєР° вЂ” Р“РђРЁРРњ Р’ РџРћР“РћРќР®
+        if (canSeePlayer && player != null)
+        {
+            lastKnownPlayerPosition = player.position;
+
+            if (currentState == State.Patrol || currentState == State.Search)
+            {
+                currentState = State.Chase;
+            }
+        }
 
         switch (currentState)
         {
             case State.Patrol:
-                if (waypoints.Length > 0 && waypoints[currentWaypointIndex] != null)
-                {
-                    ai.destination = waypoints[currentWaypointIndex].position;
-                    if (ai.reachedDestination)
-                        currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
-                }
-
-                CheckForPlayer();
+                ai.isStopped = false;
+                ExecutePatrolLogic();
                 break;
 
             case State.Chase:
+                ai.isStopped = false;
                 if (player != null)
                 {
+                    // Р’ РїРѕРіРѕРЅРµ С†РµР»СЊ вЂ” РІСЃРµРіРґР° Р¶РёРІРѕР№ РёРіСЂРѕРє
                     ai.destination = player.position;
-                    ChaseLogic();
+
+                    // Р•СЃР»Рё Р·СЂРµРЅРёРµ РїСЂРѕРїР°Р»Рѕ (Р·Р° СѓРіР»РѕРј РёР»Рё РёР·-Р·Р° РґРІРµСЂРё)
+                    if (!canSeePlayer)
+                    {
+                        Vector2 rawPredictedTarget = lastKnownPlayerPosition + (lastPlayerDirection * predictionDistance);
+                        Vector2 finalSearchTarget = lastKnownPlayerPosition;
+                        
+                        RaycastHit2D hitCheck = Physics2D.Raycast(lastKnownPlayerPosition, lastPlayerDirection, predictionDistance, obstacleMask);
+                        
+                        if (hitCheck.collider != null)
+                        {
+                            // Р•СЃР»Рё РЅР° РїСѓС‚Рё СѓРїСЂРµР¶РґРµРЅРёСЏ СЃС‚РµРЅР° РёР»Рё Р·Р°РєСЂС‹С‚Р°СЏ РґРІРµСЂСЊ вЂ” 
+                            // РјРѕРЅСЃС‚СЂ Р±РµР¶РёС‚ Рљ Р­РўРћР™ РЎРўР•РќР•/Р”Р’Р•Р Р, РѕСЃС‚Р°РЅР°РІР»РёРІР°СЏСЃСЊ С‡СѓС‚СЊ-С‡СѓС‚СЊ РЅРµ РґРѕС…РѕРґСЏ (РЅР° 0.4 РјРµС‚СЂР°)
+                            finalSearchTarget = hitCheck.point - (lastPlayerDirection * 0.4f);
+                        }
+                        
+                        else
+                        {
+                            // Р•СЃР»Рё РІРїРµСЂРµРґРё РїСѓСЃС‚Рѕ вЂ” РїСЂРѕРІРµСЂСЏРµРј С‚РѕС‡РєСѓ С‡РµСЂРµР· Рђ*
+                            if (AstarPath.active != null)
+                            {
+                                var safeNodeInfo = AstarPath.active.GetNearest(rawPredictedTarget, NNConstraint.Default);
+                                if (safeNodeInfo.node != null && safeNodeInfo.node.Walkable)
+                                {
+                                    finalSearchTarget = (Vector3)safeNodeInfo.position;
+                                }
+                                else
+                                {
+                                    finalSearchTarget = lastKnownPlayerPosition;
+                                }
+                            }
+                            else
+                            {
+                                finalSearchTarget = rawPredictedTarget;
+                            }
+                        }
+
+                        StartSearchingAt(finalSearchTarget);
+                    }
                 }
                 break;
 
             case State.Search:
-                ai.destination = lastPlayerPosition;
-                SearchLogic();
-                CheckForPlayer();
+                ExecuteSearchLogic();
                 break;
         }
-
-        UpdateAnimation();
     }
-
-    // Метод оглушения, который вызывается при попадании коробки
-    public IEnumerator BecomeStunned(float duration)
+    
+    // Р§РµСЃС‚РЅР°СЏ РїСЂРѕРІРµСЂРєР° РїСЂСЏРјРѕР№ РІРёРґРёРјРѕСЃС‚Рё СЃ РІРѕР·РІСЂР°С‚РѕРј РґР°РЅРЅС‹С… Рѕ РїСЂРµРїСЏС‚СЃС‚РІРёРё
+    bool EvaluateLineOfSight(float maxDistance, out RaycastHit2D hitResult)
     {
-        // МУДРОЕ РЕШЕНИЕ: Если монстр УЖЕ находится в состоянии оглушения, 
-        // мы просто мгновенно выходим из метода и игнорируем новую коробку!
-        if (currentState == State.Stun)
+        hitResult = new RaycastHit2D();
+        if (player == null) return false;
+
+        float distance = Vector2.Distance(transform.position, player.position);
+        
+        // Р РђР‘РћРўРђ РЎРћ РЎРўР•Р›РЎРћРњ (РљРѕРЅСѓСЃ Р·СЂРµРЅРёСЏ + "РЎР»СѓС…")
+        Vector2 directionToPlayer = ((Vector2)player.position - (Vector2)transform.position).normalized;
+        
+        // РЎРєР°Р»СЏСЂРЅРѕРµ РїСЂРѕРёР·РІРµРґРµРЅРёРµ РІРµРєС‚РѕСЂРѕРІ РІР·РіР»СЏРґР° Рё РЅР°РїСЂР°РІР»РµРЅРёСЏ РЅР° РёРіСЂРѕРєР°
+        float cosAngle = Vector2.Dot(lastFacingDirection, directionToPlayer);
+        
+        float allowedDistance = maxDistance;
+
+        // Р•СЃР»Рё cosAngle < 0.35f, Р·РЅР°С‡РёС‚ РёРіСЂРѕРє РЅР°С…РѕРґРёС‚СЃСЏ СЃР±РѕРєСѓ РёР»Рё Р·Р° СЃРїРёРЅРѕР№ (СѓРіРѕР» > ~72 РіСЂР°РґСѓСЃРѕРІ РѕС‚ С†РµРЅС‚СЂР° РІР·РіР»СЏРґР°)
+        if (cosAngle < 0.35f)
         {
-            yield break; // Прерывает выполнение корутины прямо здесь
+            allowedDistance = backChaseDistance; // Р’РєР»СЋС‡Р°РµРј СЂР°РґРёСѓСЃ "СЃР»СѓС…Р°"
+        }
+        
+        // Р•СЃР»Рё РёРіСЂРѕРє Р·Р° РїСЂРµРґРµР»Р°РјРё СЂР°РґРёСѓСЃР° (РґРёРЅР°РјРёС‡РµСЃРєРѕРіРѕ) вЂ” РЅРµ РІРёРґРёРј РµРіРѕ
+        if (distance > allowedDistance) return false;
+
+        hitResult = Physics2D.Raycast(transform.position, directionToPlayer, distance, obstacleMask);
+
+        if (hitResult.collider == null)
+        {
+            Debug.DrawLine(transform.position, player.position, Color.green); // Р’РёР¶Сѓ!
+            return true;
         }
 
-        State previousState = currentState; // Запоминаем текущее состояние
+        Debug.DrawLine(transform.position, hitResult.point, Color.red); // Р’РёР¶Сѓ С‚РѕР»СЊРєРѕ СЃС‚РµРЅСѓ/РґРІРµСЂСЊ
+        return false;
+    }
+    
+    void StartSearchingAt(Vector2 targetPos)
+    {
+        currentState = State.Search;
+        searchTargetPosition = targetPos;
+        searchTimer = searchWaitDuration;
+        stuckCheckTimer = 0f;
+        ai.isStopped = true; 
+        ai.destination = searchTargetPosition;
+    
+        // Р”Р°РµРј РЅРµР±РѕР»СЊС€СѓСЋ Р·Р°РґРµСЂР¶РєСѓ РїРµСЂРµРґ С‚РµРј, РєР°Рє РѕРЅ СЃРЅРѕРІР° РїРѕР№РґРµС‚ РёСЃРєР°С‚СЊ
+        // Р­С‚Рѕ РїРѕР·РІРѕР»РёС‚ СЃРёСЃС‚РµРјРµ Рђ* РѕР±РЅРѕРІРёС‚СЊ РіСЂР°С„ Рё РїРѕРЅСЏС‚СЊ, С‡С‚Рѕ РїСѓС‚СЊ РїРµСЂРµРєСЂС‹С‚
+        StartCoroutine(ResumeMovementAfterDelay(0.3f));
+    }
+    
+    IEnumerator ResumeMovementAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ai.isStopped = false;
+    }
+    
+    void ExecutePatrolLogic()
+    {
+        if (waypoints.Length == 0 || waypoints[currentWaypointIndex] == null) return;
+
+        ai.destination = waypoints[currentWaypointIndex].position;
+        if (ai.reachedDestination)
+        {
+            currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
+        }
+    }
+    
+    void ExecuteSearchLogic()
+    {
+        float distanceToSearchPoint = Vector2.Distance(transform.position, searchTargetPosition);
+        
+        bool reachedTarget = distanceToSearchPoint < playerDistError;
+
+        stuckCheckTimer += Time.deltaTime;
+        bool isStuck = (stuckCheckTimer > 0.5f) && (ai.velocity.magnitude < 0.1f);
+
+        if (reachedTarget || isStuck)
+        {
+            ai.isStopped = true; // РљСЂР°СЃРёРІРѕ СЃС‚РѕРёРј РЅР° РјРµСЃС‚Рµ Рё В«РёС‰РµРјВ»
+
+            searchTimer -= Time.deltaTime;
+            if (searchTimer <= 0)
+            {
+                ai.isStopped = false;
+                currentState = State.Patrol; // РћР±С‹СЃРєР°Р»Рё, РЅРёРєРѕРіРѕ РЅРµС‚ вЂ” РїРѕС€Р»Рё РїР°С‚СЂСѓР»РёСЂРѕРІР°С‚СЊ РґР°Р»СЊС€Рµ
+            }
+        }
+        else
+        {
+            // РџРѕРєР° Р±РµР¶РёРј Рє СѓРіР»Сѓ/РґРІРµСЂРё вЂ” С‚РѕСЂРјРѕР·РёС‚СЊ РЅРµР»СЊР·СЏ!
+            ai.isStopped = false;
+            ai.destination = searchTargetPosition;
+        }
+    }
+
+    public IEnumerator BecomeStunned(float duration)
+    {
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, 
+        // пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!
+        if (currentState == State.Stun)
+        {
+            yield break; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+        }
+
+        State previousState = currentState; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         currentState = State.Stun;
-        ai.isStopped = true; // Принудительно останавливаем движение плагина A*
+        ai.isStopped = true;
 
-        // Включаем визуальные эффекты оглушения
-        if (anim != null) anim.SetBool("IsStunned", true);
-        if (stunEffectObject != null) stunEffectObject.SetActive(true);
+        if (anim != null)
+        {
+            anim.SetBool("IsStunned", true);
+        }
 
-        Debug.Log("Монстр оглушен!");
+        if (stunEffectObject != null)
+        {
+            stunEffectObject.SetActive(true);
+        }
 
         yield return new WaitForSeconds(duration);
 
-        // Отключаем визуальные эффекты оглушения
-        if (anim != null) anim.SetBool("IsStunned", false);
-        if (stunEffectObject != null) stunEffectObject.SetActive(false);
+        if (anim != null)
+        {
+            anim.SetBool("IsStunned", false);
+        }
 
-        ai.isStopped = false; // Разрешаем плагину А* снова ходить
-        currentState = State.Patrol; // Безопасно возвращаем в патруль
-        Debug.Log("Монстр пришел в себя");
+        if (stunEffectObject != null)
+        {
+            stunEffectObject.SetActive(false);
+        }
+
+        ai.isStopped = false; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ* пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+        currentState = previousState; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, Chase пїЅпїЅпїЅ Patrol)
     }
 
     void UpdateAnimation()
@@ -127,12 +303,25 @@ public class EnemyAI : MonoBehaviour
         Vector2 velocity = ai.velocity;
         float speed = velocity.magnitude;
 
-        // Если монстр движется и НЕ оглушен
-        if (speed > 0.1f && currentState != State.Stun)
+        if (speed > 0.2f && currentState != State.Stun)
         {
             Vector2 dir = velocity.normalized;
-            anim.SetFloat("MoveX", dir.x);
-            anim.SetFloat("MoveY", dir.y);
+            
+            if (Mathf.Abs(dir.x) > 0.3f || Mathf.Abs(dir.y) > 0.3f)
+            {
+                lastFacingDirection = dir;
+                
+                if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+                {
+                    anim.SetFloat("MoveX", dir.x > 0 ? 1f : -1f);
+                    anim.SetFloat("MoveY", 0f);
+                }
+                else
+                {
+                    anim.SetFloat("MoveX", 0f);
+                    anim.SetFloat("MoveY", dir.y > 0 ? 1f : -1f);
+                }
+            }
             anim.SetBool("isMoving", true);
         }
         else
@@ -141,82 +330,39 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    void ChaseLogic()
-    {
-        float distance = Vector2.Distance(transform.position, player.position);
-        if (distance > stopChaseDistance)
-        {
-            lastPlayerPosition = player.position;
-            searchTimer = 3f;
-            currentState = State.Search;
-        }
-    }
-
-    void CheckForPlayer()
-    {
-        if (player == null) return;
-
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-        if (distanceToPlayer < chaseDistance)
-        {
-            Vector2 directionToPlayer = (player.position - transform.position).normalized;
-
-            // Настройка фильтра: игнорируем любые триггеры (зоны видимости, свет и т.д.)
-            ContactFilter2D filter = new ContactFilter2D();
-            filter.useTriggers = false;
-            filter.SetLayerMask(obstacleMask); // Луч будет реагировать ТОЛЬКО на стены из obstacleMask
-
-            // Создаем массив для результата (нам нужен только 1 хит — самое первое препятствие)
-            RaycastHit2D[] results = new RaycastHit2D[1];
-
-            // Пускаем луч от монстра к игроку, который проверяет ТОЛЬКО стены
-            int hitCount = Physics2D.Raycast(transform.position, directionToPlayer, filter, results, distanceToPlayer);
-
-            // ЕСЛИ на пути луча до игрока НЕ встретилось ни одной стены (hitCount == 0)
-            if (hitCount == 0)
-            {
-                // Значит, между монстром и игроком чистый воздух! Монстр видит игрока.
-                currentState = State.Chase;
-            }
-            else
-            {
-                // Если луч во что-то попал, значит между ними стена. Монстр не видит игрока.
-                // Для теста можно вывести в консоль, что именно перекрыло обзор:
-                // Debug.Log($"Игрок скрыт за объектом: {results[0].collider.name}");
-            }
-        }
-    }
-
-    void SearchLogic()
-    {
-        float distToLastPlayerPos = Vector2.Distance(transform.position, lastPlayerPosition);
-        if (distToLastPlayerPos < playerDistError)
-        {
-            searchTimer -= Time.deltaTime;
-            if (searchTimer <= 0)
-            {
-                currentState = State.Patrol;
-            }
-        }
-    }
-
     void OnDrawGizmosSelected()
     {
+        // Р—РµР»РµРЅС‹Р№ РєРѕРЅСѓСЃ/Р»СѓС‡ вЂ” РєСѓРґР° СЃРµР№С‡Р°СЃ РЅР°РїСЂР°РІР»РµРЅ РІР·РіР»СЏРґ РР
+        Gizmos.color = Color.green;
+        Gizmos.DrawRay(transform.position, (Vector3)lastFacingDirection * chaseDistance);
+
+        // РЎРёРЅСЏСЏ Р·РѕРЅР° вЂ” СЂР°РґРёСѓСЃ "СЃР»СѓС…Р°" СЃРѕ СЃРїРёРЅС‹
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, backChaseDistance);
+
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, chaseDistance);
+
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, stopChaseDistance);
+
+        if (currentState == State.Search)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(searchTargetPosition, 0.4f);
+            Gizmos.DrawLine(lastKnownPlayerPosition, searchTargetPosition);
+        }
     }
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        // Если монстр в отключке, он не может атаковать
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (currentState == State.Stun) return;
 
-        // Проверяем Кулдаун атаки (общий для игрока и для коробок)
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
         if (Time.time >= lastAttackTime + attackCooldown)
         {
-            // 1. ЛОГИКА АТАКИ ИГРОКА
+            // 1. пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             if (collision.gameObject.CompareTag("Player"))
             {
                 PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
@@ -228,17 +374,17 @@ public class EnemyAI : MonoBehaviour
                     if (anim != null) anim.SetTrigger("Attack");
                 }
             }
-            // 2. НОВАЯ ЛОГИКА АТАКИ КОРОБКИ
+            // 2. пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             else if (collision.gameObject.CompareTag("Item"))
             {
                 BoxImpact box = collision.gameObject.GetComponent<BoxImpact>();
                 if (box != null)
                 {
-                    // Монстр наносит коробке 1 единицу урона (снимает 1 ХП ящика)
+                    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ 1 пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ 1 пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ)
                     box.TakeDamage(1);
                     lastAttackTime = Time.time;
 
-                    // Запускаем ту же самую анимацию удара мечом/кулаком!
+                    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ/пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!
                     if (anim != null) anim.SetTrigger("Attack");
                 }
             }

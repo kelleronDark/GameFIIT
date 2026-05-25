@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Death Screen")]
     public DeathScreen deathScreen; // Назначь в инспекторе
+    
+    private int originalItemLayer;
 
     void Start()
     {
@@ -235,6 +237,7 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("✅ TryPickUp: Найден предмет с тегом 'Item'!");
             
                 carriedItem = hit.gameObject;
+                originalItemLayer = carriedItem.layer;
 
                 // === ИСПРАВЛЕНО: Меняем слой у КОРОБКИ (carriedItem), а не у игрока ===
                 // Переводим коробку на слой "Ignore Raycast", чтобы монстр не "спотыкался" об неё лучом
@@ -251,6 +254,8 @@ public class PlayerController : MonoBehaviour
 
                 Collider2D col = carriedItem.GetComponent<Collider2D>();
                 if (col != null) col.enabled = false;
+                
+                SetLayerRecursively(carriedItem, 2);
 
                 if (AstarPath.active != null)
                 {
@@ -289,6 +294,8 @@ public class PlayerController : MonoBehaviour
         // Включаем коллайдер обратно перед тем как бросить под ноги
         Collider2D col = carriedItem.GetComponent<Collider2D>();
         if (col != null) col.enabled = true;
+        
+        SetLayerRecursively(carriedItem, originalItemLayer);
 
         carriedItem.transform.SetParent(null);
 
@@ -353,6 +360,8 @@ public class PlayerController : MonoBehaviour
 
         if (itemRb) itemRb.simulated = true;
         if (itemCol) itemCol.isTrigger = false; // Возвращаем обычную физику
+        
+        SetLayerRecursively(item, originalItemLayer);
 
         // === ИСПРАВЛЕНО: Коробка приземлилась, возвращаем ей слой обычного препятствия ===
         item.layer = LayerMask.NameToLayer("DynamicObstacles");
@@ -368,6 +377,15 @@ public class PlayerController : MonoBehaviour
         {
             Vector2 movement = moveInput.normalized * speed * Time.fixedDeltaTime;
             rb.MovePosition(rb.position + movement);
+        }
+    }
+    
+    void SetLayerRecursively(GameObject obj, int newLayer)
+    {
+        obj.layer = newLayer;
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerRecursively(child.gameObject, newLayer);
         }
     }
 

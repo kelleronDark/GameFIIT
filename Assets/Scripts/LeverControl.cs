@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem; 
 using TMPro;
+using Pathfinding;
 
 public class LeverControl : MonoBehaviour
 {
@@ -81,6 +82,8 @@ public class LeverControl : MonoBehaviour
             leverAnimator.SetBool("isActivated", isOpen);
             leverAnimator.Play(isOpen ? "Lever_On" : "Lever_Off", 0, 1f);
         }
+        
+        UpdateAstarGraph();
     }
 
     void Update()
@@ -108,6 +111,8 @@ public class LeverControl : MonoBehaviour
 
             if (leverAnimator != null)
                 leverAnimator.SetBool("isActivated", newState);
+            
+            UpdateAstarGraph();
 
             Debug.Log("Рычаг и дверь переключены. Состояние открыто: " + newState);
         }
@@ -166,6 +171,16 @@ public class LeverControl : MonoBehaviour
         else
         {
             Debug.LogWarning("❌ [FEEDBACK] doorOpenParticles (префаб блёсток двери) не задан в инспекторе!");
+        }
+    }
+    
+    private void UpdateAstarGraph()
+    {
+        if (doorCollider != null && AstarPath.active != null)
+        {
+            // Берем позицию коллайдера двери и создаем вокруг зону перерасчета
+            Bounds customBounds = new Bounds(doorCollider.bounds.center, new Vector3(2.5f, 2.5f, 2.5f));
+            AstarPath.active.UpdateGraphs(customBounds);
         }
     }
 

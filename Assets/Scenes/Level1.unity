@@ -20249,7 +20249,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 9124112052873377057, guid: b0f1e03137897481daedd50bd8b911cd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1097644592}
   m_SourcePrefab: {fileID: 100100000, guid: b0f1e03137897481daedd50bd8b911cd, type: 3}
 --- !u!1001 &239258102
 PrefabInstance:
@@ -23886,7 +23889,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.AIPath
   version: 5
-  radius: 0.3
+  radius: 0.45
   height: 2
   canMove: 1
   maxSpeed: 3.5
@@ -23903,14 +23906,14 @@ MonoBehaviour:
     mode: 2
     interval: 0.5
     sensitivity: 10
-    maximumInterval: 2
+    maximumInterval: 0.4
     visualizeSensitivity: 0
   targetCompatibility: {fileID: 0}
   maxAcceleration: -2.5
   rotationSpeed: 360
-  slowdownDistance: 0.6
+  slowdownDistance: 0.1
   pickNextWaypointDist: 0.3
-  endReachedDistance: 0.2
+  endReachedDistance: 0.5
   alwaysDrawGizmos: 0
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
@@ -23968,11 +23971,15 @@ MonoBehaviour:
   damageAmount: 20
   attackCooldown: 1.5
   chaseDistance: 5
+  backChaseDistance: 2
   stopChaseDistance: 8
-  playerDistError: 1.1
+  playerDistError: 0.4
   obstacleMask:
     serializedVersion: 2
     m_Bits: 72
+  doorLayerName: DynamicObs
+  searchWaitDuration: 3
+  predictionDistance: 1.5
   stunEffectObject: {fileID: 1266863228}
 --- !u!70 &520480161
 CapsuleCollider2D:
@@ -77026,6 +77033,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BayonetTrap
   damagePerSecond: 150
+--- !u!1 &1097644590 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9124112052873377057, guid: b0f1e03137897481daedd50bd8b911cd, type: 3}
+  m_PrefabInstance: {fileID: 230647640}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1097644592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097644590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.DynamicGridObstacle
+  version: 1
+  uniqueID: 7373964690880584727
+  updateError: 1
+  checkTime: 0.2
 --- !u!1 &1111455721
 GameObject:
   m_ObjectHideFlags: 0
