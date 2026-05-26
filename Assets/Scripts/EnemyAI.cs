@@ -257,22 +257,43 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    private Coroutine stunCoroutine; // Ссылка для контроля одиночного стана
+
     public IEnumerator BecomeStunned(float duration)
     {
-        // ������ �������: ���� ������ ��� ��������� � ��������� ���������, 
-        // �� ������ ��������� ������� �� ������ � ���������� ����� �������!
-        if (currentState == State.Stun)
+        // ЖЕСТКАЯ ПРОВЕРКА: Если монстр уже в стане, не даем запустить корутину второй раз
+        if (currentState == State.Stun || stunCoroutine != null)
         {
-            yield break; // ��������� ���������� �������� ����� �����
+            yield break;
         }
 
-        State previousState = currentState; // ���������� ������� ���������
         currentState = State.Stun;
-        ai.isStopped = true;
+        stunCoroutine = StartCoroutine(StunExecution(duration));
+    }
 
+    private IEnumerator StunExecution(float duration)
+    {
+        // 1. Полностью останавливаем навигацию А*
+        if (ai != null)
+        {
+            ai.isStopped = true;
+            ai.destination = transform.position; // Сбрасываем конечную точку на самого себя
+            ai.maxSpeed = 0f; // Принудительно гасим скорость плагина путей
+        }
+
+        // 2. Гасим физическое скольжение (инерцию Rigidbody2D)
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero; // Обнуляем скорость скольжения
+            rb.isKinematic = true; // Временный перевод в кинематику, чтобы его нельзя было сдвинуть коробкой
+        }
+
+        // 3. Включаем визуал стана
         if (anim != null)
         {
             anim.SetBool("IsStunned", true);
+            anim.SetBool("isMoving", false); // Чтобы анимация ходьбы точно отключилась
         }
 
         if (stunEffectObject != null)
@@ -280,8 +301,10 @@ public class EnemyAI : MonoBehaviour
             stunEffectObject.SetActive(true);
         }
 
+        // Ждем положенное время (например, 3 секунды)
         yield return new WaitForSeconds(duration);
 
+        // 4. ВОЗВРАЩАЕМ ВСЁ НАЗАД
         if (anim != null)
         {
             anim.SetBool("IsStunned", false);
@@ -292,8 +315,24 @@ public class EnemyAI : MonoBehaviour
             stunEffectObject.SetActive(false);
         }
 
-        ai.isStopped = false; // ��������� ������� �* ����� ������
-        currentState = previousState; // ���������� ������� � ����, ��� �� ��������� �� ����� (��������, Chase ��� Patrol)
+        // Возвращаем физику
+        if (rb != null)
+        {
+            rb.isKinematic = false;
+        }
+
+        // Возвращаем скорость ИИ (вернется к стандартной из настроек компонента AIPath)
+        if (ai != null)
+        {
+            ai.isStopped = false;
+            // Восстанавливаем дефолтную скорость. 
+            // Если у тебя в компоненте AIPath скорость отличается от 2.5, укажи тут свою!
+            ai.maxSpeed = 2.5f;
+        }
+
+        // Только в самом конце меняем стейт и очищаем ссылку
+        currentState = State.Patrol; // Возвращаем в патруль, он сам переключится в Chase, если увидит игрока
+        stunCoroutine = null;
     }
 
     void UpdateAnimation()
