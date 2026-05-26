@@ -3,13 +3,13 @@ using UnityEngine;
 public class AuraPulse : MonoBehaviour
 {
     [Header("Pulse")]
-    public float minScale = 1.2f;
-    public float maxScale = 1.4f;
-    public float pulseSpeed = 2.1f; // Цикл
+    public float minScale = 1.4f;
+    public float maxScale = 1.6f;
+    public float pulseSpeed = 2.0f; // Цикл
 
     [Header("Opacity")]
-    public float minAlpha = 0.25f;
-    public float maxAlpha = 0.5f;
+    public float minAlpha = 0.4f;
+    public float maxAlpha = 0.6f;
 
     private SpriteRenderer sr;
     private Vector3 baseScale;
