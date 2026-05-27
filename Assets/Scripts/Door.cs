@@ -1,6 +1,6 @@
 using UnityEngine;
 using TMPro;
-using Pathfinding; // ОБЯЗАТЕЛЬНО: Подключаем пространство имен A* Pathfinding
+using Pathfinding;
 
 public class Door : MonoBehaviour
 {
@@ -12,7 +12,7 @@ public class Door : MonoBehaviour
     public Animator animator;
     public GameObject hintPrefab;
     public AudioSource audioSource;
-    public GameObject sparklesEffect; // блёстки для двери
+    public GameObject sparklesEffect;
 
     private GameObject currentHint;
     private bool playerInRange = false;
@@ -24,21 +24,16 @@ public class Door : MonoBehaviour
 
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
-
-        // АВТОМАТИЧЕСКОЕ СОЗДАНИЕ БЛЁСТОК ДЛЯ ДВЕРИ
+        
         if (sparklesEffect != null)
         {
-            // Создаём копию префаба прямо на сцене
             GameObject instance = Instantiate(sparklesEffect, transform.position + Vector3.up * 1.2f, Quaternion.identity);
-            instance.transform.SetParent(transform); // Делаем дочерним
-            instance.transform.localPosition = Vector3.up * 1.2f; // Позиционируем над дверью
-            sparklesEffect = instance; // Заменяем ссылку на префаб ссылкой на объект
+            instance.transform.SetParent(transform);
+            instance.transform.localPosition = Vector3.up * 1.2f;
+            sparklesEffect = instance;
         }
 
         UpdateSparkles();
-
-        // ДИНАМИЧЕСКИЙ А*: При старте игры принудительно обновляем сетку вокруг закрытой двери,
-        // чтобы монстр точно знал, что здесь сейчас проходить нельзя
         UpdateAstarGraph();
     }
 
@@ -48,7 +43,7 @@ public class Door : MonoBehaviour
         {
             playerInRange = true;
             ShowHint();
-            UpdateSparkles(); // Показываем блёстки, когда игрок рядом
+            UpdateSparkles();
         }
     }
 
@@ -58,7 +53,7 @@ public class Door : MonoBehaviour
         {
             playerInRange = false;
             HideHint();
-            UpdateSparkles(); // Скрываем, когда игрок ушёл
+            UpdateSparkles();
         }
     }
 
@@ -70,7 +65,6 @@ public class Door : MonoBehaviour
         }
     }
 
-    // Вынесли логику обновления текста подсказки для чистоты кода
     private void StringUpdateHint()
     {
         TextMeshProUGUI hintText = currentHint.GetComponentInChildren<TextMeshProUGUI>();
@@ -120,38 +114,25 @@ public class Door : MonoBehaviour
         if (animator != null)
             animator.SetBool("IsOpen", true);
 
-        // Отключаем физический коллайдер двери
         Collider2D doorCollider = GetComponent<Collider2D>();
         if (doorCollider != null)
             doorCollider.enabled = false;
 
-        // ДИНАМИЧЕСКИЙ А*: Обновляем сетку путей после отключения коллайдера, 
-        // чтобы открыть проход для монстра
         UpdateAstarGraph();
-
         HideHint();
-        UpdateSparkles(); // Скрываем блёстки после открытия
+        UpdateSparkles();
     }
 
-    /// <summary>
-    /// Вспомогательный метод для обновления графа путей вокруг двери
-    /// </summary>
     private void UpdateAstarGraph()
     {
         Collider2D doorCollider = GetComponent<Collider2D>();
         if (doorCollider != null && AstarPath.active != null)
         {
-            // Вместо точных границ коллайдера, создаём новые границы (Bounds)
-            // Мы берём центр двери, но принудительно задаём размер зоны обновления,
-            // например, 2.5 единицы в ширину и высоту, чтобы зацепить соседние клетки сетки
             Bounds customBounds = new Bounds(transform.position, new Vector3(2.5f, 2.5f, 2.5f));
-
-            // Просим А* пересчитать эту расширенную область
             AstarPath.active.UpdateGraphs(customBounds);
         }
     }
 
-    // --- Управление блёстками ---
     private void UpdateSparkles()
     {
         if (sparklesEffect != null)

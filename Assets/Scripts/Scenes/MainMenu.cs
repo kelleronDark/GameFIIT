@@ -7,8 +7,8 @@ public class MainMenu : MonoBehaviour
     public Button continueButton;
     
     [Header("Audio Settings")]
-    public AudioSource sfxSource;   // Ссылка на источник звуков (кликов)
-    public AudioClip clickSound;    // Сам файл звука клика
+    public AudioSource sfxSource;
+    public AudioClip clickSound;
 
     void Start()
     {
@@ -24,7 +24,6 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    // Универсальный метод для проигрывания звука кнопки
     public void PlayClickSound()
     {
         if (AudioManager.Instance != null && AudioManager.Instance.sfxSource != null && clickSound != null)
@@ -58,18 +57,15 @@ public class MainMenu : MonoBehaviour
     
     private System.Collections.IEnumerator FadeAndContinue()
     {
-        if (continueButton != null) continueButton.interactable = false; // Защита от спама кнопкой
+        if (continueButton != null) continueButton.interactable = false;
 
         if (AudioManager.Instance != null)
         {
-            // Плавно гасим музыку меню за 0.6 секунды
             AudioManager.Instance.StopMusicWithFade(0.6f);
         }
 
-        // Ждем, пока музыка затихнет
         yield return new WaitForSecondsRealtime(0.6f);
 
-        // Загружаем сцену самой игры
         SceneManager.LoadScene(2);
     }
 

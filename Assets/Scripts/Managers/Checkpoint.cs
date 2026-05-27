@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    [SerializeField] private float cooldown = 2f; // Задержка, чтобы не спамить сохранением
-    [SerializeField] private Vector3 respawnOffset = new Vector3(0, 0.5f, 0); // Чтобы не застрять в текстурах
+    [SerializeField] private float cooldown = 2f;
+    [SerializeField] private Vector3 respawnOffset = new Vector3(0, 0.5f, 0);
     private float nextSaveTime;
     public string checkpointID;
     private bool isActivated = false;
@@ -48,7 +48,6 @@ public class Checkpoint : MonoBehaviour
                     SaveManager.Instance.RegisterCheckpoint(checkpointID);
                 }
 
-                // 1. Обновляем точку в контроллере игрока
                 player.SetCheckpoint(transform.position + respawnOffset); 
                 
                 if (InventoryManager.Instance != null)
@@ -61,13 +60,11 @@ public class Checkpoint : MonoBehaviour
                 //     KeyInventory.Instance.SaveKeyState();
                 // }
 
-                // 3. Сохраняем данные на диск/в память
                 if (SaveManager.Instance != null)
                 {
                     SaveManager.Instance.SaveGame();
                 }
                 
-                // 4. Запускаем анимацию дискеты (наша гордость!)
                 if (UIAnimationController.Instance != null)
                 {
                     UIAnimationController.Instance.TriggerSaveIcon();

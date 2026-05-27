@@ -17,21 +17,18 @@ public class BoxTutorialManager : MonoBehaviour
     private bool isTutorialActive = false;
     private Coroutine typingCoroutine;
     
-    // Флаг для игнорирования ввода в первом кадре после открытия
     private bool ignoreInputForOneFrame = false;
 
     void Update()
     {
         if (isTutorialActive)
         {
-            // Пропускаем первый кадр, чтобы избежать мгновенного закрытия от кнопки подбора
             if (ignoreInputForOneFrame)
             {
                 ignoreInputForOneFrame = false;
                 return;
             }
 
-            // Закрытие по клавиатуре
             if (Keyboard.current != null && 
                 (Keyboard.current.fKey.wasPressedThisFrame || 
                  Keyboard.current.escapeKey.wasPressedThisFrame))
@@ -39,7 +36,6 @@ public class BoxTutorialManager : MonoBehaviour
                 CloseTutorial();
             }
         
-            // Закрытие по мыши
             if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             {
                 CloseTutorial();
@@ -51,20 +47,20 @@ public class BoxTutorialManager : MonoBehaviour
     {
         if (!ShouldShowTutorial())
         {
-            Debug.Log("❌ BoxTutorial: Уже был показан ранее");
+            Debug.Log("BoxTutorial: Уже был показан ранее");
             return;
         }
         
         if (dialoguePanel == null)
         {
-            Debug.LogError("❌ BoxTutorial: dialoguePanel не назначен!");
+            Debug.LogError("BoxTutorial: dialoguePanel не назначен!");
             return;
         }
         
-        Debug.Log("✅ BoxTutorial: Показываем туториал!");
+        Debug.Log("BoxTutorial: Показываем туториал!");
         
         isTutorialActive = true;
-        ignoreInputForOneFrame = true; // <-- ВАЖНО: Блокируем ввод на 1 кадр
+        ignoreInputForOneFrame = true;
         
         dialoguePanel.SetActive(true);
         
@@ -113,7 +109,7 @@ public class BoxTutorialManager : MonoBehaviour
         PlayerPrefs.SetInt(prefsKey, 1);
         PlayerPrefs.Save();
         
-        Debug.Log("✅ Box tutorial saved");
+        Debug.Log("Box tutorial saved");
         
         if (SaveManager.Instance != null)
         {

@@ -2,8 +2,8 @@ using UnityEngine;
 using System.Collections;
 
 public class Trap : MonoBehaviour {
-    public float activeTime = 2f; // Сколько секунд огонь горит
-    public float idleTime = 3f;   // Сколько секунд пауза
+    public float activeTime = 2f;
+    public float idleTime = 3f;
     
     private bool isDangerous = true;
 
@@ -17,14 +17,11 @@ public class Trap : MonoBehaviour {
         }
     }
 
-    // Корутина для управления циклом огня
     IEnumerator TrapCycle() {
         while (true) {
-            // ФАЗА 1: Огонь опасен
             isDangerous = true;
             yield return new WaitForSeconds(activeTime);
 
-            // ФАЗА 2: Огонь НЕ опасен (просто картинка)
             isDangerous = false;
             yield return new WaitForSeconds(idleTime);
         }

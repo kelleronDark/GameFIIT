@@ -10,18 +10,18 @@ public class CutsceneController : MonoBehaviour
     
     [Header("Настройки Начальной Катсцены")]
     public VideoClip introVideoClip;
-    public int introNextSceneIndex = 2; // Индекс сцены самой игры
+    public int introNextSceneIndex = 2;
 
     [Header("Настройки Финальной Катсцены")]
     public VideoClip finalVideoClip;
-    public int finalNextSceneIndex = 0; // Индекс Главного меню
+    public int finalNextSceneIndex = 0;
     
     [Header("Delay Settings")]
-    [SerializeField] private float delayBeforeLoad = 1.3f; // <--- ЗАДЕРЖКА В СЕКУНДАХ (настрой в инспекторе)
+    [SerializeField] private float delayBeforeLoad = 1.3f;
 
-    private bool isTransitioning = false; // Защита от двойного срабатывания кнопки пропуска
+    private bool isTransitioning = false;
     private int sceneToLoadIndex;
-    private bool isFinalCutscene = false; // Флаг, чтобы разделять логику переходов
+    private bool isFinalCutscene = false;
     
     void Start()
     {
@@ -82,10 +82,8 @@ public class CutsceneController : MonoBehaviour
 
         videoPlayer.loopPointReached -= OnVideoFinished;
         
-        // Останавливаем видео, чтобы картинка замерла или пропала в черноту
         if (videoPlayer.isPlaying) videoPlayer.Stop(); 
 
-        // Запускаем корутину задержки
         StartCoroutine(WaitAndLoadRoutine());
     }
 

@@ -21,12 +21,12 @@ public class LeverControl : MonoBehaviour
     public GameObject hintPrefab;
     
     [Header("Sparkles (Lever)")] 
-    public GameObject sparklesEffect; // Префаб блёсток рычага
+    public GameObject sparklesEffect;
     
     [Header("Door Feedback")]
-    public GameObject doorOpenParticles;      // Префаб блёсток/частиц двери
+    public GameObject doorOpenParticles;
 
-    private GameObject leverSparklesInstance; // Храним инстанс отдельно, не ломая префаб
+    private GameObject leverSparklesInstance;
     private GameObject currentHint;
     private bool isPlayerNearby = false;
 
@@ -35,7 +35,6 @@ public class LeverControl : MonoBehaviour
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
     
-        // 1. Создаем блёстки для РЫЧАГА
         if (sparklesEffect != null)
         {
             leverSparklesInstance = Instantiate(sparklesEffect, transform.position + Vector3.up * 0.8f, Quaternion.identity);
@@ -43,7 +42,6 @@ public class LeverControl : MonoBehaviour
             leverSparklesInstance.transform.localPosition = Vector3.up * 0.8f;
         }
     
-        // 2. Определяем начальное состояние
         bool targetState = startsOpened; 
 
         if (bayonetTrap != null)
@@ -55,10 +53,8 @@ public class LeverControl : MonoBehaviour
             }
         }
 
-        // 3. Применяем состояние
         ApplyState(targetState);
     
-        // 4. Обновляем видимость блесток рычага
         UpdateSparkles(); 
     }
     
@@ -131,7 +127,6 @@ public class LeverControl : MonoBehaviour
             Debug.Log("Ловушка переключена.");
         }
 
-        // Вызываем визуальный отклик двери (только блёстки), если она ОТКРЫЛАСЬ
         if (newState) 
         {
             PlayDoorOpenFeedback();
@@ -143,34 +138,29 @@ public class LeverControl : MonoBehaviour
     
     private void PlayDoorOpenFeedback()
     {
-        Debug.Log("🚪 [FEEDBACK] Spawning door sparkles!");
+        Debug.Log("Spawning door sparkles!");
 
-        // Спавн частиц блёсток около двери
         if (doorOpenParticles != null)
         {
-            // Позиция спавна: если есть doorAnimator, берем его позицию, иначе позицию самого рычага
             Vector3 spawnPosition = (doorAnimator != null) ? doorAnimator.transform.position : transform.position;
-            spawnPosition += Vector3.up * 1f; // Смещение чуть выше центра двери
+            spawnPosition += Vector3.up * 1f;
 
             GameObject particlesInstance = Instantiate(doorOpenParticles, spawnPosition, Quaternion.identity);
             
-            // Запускаем систему частиц, если она не стартует сама
             ParticleSystem ps = particlesInstance.GetComponentInChildren<ParticleSystem>();
             if (ps != null)
             {
                 ps.Play();
-                // Автоматически удаляем объект из сцены, как только частицы догорят
                 Destroy(particlesInstance, ps.main.duration + ps.main.startLifetime.constantMax);
             }
             else
             {
-                // Резервный таймер удаления для обычных объектов
                 Destroy(particlesInstance, 2f); 
             }
         }
         else
         {
-            Debug.LogWarning("❌ [FEEDBACK] doorOpenParticles (префаб блёсток двери) не задан в инспекторе!");
+            Debug.LogWarning("doorOpenParticles (префаб блёсток двери) не задан в инспекторе!");
         }
     }
     
@@ -178,7 +168,6 @@ public class LeverControl : MonoBehaviour
     {
         if (doorCollider != null && AstarPath.active != null)
         {
-            // Берем позицию коллайдера двери и создаем вокруг зону перерасчета
             Bounds customBounds = new Bounds(doorCollider.bounds.center, new Vector3(2.5f, 2.5f, 2.5f));
             AstarPath.active.UpdateGraphs(customBounds);
         }
@@ -204,7 +193,6 @@ public class LeverControl : MonoBehaviour
     
     private void UpdateSparkles()
     {
-        // ВАЖНО: проверяем leverSparklesInstance (созданную копию), а не префаб!
         if (leverSparklesInstance != null && leverAnimator != null)
         {
             bool shouldShow = !leverAnimator.GetBool("isActivated");

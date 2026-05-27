@@ -3,15 +3,15 @@ using UnityEngine.UI;
 
 public class KeyInventory : MonoBehaviour
 {
-    public static KeyInventory Instance; // Singleton для доступа из любого места
+    public static KeyInventory Instance;
 
     [Header("Settings")]
-    public int maxKeys = 4; // Максимум ключей
-    private int currentKeys = 0; // Текущее количество
+    public int maxKeys = 4;
+    private int currentKeys = 0;
 
     [Header("UI Slots")]
-    public Image[] keySlots; // Массив из 4 слотов в UI
-    public Sprite keySprite; // Спрайт ключа для отображения
+    public Image[] keySlots;
+    public Sprite keySprite;
 
     [Header("Debug")]
     public bool showDebugLogs = true;
@@ -20,7 +20,6 @@ public class KeyInventory : MonoBehaviour
 
     void Awake()
     {
-        // Singleton pattern
         if (Instance == null)
         {
             Instance = this;
@@ -31,34 +30,29 @@ public class KeyInventory : MonoBehaviour
             return;
         }
 
-        // Инициализация UI
         InitializeUI();
     }
 
     void InitializeUI()
     {
-        currentKeys = 0; // Сброс на всякий случай
+        currentKeys = 0;
 
         foreach (var slot in keySlots)
         {
             if (slot == null) continue;
 
-            slot.enabled = true; // Фон всегда виден
+            slot.enabled = true;
 
             Transform keyIconTransform = slot.transform.Find("KeyIcon");
             if (keyIconTransform != null)
             {
                 Image keyIcon = keyIconTransform.GetComponent<Image>();
                 if (keyIcon != null)
-                    keyIcon.enabled = false; // Иконка скрыта по умолчанию
+                    keyIcon.enabled = false;
             }
         }
     }
 
-    /// <summary>
-    /// Добавить ключ в инвентарь
-    /// </summary>
-    /// <returns>true если ключ добавлен, false если инвентарь полон</returns>
     public bool AddKey()
     {
         if (currentKeys >= maxKeys)
@@ -77,10 +71,6 @@ public class KeyInventory : MonoBehaviour
         return true;
     }
 
-    /// <summary>
-    /// Использовать ключ (удалить один)
-    /// </summary>
-    /// <returns>true если ключ был использован, false если ключей нет</returns>
     public bool UseKey()
     {
         if (currentKeys <= 0)
@@ -99,17 +89,11 @@ public class KeyInventory : MonoBehaviour
         return true;
     }
 
-    /// <summary>
-    /// Проверить наличие ключей
-    /// </summary>
     public bool HasKeys()
     {
         return currentKeys > 0;
     }
 
-    /// <summary>
-    /// Получить текущее количество ключей
-    /// </summary>
     public int GetKeyCount()
     {
         return currentKeys;
@@ -117,16 +101,12 @@ public class KeyInventory : MonoBehaviour
 
     void UpdateUI()
     {
-        // Проходим по всем 4 слотам
         for (int i = 0; i < keySlots.Length; i++)
         {
             if (keySlots[i] != null)
             {
-                // 1. ОБЪЯВЛЯЕМ переменную hasKey здесь!
-                // Она true, если индекс слота меньше текущего количества ключей
                 bool hasKey = (i < currentKeys);
 
-                // 2. Находим иконку внутри слота
                 Transform keyIconTransform = keySlots[i].transform.Find("KeyIcon");
                 
                 if (keyIconTransform != null)
@@ -134,10 +114,8 @@ public class KeyInventory : MonoBehaviour
                     Image keyIcon = keyIconTransform.GetComponent<Image>();
                     if (keyIcon != null)
                     {
-                        // Включаем/выключаем иконку в зависимости от hasKey
                         keyIcon.enabled = hasKey;
                         
-                        // Если иконка включена, ставим ей правильный спрайт
                         if (hasKey && keySprite != null)
                         {
                             keyIcon.sprite = keySprite;
@@ -145,8 +123,6 @@ public class KeyInventory : MonoBehaviour
                     }
                 }
 
-                // 3. ЗАПУСКАЕМ ПУЛЬСАЦИЮ только для нового ключа
-                // Используем ту самую переменную hasKey, которую мы создали выше
                 if (hasKey && i == currentKeys - 1) 
                 {
                     KeySlotPulse pulser = keySlots[i].GetComponent<KeySlotPulse>();
@@ -160,7 +136,6 @@ public class KeyInventory : MonoBehaviour
         }
     }
 
-    // Для отладки - можно вызвать из консоли
     [ContextMenu("Add Test Key")]
     void AddTestKey()
     {
@@ -179,7 +154,6 @@ public class KeyInventory : MonoBehaviour
         // Debug.Log($"Состояние ключей сохранено: {savedKeysSnapshot}");
     }
 
-    // Вызывается при смерти
     public void ResetKeys()
     {
         // currentKeys = savedKeysSnapshot;
@@ -187,13 +161,10 @@ public class KeyInventory : MonoBehaviour
         // Debug.Log("Ключи восстановлены из сохранения.");
     }
     
-    /// <summary>
-    /// Принудительно восстанавливает количество ключей (для загрузки и чекпоинтов)
-    /// </summary>
     public void RestoreKeys(int count)
     {
         // currentKeys = count;
-        // savedKeysSnapshot = count; // Обновляем и снимок, чтобы после смерти ключи не откатились к 0
-        // UpdateUI(); // Перерисовываем иконки ключей в UI
+        // savedKeysSnapshot = count;
+        // UpdateUI();
     }
 }

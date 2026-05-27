@@ -22,7 +22,6 @@ public class GameSceneMusic : MonoBehaviour
         
         if (AudioManager.Instance != null && AudioManager.Instance.isPlayingHatch)
         {
-            // Берем ссылку на источник, который сейчас крутит люк
             AudioSource sfx = AudioManager.Instance.sfxSource;
 
             if (sfx != null && sfx.isPlaying && sfx.clip == AudioManager.Instance.hatchOpenSound)
@@ -35,12 +34,10 @@ public class GameSceneMusic : MonoBehaviour
                 }
             }
             
-            // В любом случае сбрасываем флаг, так как люк завершен
             AudioManager.Instance.isPlayingHatch = false;
         }
         else
         {
-            // Если пришли по кнопке "Продолжить" — пролетаем без задержек
             yield return null;
         }
         
