@@ -20,6 +20,8 @@ public class BoxImpact : MonoBehaviour
     private SpriteRenderer sr;
     private Collider2D col;
     private Color originalColor;
+    
+    public bool IsFlyingAndCanStun => canStun;
 
     private void Start()
     {
@@ -110,19 +112,15 @@ public class BoxImpact : MonoBehaviour
     {
         if (!canStun) return;
 
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
-        foreach (var obj in hitEnemies)
+        if (collision.gameObject.CompareTag("Enemy"))
         {
-            if (obj.CompareTag("Enemy"))
+            EnemyAI enemy = collision.gameObject.GetComponent<EnemyAI>();
+            if (enemy != null)
             {
-                EnemyAI enemy = obj.GetComponent<EnemyAI>();
-                if (enemy != null)
-                {
-                    StartCoroutine(enemy.BecomeStunned(3f));
-                    canStun = false;
-                    Debug.Log("Монстр получил коробкой по голове!");
-                    break;
-                }
+                canStun = false; 
+            
+                StartCoroutine(enemy.BecomeStunned(3f));
+                Debug.Log("Монстр получил летящей коробкой прямо по голове!");
             }
         }
     }

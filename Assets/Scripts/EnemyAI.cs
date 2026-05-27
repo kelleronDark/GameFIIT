@@ -15,8 +15,10 @@ public class EnemyAI : MonoBehaviour
 
     [Header("Attack Settings")]
     public int damageAmount = 30;
-    public float attackCooldown = 1.5f;
+    public float attackCooldown = 2.1f;
+    public float attackRange = 1.2f;
     private float lastAttackTime;
+    private GameObject currentAttackTarget;
 
     [Header("Detection Settings")]
     [Tooltip("Дистанция зрения перед собой")]
@@ -39,6 +41,7 @@ public class EnemyAI : MonoBehaviour
     public GameObject stunEffectObject;
 
     private IAstarAI ai;
+    private Rigidbody2D rb;
     private int currentWaypointIndex = 0;
     private float searchTimer;
     private float stuckCheckTimer;
@@ -111,6 +114,9 @@ public class EnemyAI : MonoBehaviour
                 if (player != null)
                 {
                     ai.destination = player.position;
+                    
+                    TryAttackTarget();
+                    
                     if (!canSeePlayer)
                     {
                         Vector2 rawPredictedTarget = lastKnownPlayerPosition + (lastPlayerDirection * predictionDistance);
@@ -152,6 +158,58 @@ public class EnemyAI : MonoBehaviour
                 ExecuteSearchLogic();
                 break;
         }
+    }
+    
+    private void TryAttackTarget()
+    {
+        if (player == null || currentState == State.Stun) return;
+
+        if (Time.time >= lastAttackTime + attackCooldown)
+        {
+            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+            if (distanceToPlayer <= attackRange)
+            {
+                currentAttackTarget = player.gameObject;
+                lastAttackTime = Time.time;
+
+                if (anim != null) 
+                    anim.SetTrigger("Attack");
+                else 
+                    ExecuteDirectDamage(); // Фоллбек
+            }
+        }
+    }
+    
+    public void OnAttackAnimationHit()
+    {
+        ExecuteDirectDamage();
+    }
+    
+    private void ExecuteDirectDamage()
+    {
+        if (currentAttackTarget == null || currentState == State.Stun) return;
+
+        float dist = Vector2.Distance(transform.position, currentAttackTarget.transform.position);
+        if (dist <= attackRange + 1.5f)
+        {
+            // Напрямую берем контроллер игрока и уменьшаем ему ХП!
+            PlayerController playerController = player.GetComponent<PlayerController>();
+            if (playerController != null)
+            {
+                playerController.TakeDamage(damageAmount);
+                Debug.Log($"[Монстр] Успешно нанес {damageAmount} урона игроку! Дистанция: {dist}");
+            }
+            else
+            {
+                Debug.LogError("[Монстр] Ошибка! На объекте Player не найден скрипт PlayerController!");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[Монстр] Промах! Игрок успел отбежать. Дистанция: {dist}, а надо хотя бы {attackRange + 1.5f}");
+        }
+        
+        currentAttackTarget = null;
     }
     
     bool EvaluateLineOfSight(float maxDistance, out RaycastHit2D hitResult)
@@ -211,6 +269,7 @@ public class EnemyAI : MonoBehaviour
         ai.destination = waypoints[currentWaypointIndex].position;
         if (ai.reachedDestination)
         {
+            if (rb != null) rb.linearVelocity = Vector2.zero;
             currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
         }
     }
@@ -227,6 +286,8 @@ public class EnemyAI : MonoBehaviour
         if (reachedTarget || isStuck)
         {
             ai.isStopped = true;
+            
+            if (rb != null) rb.linearVelocity = Vector2.zero;
 
             searchTimer -= Time.deltaTime;
             if (searchTimer <= 0)
@@ -246,12 +307,13 @@ public class EnemyAI : MonoBehaviour
 
     public IEnumerator BecomeStunned(float duration)
     {
-        if (currentState == State.Stun || stunCoroutine != null)
-        {
-            yield break;
-        }
-
+        if (currentState == State.Stun) yield break;
+        
         currentState = State.Stun;
+        
+        currentAttackTarget = null;
+        
+        if (stunCoroutine != null) StopCoroutine(stunCoroutine);
         stunCoroutine = StartCoroutine(StunExecution(duration));
     }
 
@@ -273,6 +335,7 @@ public class EnemyAI : MonoBehaviour
 
         if (anim != null)
         {
+            anim.ResetTrigger("Attack");
             anim.SetBool("IsStunned", true);
             anim.SetBool("isMoving", false);
         }
@@ -316,7 +379,7 @@ public class EnemyAI : MonoBehaviour
         Vector2 velocity = ai.velocity;
         float speed = velocity.magnitude;
 
-        if (speed > 0.2f && currentState != State.Stun)
+        if (speed > 0.25f && currentState != State.Stun && !ai.isStopped)
         {
             Vector2 dir = velocity.normalized;
             
@@ -340,6 +403,8 @@ public class EnemyAI : MonoBehaviour
         else
         {
             anim.SetBool("isMoving", false);
+            anim.SetFloat("MoveX", 0f);
+            anim.SetFloat("MoveY", 0f);
         }
     }
 
@@ -368,29 +433,19 @@ public class EnemyAI : MonoBehaviour
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (currentState == State.Stun) return;
-
-        if (Time.time >= lastAttackTime + attackCooldown)
+        
+        if (collision.gameObject.CompareTag("Item"))
         {
-            if (collision.gameObject.CompareTag("Player"))
+            BoxImpact box = collision.gameObject.GetComponent<BoxImpact>();
+            if (box != null && !box.IsFlyingAndCanStun)
             {
-                PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
-                if (playerController != null)
+                if (Time.time >= lastAttackTime + attackCooldown)
                 {
-                    playerController.TakeDamage(damageAmount);
+                    currentAttackTarget = collision.gameObject;
                     lastAttackTime = Time.time;
-
                     if (anim != null) anim.SetTrigger("Attack");
-                }
-            }
-            else if (collision.gameObject.CompareTag("Item"))
-            {
-                BoxImpact box = collision.gameObject.GetComponent<BoxImpact>();
-                if (box != null)
-                {
+                    
                     box.TakeDamage(1);
-                    lastAttackTime = Time.time;
-
-                    if (anim != null) anim.SetTrigger("Attack");
                 }
             }
         }

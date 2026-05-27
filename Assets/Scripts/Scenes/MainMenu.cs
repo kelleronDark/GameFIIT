@@ -12,6 +12,8 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = 1f;
+        
         if (AudioManager.Instance != null && AudioManager.Instance.mainMenuMusic != null)
         {
             float currentFadeDuration = AudioManager.Instance.fadeDuration;
@@ -45,6 +47,8 @@ public class MainMenu : MonoBehaviour
         {
             SaveManager.Instance.DeleteSaveFile(); 
         }
+        
+        Time.timeScale = 1f;
         SceneManager.LoadScene(1);
     }
 
@@ -65,6 +69,8 @@ public class MainMenu : MonoBehaviour
         }
 
         yield return new WaitForSecondsRealtime(0.6f);
+        
+        Time.timeScale = 1f;
 
         SceneManager.LoadScene(2);
     }

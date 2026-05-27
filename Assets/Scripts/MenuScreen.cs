@@ -66,7 +66,6 @@ public class MenuScreen : MonoBehaviour
 
     public void LoadMainMenu(string mainMenuSceneName)
     {
-        Time.timeScale = 1f;
         StartCoroutine(WaitAndLoadMenu(mainMenuSceneName));
     }
     

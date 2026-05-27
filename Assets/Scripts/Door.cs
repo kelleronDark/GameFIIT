@@ -114,9 +114,11 @@ public class Door : MonoBehaviour
         if (animator != null)
             animator.SetBool("IsOpen", true);
 
-        Collider2D doorCollider = GetComponent<Collider2D>();
-        if (doorCollider != null)
-            doorCollider.enabled = false;
+        Collider2D[] doorColliders = GetComponents<Collider2D>();
+        foreach (var col in doorColliders)
+        {
+            col.enabled = false;
+        }
 
         UpdateAstarGraph();
         HideHint();
@@ -125,12 +127,17 @@ public class Door : MonoBehaviour
 
     private void UpdateAstarGraph()
     {
-        Collider2D doorCollider = GetComponent<Collider2D>();
-        if (doorCollider != null && AstarPath.active != null)
+        if (AstarPath.active != null)
         {
             Bounds customBounds = new Bounds(transform.position, new Vector3(2.5f, 2.5f, 2.5f));
             AstarPath.active.UpdateGraphs(customBounds);
         }
+        // Collider2D doorCollider = GetComponent<Collider2D>();
+        // if (doorCollider != null && AstarPath.active != null)
+        // {
+        //     Bounds customBounds = new Bounds(transform.position, new Vector3(2.5f, 2.5f, 2.5f));
+        //     AstarPath.active.UpdateGraphs(customBounds);
+        // }
     }
 
     private void UpdateSparkles()

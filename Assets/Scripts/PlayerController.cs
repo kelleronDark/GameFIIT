@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public float speed = 5f;
     public int maxHealth = 100;
     private int currentHealth;
+    private bool isDead = false;
 
     private Rigidbody2D rb;
     private Animator anim;
@@ -89,6 +90,14 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (isDead) 
+        {
+            moveInput = Vector2.zero;
+            if (throwCursor != null) throwCursor.SetActive(false);
+            if (lineRenderer != null) lineRenderer.enabled = false;
+            return; 
+        }
+        
         if (Keyboard.current != null)
         {
             Vector2 input = Vector2.zero;
@@ -340,6 +349,8 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isDead) return;
+        
         if (moveInput.magnitude > 0)
         {
             Vector2 movement = moveInput.normalized * speed * Time.fixedDeltaTime;
@@ -401,6 +412,11 @@ public class PlayerController : MonoBehaviour
     private void Die()
     {
         Debug.Log("Игрок погиб! Показываем экран смерти...");
+        
+        isDead = true; 
+        rb.linearVelocity = Vector2.zero; 
+        anim.SetFloat("MoveX", 0f);
+        anim.SetFloat("MoveY", 0f);
 
         if (deathScreen != null)
         {
