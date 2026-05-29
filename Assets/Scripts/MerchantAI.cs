@@ -44,6 +44,8 @@ public class MerchantAI : MonoBehaviour
     public float cameraPanSpeed = 3f;
     public float submarineViewDuration = 2.5f;
     private bool isExternalMovementLock = false;
+    [Header("Финальный Маркер")]
+    public Transform finalPlayerMarker;
     
     [Header("Настройки Инвентаря")]
     [Tooltip("Имена спрайтов деталей в инвентаре, которые нужно собрать")]
@@ -154,13 +156,7 @@ public class MerchantAI : MonoBehaviour
         if (CheckPlayerHasAllParts() && storyState != MerchantStoryState.NotMet && storyState != MerchantStoryState.LookingAtSubmarine)
         {
             storyState = MerchantStoryState.ReadyToRepair;
-            
-            if (SaveManager.Instance != null)
-            {
-                SaveManager.Instance.SetMerchantState((int)storyState);
-                SaveManager.Instance.QuickSave();
-            }
-            
+            SaveFinalProgress();
             currentActivePhrases = finalPhrases;
         }
         else if (storyState == MerchantStoryState.NotMet)
@@ -174,22 +170,13 @@ public class MerchantAI : MonoBehaviour
         else if (storyState == MerchantStoryState.SearchingForParts 
                  || storyState == MerchantStoryState.LookingAtSubmarine)
         {
-            bool hasAnyParts = CheckPlayerHasAnyParts(); 
-            bool hasAllParts = CheckPlayerHasAllParts(); 
-
-            if (hasAllParts)
+            if (storyState == MerchantStoryState.LookingAtSubmarine && CheckPlayerHasAllParts())
             {
                 storyState = MerchantStoryState.ReadyToRepair;
-                
-                if (SaveManager.Instance != null)
-                {
-                    SaveManager.Instance.SetMerchantState((int)storyState);
-                    SaveManager.Instance.QuickSave();
-                }
-                
+                SaveFinalProgress();
                 currentActivePhrases = finalPhrases;
             }
-            else if (hasAnyParts)
+            else if (CheckPlayerHasAnyParts())
             {
                 currentActivePhrases = idleWithPartsPhrases;
             }
@@ -202,11 +189,10 @@ public class MerchantAI : MonoBehaviour
                 }
                 else
                 {
-                    DialogueLine defaultLine = new DialogueLine { speaker = Speaker.Merchant, text = "Эх, скукотища..." };
-                    if (currentActivePhrases != null && currentPhraseIndex < currentActivePhrases.Length)
-                    {
-                        dialogueText.text = currentActivePhrases[currentPhraseIndex].text;
-                    }
+                    currentActivePhrases = new DialogueLine[] 
+                    { 
+                        new DialogueLine { speaker = Speaker.Merchant, text = "Эх, скукотища..." } 
+                    };
                 }
             }
         }
@@ -255,13 +241,41 @@ public class MerchantAI : MonoBehaviour
         }
         else if (storyState == MerchantStoryState.ReadyToRepair)
         {
-            if (SaveManager.Instance != null)
-            {
-                SaveManager.Instance.playFinalCutsceneNext = true;
-                SaveManager.Instance.SaveGame();
-            }
-
             UnityEngine.SceneManagement.SceneManager.LoadScene(1);
+        }
+    }
+    
+    private void UpdatePlayerCheckpointToMarker()
+    {
+        if (finalPlayerMarker != null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                PlayerController playerCtrl = playerObj.GetComponent<PlayerController>();
+                if (playerCtrl != null)
+                {
+                    playerCtrl.SetCheckpoint(finalPlayerMarker.position);
+                    Debug.Log($"Чекпоинт игрока принудительно перезаписан на координаты маркера: {finalPlayerMarker.position}");
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("[MerchantAI] Поле finalPlayerMarker пустое!");
+        }
+    }
+    
+    private void SaveFinalProgress()
+    {
+        UpdatePlayerCheckpointToMarker();
+
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.SetMerchantState((int)storyState);
+            SaveManager.Instance.playFinalCutsceneNext = true;
+            SaveManager.Instance.QuickSave();
+            Debug.Log("[MerchantAI] Финальный прогресс и маркер успешно засейвлены.");
         }
     }
     
