@@ -186,7 +186,7 @@ public class EnemyAI : MonoBehaviour
                 if (anim != null) 
                     anim.SetTrigger("Attack");
                 else 
-                    ExecuteDirectDamage(); // Фоллбек
+                    ExecuteDirectDamage();
             }
         }
     }
@@ -394,64 +394,50 @@ public class EnemyAI : MonoBehaviour
     void UpdateAnimation()
     {
         if (anim == null || ai == null) return;
-
-        // Снова берем чистый desiredVelocity, он лучше всего подходит.
+        
         Vector2 desiredDir = ai.desiredVelocity;
         float speed = desiredDir.magnitude;
 
-        // Условие для анимации движения (завысил порог скорости, чтобы убить дрожь у точек)
         if (speed > 0.5f && currentState != State.Stun && !ai.isStopped && !ai.reachedDestination)
         {
             Vector2 normalizedDir = desiredDir.normalized;
             
-            // 1. Убиваем диагонали на корню. Принудительно выпрямляем вектор в "крест" U,D,L,R.
-            // Это решит проблему прокрутки Право->Вверх->Лево.
             Vector2 snapedDir = Vector2.zero;
             if (Mathf.Abs(normalizedDir.x) > Mathf.Abs(normalizedDir.y))
             {
-                snapedDir = new Vector2(normalizedDir.x > 0 ? 1f : -1f, 0f); // Только горизонталь
+                snapedDir = new Vector2(normalizedDir.x > 0 ? 1f : -1f, 0f);
             }
             else
             {
-                snapedDir = new Vector2(0f, normalizedDir.y > 0 ? 1f : -1f); // Только вертикаль
+                snapedDir = new Vector2(0f, normalizedDir.y > 0 ? 1f : -1f);
             }
 
-            // 2. Вводим гистерезис. Если новое snapped-направление совпадает со старым, сбрасываем таймер.
             if (snapedDir == movementIntention)
             {
                 changeDirectionTimer = 0f;
             }
             else
             {
-                // 3. Если новое snapped-направление отличается, запускаем таймер уверенности.
-                // movementIntention == zero — это когда он только начал идти или вышел из стана.
                 if (movementIntention == Vector2.zero)
                 {
-                    // Если он стоял, принимаем поворот мгновенно, без задержки.
                     movementIntention = snapedDir;
                     changeDirectionTimer = 0f;
                 }
                 else
                 {
-                    // Если он уже шел, требуем уверенности в новом векторе.
                     changeDirectionTimer += Time.deltaTime;
 
-                    // 4. Если уверенность в новом направлении длилась дольше directionChangeDamping...
                     if (changeDirectionTimer >= directionChangeDamping)
                     {
-                        // То наконец принимаем решение развернуть спрайт.
                         movementIntention = snapedDir;
                         changeDirectionTimer = 0f;
                     }
                 }
             }
-
-            // 5. И только на основе проверенного intentions (movementIntention) ставим Float'ы в аниматор.
-            // directionChangeDamping гарантирует, что движение и спрайт всегда будут синхронны.
-            // Это решит проблему Вверх->Вниз->Влево.
+            
             if (movementIntention != Vector2.zero)
             {
-                lastFacingDirection = movementIntention; // Запоминаем для стана/атаки
+                lastFacingDirection = movementIntention;
                 
                 anim.SetFloat("MoveX", movementIntention.x);
                 anim.SetFloat("MoveY", movementIntention.y);
@@ -460,12 +446,10 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
-            // При остановке сбрасываем всё
             anim.SetBool("isMoving", false);
             anim.SetFloat("MoveX", 0f);
             anim.SetFloat("MoveY", 0f);
             
-            //movementIntention = Vector2.zero; // Лучше не сбрасывать, чтобы спрайт не "дрожал" при микро-остановках.
             changeDirectionTimer = 0f;
         }
     }

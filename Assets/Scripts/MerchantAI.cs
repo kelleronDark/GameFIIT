@@ -311,7 +311,6 @@ public class MerchantAI : MonoBehaviour
 
             yield return new WaitForSeconds(submarineViewDuration);
 
-            // 5. Плавно возвращаем камеру назад к игроку/лавочнику
             elapsed = 0f;
             while (elapsed < 1.5f)
             {
