@@ -6,17 +6,16 @@ public class HealthPotion : MonoBehaviour
 {
     [Header("Settings")]
     public int healAmount = 25;
-    private bool isUsed = false; // Чтобы нельзя было юзнуть дважды
+    private bool isUsed = false;
 
     [Header("UI Hint")]
-    public GameObject hintPrefab; // Сюда в инспекторе кинешь префаб подсказки
+    public GameObject hintPrefab;
     private GameObject currentHint;
     private bool playerInRange = false;
     
     void Update()
     {
         if (isUsed) return;
-        // Проверяем нажатие кнопки F, если игрок рядом и хилка еще не использована
         if (playerInRange && !isUsed && Keyboard.current.fKey.wasPressedThisFrame)
         {
             UsePotion();
@@ -27,14 +26,13 @@ public class HealthPotion : MonoBehaviour
     {
         if (isUsed) return;
         
-        isUsed = true; // Сразу блокируем повторное нажатие
+        isUsed = true;
         playerInRange = false;
 
-        // Ищем скрипт здоровья на игроке (замени PlayerHealth на имя своего скрипта)
         PlayerController player = FindFirstObjectByType<PlayerController>();
         if (player != null)
         {
-            player.Heal(healAmount); // Лечим через метод игрока
+            player.Heal(healAmount);
         }
         
         Collider2D potionCollider = GetComponent<Collider2D>();
@@ -55,7 +53,6 @@ public class HealthPotion : MonoBehaviour
             delay = audio.clip.length;
         }
 
-        // Удаляем объект после того как доиграет звук
         Destroy(gameObject, delay + 0.1f);
     }
 

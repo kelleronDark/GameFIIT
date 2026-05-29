@@ -11,10 +11,10 @@ public class Chest : MonoBehaviour
     public Animator animator;
     public GameObject hintPrefab;
     public AudioSource audioSource;
-    public GameObject sparklesEffect; // <-- НОВОЕ: ссылка на блёстки
+    public GameObject sparklesEffect;
 
     private GameObject currentHint;
-    private bool playerInRange = false;
+    public bool IsPlayerInRange { get; private set; } = false;
 
     void Start()
     {
@@ -24,13 +24,11 @@ public class Chest : MonoBehaviour
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
     
-        // АВТОМАТИЧЕСКОЕ СОЗДАНИЕ БЛЁСТОК
         if (sparklesEffect != null)
         {
-            // Создаём копию префаба прямо на сцене
             GameObject instance = Instantiate(sparklesEffect, transform.position + Vector3.up, Quaternion.identity);
-            instance.transform.SetParent(transform); // Делаем дочерним
-            sparklesEffect = instance; // Заменяем ссылку на префаб ссылкой на объект
+            instance.transform.SetParent(transform);
+            sparklesEffect = instance;
         }
     
         UpdateSparkles();
@@ -40,7 +38,7 @@ public class Chest : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            playerInRange = true;
+            IsPlayerInRange = true;
             ShowHint();
         }
     }
@@ -49,7 +47,7 @@ public class Chest : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            playerInRange = false;
+            IsPlayerInRange = false;
             HideHint();
         }
     }
@@ -74,21 +72,16 @@ public class Chest : MonoBehaviour
             else Debug.LogWarning("Инвентарь полон! Ключ не подобран.");
         }
 
-        // Скрываем подсказку и блёстки после открытия
         HideHint();
         UpdateSparkles();
     }
-
-    // --- НОВЫЙ МЕТОД: Управление блёстками ---
     
     private void UpdateSparkles()
     {
         if (sparklesEffect != null)
         {
-            // Показываем блёстки только если сундук ещё НЕ открыт
             sparklesEffect.SetActive(!isOpened);
             
-            // Если это Particle System, можно управлять воспроизведением
             var particle = sparklesEffect.GetComponent<ParticleSystem>();
             if (particle != null)
             {

@@ -11,6 +11,8 @@ public class SaveManager : MonoBehaviour
     private bool bayonetTrapDeactivated = false;
     private int savedMerchantState = 0;
     private int savedBoothmanState = 0;
+    private bool hasSeenBoxTutorial = false;
+    [HideInInspector] public bool playHatchSoundNext = false;
     
     [HideInInspector] public bool playFinalCutsceneNext = false;
 
@@ -29,10 +31,8 @@ public class SaveManager : MonoBehaviour
         filePath = Path.Combine(Application.persistentDataPath, "savegame.json");
     }
 
-    // Тот самый метод SaveGame, которого не хватало!
     public void SaveGame()
     {
-        // 1. Ищем игрока (на случай если сцена перезагрузилась)
         if (player == null)
         {
             GameObject p = GameObject.FindGameObjectWithTag("Player");
@@ -51,16 +51,13 @@ public class SaveManager : MonoBehaviour
             data.checkpointY = cpPos.y;
         }
 
-        // Добавляем данные из инвентаря (если InventoryManager существует)
         if (InventoryManager.Instance != null)
         {
             data.inventoryItemNames = InventoryManager.Instance.GetCollectedItemsNames();
         }
         
         data.keyCount = KeyInventory.Instance.GetKeyCount();
-        
         data.activatedCheckpoints = new List<string>(activeCheckpointsList);
-        
         data.isBayonetTrapDeactivated = bayonetTrapDeactivated;
         
         MerchantAI merchant = Object.FindFirstObjectByType<MerchantAI>();
@@ -78,14 +75,12 @@ public class SaveManager : MonoBehaviour
         data.boothmanStoryStateInt = savedBoothmanState;
         
         data.playFinalCutsceneNext = playFinalCutsceneNext;
-        
-        data.hasSeenBoxTutorial = PlayerPrefs.GetInt("HasSeenBoxTutorial", 0) == 1;
+        data.hasSeenBoxTutorial = hasSeenBoxTutorial;
         
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(filePath, json);
         Debug.Log("Прогресс (чекпоинт) сохранен!");
 
-        // 4. Запуск анимации иконки в углу
         if (UIAnimationController.Instance != null)
         {
             UIAnimationController.Instance.TriggerSaveIcon();
@@ -115,17 +110,14 @@ public class SaveManager : MonoBehaviour
         }
         
         activeCheckpointsList = new List<string>(data.activatedCheckpoints);
-        
         bayonetTrapDeactivated = data.isBayonetTrapDeactivated;
 
-        // Ищем ловушку на сцене и применяем состояние
         BayonetTrap trap = Object.FindFirstObjectByType<BayonetTrap>();
         if (trap != null)
         {
             trap.SetState(bayonetTrapDeactivated);
         }
 
-        // Ищем игрока, если ссылка потерялась при смене сцены
         if (player == null) 
         {
             GameObject p = GameObject.FindGameObjectWithTag("Player");
@@ -139,7 +131,7 @@ public class SaveManager : MonoBehaviour
             var cam = FindFirstObjectByType<CameraFollow>();
             if (cam != null) 
             {
-                cam.target = player; // Гарантируем, что таргет назначен
+                cam.target = player;
                 cam.Warp();
             }
             
@@ -161,9 +153,7 @@ public class SaveManager : MonoBehaviour
         }
         
         playFinalCutsceneNext = data.playFinalCutsceneNext;
-        
-        PlayerPrefs.SetInt("HasSeenBoxTutorial", data.hasSeenBoxTutorial ? 1 : 0);
-        PlayerPrefs.Save();
+        hasSeenBoxTutorial = data.hasSeenBoxTutorial;
     }
     
     public bool HasSaveFile()
@@ -171,7 +161,6 @@ public class SaveManager : MonoBehaviour
         return File.Exists(filePath);
     }
 
-// 2. Удаление файла (нужна для кнопки "Новая игра")
     public void DeleteSaveFile()
     {
         if (File.Exists(filePath))
@@ -185,34 +174,28 @@ public class SaveManager : MonoBehaviour
     
     private void OnEnable()
     {
-        // Подписываемся на событие загрузки сцены
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDisable()
     {
-        // Отписываемся, чтобы не было утечек памяти
         UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
     }
     
     private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
     {
-        // Проверяем: если это сцена игры (индекс 1) и у нас есть что загружать
         if (scene.buildIndex != 0 && scene.name != "Cutscenes" && HasSaveFile())
         {
             Debug.Log("Игровая сцена загружена, восстанавливаем данные...");
-            LoadGame(); // Твой метод загрузки
+            LoadGame();
         }
     }
     
-    // Добавь этот метод для сохранения при подборе запчастей
     public void QuickSave()
     {
-        // Сначала обновляем "снимки" в памяти
         if (InventoryManager.Instance != null) InventoryManager.Instance.SaveInventoryState();
         if (KeyInventory.Instance != null) KeyInventory.Instance.SaveKeyState();
 
-        // Затем пишем в файл
         SaveGame();
     }
     
@@ -268,6 +251,16 @@ public class SaveManager : MonoBehaviour
         return savedBoothmanState;
     }
     
+    public void SetBoxTutorialSeen(bool state)
+    {
+        hasSeenBoxTutorial = state;
+    }
+
+    public bool IsBoxTutorialSeen()
+    {
+        return hasSeenBoxTutorial;
+    }
+    
     public void ResetInMemoryData()
     {
         activeCheckpointsList.Clear();
@@ -275,11 +268,10 @@ public class SaveManager : MonoBehaviour
         playFinalCutsceneNext = false;
         savedMerchantState = 0;
         savedBoothmanState = 0;
-        player = null; // Сбрасываем ссылку на старого уничтоженного игрока
+        player = null;
+        hasSeenBoxTutorial = false;
+        playHatchSoundNext = false;
         
-        PlayerPrefs.SetInt("HasSeenBoxTutorial", 0); 
-        PlayerPrefs.Save();
-    
         Debug.Log("<color=cyan>Данные сохранения в RAM успешно сброшены к начальным значениям.</color>");
     }
 }

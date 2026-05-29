@@ -24,20 +24,17 @@ public class UIAnimationController : MonoBehaviour
 
     public void TriggerSaveIcon()
     {
-        // Останавливаем старую анимацию, если она еще шла, и запускаем новую
         StopAllCoroutines();
         StartCoroutine(SaveAnimationRoutine());
     }
 
     private IEnumerator SaveAnimationRoutine()
     {
-        // 1. Запускаем кручение дискеты в Animator сразу
         if (animator != null)
         {
             animator.Play("SaveAnimation", 0, 0f);
         }
 
-        // 2. Плавное появление (Fade In)
         float t = 0;
         while (t < 1f)
         {
@@ -47,10 +44,8 @@ public class UIAnimationController : MonoBehaviour
             yield return null;
         }
 
-        // 3. Ждем пока игрок полюбуется на крутящуюся дискету
         yield return new WaitForSeconds(waitTime);
 
-        // 4. Плавное исчезновение (Fade Out)
         t = 0;
         while (t < 1f)
         {

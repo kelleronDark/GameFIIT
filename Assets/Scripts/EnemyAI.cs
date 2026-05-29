@@ -15,18 +15,25 @@ public class EnemyAI : MonoBehaviour
 
     [Header("Attack Settings")]
     public int damageAmount = 30;
-    public float attackCooldown = 1.5f; // �������� ����� �������
+    public float attackCooldown = 2.1f;
+    public float attackRange = 1.2f;
     private float lastAttackTime;
+    private GameObject currentAttackTarget;
 
     [Header("Detection Settings")]
     [Tooltip("Дистанция зрения перед собой")]
     public float chaseDistance = 6f; 
-    [Tooltip("Дистанция слуха/зрения сзади")]
+    [Tooltip("Дистанция зрения сзади")]
     public float backChaseDistance = 3.5f;
     [Tooltip("Дистанция, при которой монстр теряет интерес")]
     public float stopChaseDistance = 8f;
     public float playerDistError = 0.4f;
     public LayerMask obstacleMask;
+    
+    private float changeDirectionTimer = 0f;
+    [Header("Damping Settings")]
+    public float directionChangeDamping = 0.08f;
+    private Vector2 movementIntention = Vector2.zero;
     
     [Header("Layer Settings")]
     public string doorLayerName = "DynamicObs";
@@ -36,9 +43,10 @@ public class EnemyAI : MonoBehaviour
     public float predictionDistance = 2.5f;
 
     [Header("VFX References")]
-    public GameObject stunEffectObject; // ���� ������������� ������ StunEffects �� ��������
+    public GameObject stunEffectObject;
 
     private IAstarAI ai;
+    private Rigidbody2D rb;
     private int currentWaypointIndex = 0;
     private float searchTimer;
     private float stuckCheckTimer;
@@ -50,10 +58,14 @@ public class EnemyAI : MonoBehaviour
     private Vector3 lastPlayerPosTrack;
     
     private Vector2 lastFacingDirection = Vector2.down;
+    
+    private float originalMaxSpeed;
 
     void Start()
     {
         ai = GetComponent<IAstarAI>();
+        rb = GetComponent<Rigidbody2D>();
+        if (ai != null) originalMaxSpeed = ai.maxSpeed;
         if (anim == null) anim = GetComponent<Animator>();
         if (stunEffectObject != null) stunEffectObject.SetActive(false);
     }
@@ -89,7 +101,6 @@ public class EnemyAI : MonoBehaviour
         float currentVisionRange = (currentState == State.Chase) ? stopChaseDistance : chaseDistance;
         bool canSeePlayer = EvaluateLineOfSight(currentVisionRange, out RaycastHit2D hit);
 
-        // Если мы в режиме патруля или поиска и увидели игрока — ГАШИМ В ПОГОНЮ
         if (canSeePlayer && player != null)
         {
             lastKnownPlayerPosition = player.position;
@@ -111,10 +122,10 @@ public class EnemyAI : MonoBehaviour
                 ai.isStopped = false;
                 if (player != null)
                 {
-                    // В погоне цель — всегда живой игрок
                     ai.destination = player.position;
-
-                    // Если зрение пропало (за углом или из-за двери)
+                    
+                    TryAttackTarget();
+                    
                     if (!canSeePlayer)
                     {
                         Vector2 rawPredictedTarget = lastKnownPlayerPosition + (lastPlayerDirection * predictionDistance);
@@ -124,14 +135,11 @@ public class EnemyAI : MonoBehaviour
                         
                         if (hitCheck.collider != null)
                         {
-                            // Если на пути упреждения стена или закрытая дверь — 
-                            // монстр бежит К ЭТОЙ СТЕНЕ/ДВЕРИ, останавливаясь чуть-чуть не доходя (на 0.4 метра)
                             finalSearchTarget = hitCheck.point - (lastPlayerDirection * 0.4f);
                         }
                         
                         else
                         {
-                            // Если впереди пусто — проверяем точку через А*
                             if (AstarPath.active != null)
                             {
                                 var safeNodeInfo = AstarPath.active.GetNearest(rawPredictedTarget, NNConstraint.Default);
@@ -161,7 +169,67 @@ public class EnemyAI : MonoBehaviour
         }
     }
     
-    // Честная проверка прямой видимости с возвратом данных о препятствии
+    private void TryAttackTarget()
+    {
+        if (player == null || currentState == State.Stun) return;
+        
+        if (currentAttackTarget != null) return;
+
+        if (Time.time >= lastAttackTime + attackCooldown)
+        {
+            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+            if (distanceToPlayer <= attackRange)
+            {
+                currentAttackTarget = player.gameObject;
+                lastAttackTime = Time.time;
+
+                if (anim != null) 
+                    anim.SetTrigger("Attack");
+                else 
+                    ExecuteDirectDamage();
+            }
+        }
+    }
+    
+    public void OnAttackAnimationHit()
+    {
+        ExecuteDirectDamage();
+    }
+    
+    private void ExecuteDirectDamage()
+    {
+        if (currentAttackTarget == null || currentState == State.Stun) return;
+
+        float dist = Vector2.Distance(transform.position, currentAttackTarget.transform.position);
+        if (dist <= attackRange + 1.5f)
+        {
+            if (currentAttackTarget == player.gameObject)
+            {
+                PlayerController playerController = player.GetComponent<PlayerController>();
+                if (playerController != null)
+                {
+                    playerController.TakeDamage(damageAmount);
+                    Debug.Log("[Монстр] Нанес урон игроку!");
+                }
+            }
+            else if (currentAttackTarget.CompareTag("Item"))
+            {
+                BoxImpact box = currentAttackTarget.GetComponent<BoxImpact>();
+                if (box != null)
+                {
+                    box.TakeDamage(1);
+                    Debug.Log("[Монстр] Ударил по коробке, игрок в безопасности.");
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[Монстр] Промах по объекту {currentAttackTarget.name}! Дистанция: {dist}, а надо хотя бы {attackRange + 1.5f}");
+        }
+        
+        currentAttackTarget = null;
+    }
+    
     bool EvaluateLineOfSight(float maxDistance, out RaycastHit2D hitResult)
     {
         hitResult = new RaycastHit2D();
@@ -169,32 +237,28 @@ public class EnemyAI : MonoBehaviour
 
         float distance = Vector2.Distance(transform.position, player.position);
         
-        // РАБОТА СО СТЕЛСОМ (Конус зрения + "Слух")
         Vector2 directionToPlayer = ((Vector2)player.position - (Vector2)transform.position).normalized;
         
-        // Скалярное произведение векторов взгляда и направления на игрока
         float cosAngle = Vector2.Dot(lastFacingDirection, directionToPlayer);
         
         float allowedDistance = maxDistance;
 
-        // Если cosAngle < 0.35f, значит игрок находится сбоку или за спиной (угол > ~72 градусов от центра взгляда)
         if (cosAngle < 0.35f)
         {
-            allowedDistance = backChaseDistance; // Включаем радиус "слуха"
+            allowedDistance = backChaseDistance;
         }
         
-        // Если игрок за пределами радиуса (динамического) — не видим его
         if (distance > allowedDistance) return false;
 
         hitResult = Physics2D.Raycast(transform.position, directionToPlayer, distance, obstacleMask);
 
         if (hitResult.collider == null)
         {
-            Debug.DrawLine(transform.position, player.position, Color.green); // Вижу!
+            Debug.DrawLine(transform.position, player.position, Color.green);
             return true;
         }
 
-        Debug.DrawLine(transform.position, hitResult.point, Color.red); // Вижу только стену/дверь
+        Debug.DrawLine(transform.position, hitResult.point, Color.red);
         return false;
     }
     
@@ -207,8 +271,6 @@ public class EnemyAI : MonoBehaviour
         ai.isStopped = true; 
         ai.destination = searchTargetPosition;
     
-        // Даем небольшую задержку перед тем, как он снова пойдет искать
-        // Это позволит системе А* обновить граф и понять, что путь перекрыт
         StartCoroutine(ResumeMovementAfterDelay(0.3f));
     }
     
@@ -225,6 +287,7 @@ public class EnemyAI : MonoBehaviour
         ai.destination = waypoints[currentWaypointIndex].position;
         if (ai.reachedDestination)
         {
+            if (rb != null) rb.linearVelocity = Vector2.zero;
             currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
         }
     }
@@ -240,60 +303,59 @@ public class EnemyAI : MonoBehaviour
 
         if (reachedTarget || isStuck)
         {
-            ai.isStopped = true; // Красиво стоим на месте и «ищем»
+            ai.isStopped = true;
+            
+            if (rb != null) rb.linearVelocity = Vector2.zero;
 
             searchTimer -= Time.deltaTime;
             if (searchTimer <= 0)
             {
                 ai.isStopped = false;
-                currentState = State.Patrol; // Обыскали, никого нет — пошли патрулировать дальше
+                currentState = State.Patrol;
             }
         }
         else
         {
-            // Пока бежим к углу/двери — тормозить нельзя!
             ai.isStopped = false;
             ai.destination = searchTargetPosition;
         }
     }
 
-    private Coroutine stunCoroutine; // Ссылка для контроля одиночного стана
+    private Coroutine stunCoroutine;
 
     public IEnumerator BecomeStunned(float duration)
     {
-        // ЖЕСТКАЯ ПРОВЕРКА: Если монстр уже в стане, не даем запустить корутину второй раз
-        if (currentState == State.Stun || stunCoroutine != null)
-        {
-            yield break;
-        }
-
+        if (currentState == State.Stun) yield break;
+        
         currentState = State.Stun;
+        
+        currentAttackTarget = null;
+        
+        if (stunCoroutine != null) StopCoroutine(stunCoroutine);
         stunCoroutine = StartCoroutine(StunExecution(duration));
     }
 
     private IEnumerator StunExecution(float duration)
     {
-        // 1. Полностью останавливаем навигацию А*
         if (ai != null)
         {
             ai.isStopped = true;
-            ai.destination = transform.position; // Сбрасываем конечную точку на самого себя
-            ai.maxSpeed = 0f; // Принудительно гасим скорость плагина путей
+            ai.maxSpeed = 0f;
+            if (ai is MonoBehaviour aiComponent) aiComponent.enabled = false;
         }
 
-        // 2. Гасим физическое скольжение (инерцию Rigidbody2D)
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null)
         {
-            rb.linearVelocity = Vector2.zero; // Обнуляем скорость скольжения
-            rb.isKinematic = true; // Временный перевод в кинематику, чтобы его нельзя было сдвинуть коробкой
+            rb.linearVelocity = Vector2.zero;
+            rb.isKinematic = true;
         }
 
-        // 3. Включаем визуал стана
         if (anim != null)
         {
+            anim.ResetTrigger("Attack");
             anim.SetBool("IsStunned", true);
-            anim.SetBool("isMoving", false); // Чтобы анимация ходьбы точно отключилась
+            anim.SetBool("isMoving", false);
         }
 
         if (stunEffectObject != null)
@@ -301,10 +363,8 @@ public class EnemyAI : MonoBehaviour
             stunEffectObject.SetActive(true);
         }
 
-        // Ждем положенное время (например, 3 секунды)
         yield return new WaitForSeconds(duration);
 
-        // 4. ВОЗВРАЩАЕМ ВСЁ НАЗАД
         if (anim != null)
         {
             anim.SetBool("IsStunned", false);
@@ -315,67 +375,90 @@ public class EnemyAI : MonoBehaviour
             stunEffectObject.SetActive(false);
         }
 
-        // Возвращаем физику
         if (rb != null)
         {
             rb.isKinematic = false;
         }
 
-        // Возвращаем скорость ИИ (вернется к стандартной из настроек компонента AIPath)
         if (ai != null)
         {
+            if (ai is MonoBehaviour aiComponent) aiComponent.enabled = true;
             ai.isStopped = false;
-            // Восстанавливаем дефолтную скорость. 
-            // Если у тебя в компоненте AIPath скорость отличается от 2.5, укажи тут свою!
-            ai.maxSpeed = 2.5f;
+            ai.maxSpeed = originalMaxSpeed;
         }
 
-        // Только в самом конце меняем стейт и очищаем ссылку
-        currentState = State.Patrol; // Возвращаем в патруль, он сам переключится в Chase, если увидит игрока
+        currentState = State.Patrol;
         stunCoroutine = null;
     }
 
     void UpdateAnimation()
     {
-        if (anim == null) return;
+        if (anim == null || ai == null) return;
+        
+        Vector2 desiredDir = ai.desiredVelocity;
+        float speed = desiredDir.magnitude;
 
-        Vector2 velocity = ai.velocity;
-        float speed = velocity.magnitude;
-
-        if (speed > 0.2f && currentState != State.Stun)
+        if (speed > 0.5f && currentState != State.Stun && !ai.isStopped && !ai.reachedDestination)
         {
-            Vector2 dir = velocity.normalized;
+            Vector2 normalizedDir = desiredDir.normalized;
             
-            if (Mathf.Abs(dir.x) > 0.3f || Mathf.Abs(dir.y) > 0.3f)
+            Vector2 snapedDir = Vector2.zero;
+            if (Mathf.Abs(normalizedDir.x) > Mathf.Abs(normalizedDir.y))
             {
-                lastFacingDirection = dir;
-                
-                if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+                snapedDir = new Vector2(normalizedDir.x > 0 ? 1f : -1f, 0f);
+            }
+            else
+            {
+                snapedDir = new Vector2(0f, normalizedDir.y > 0 ? 1f : -1f);
+            }
+
+            if (snapedDir == movementIntention)
+            {
+                changeDirectionTimer = 0f;
+            }
+            else
+            {
+                if (movementIntention == Vector2.zero)
                 {
-                    anim.SetFloat("MoveX", dir.x > 0 ? 1f : -1f);
-                    anim.SetFloat("MoveY", 0f);
+                    movementIntention = snapedDir;
+                    changeDirectionTimer = 0f;
                 }
                 else
                 {
-                    anim.SetFloat("MoveX", 0f);
-                    anim.SetFloat("MoveY", dir.y > 0 ? 1f : -1f);
+                    changeDirectionTimer += Time.deltaTime;
+
+                    if (changeDirectionTimer >= directionChangeDamping)
+                    {
+                        movementIntention = snapedDir;
+                        changeDirectionTimer = 0f;
+                    }
                 }
             }
-            anim.SetBool("isMoving", true);
+            
+            if (movementIntention != Vector2.zero)
+            {
+                lastFacingDirection = movementIntention;
+                
+                anim.SetFloat("MoveX", movementIntention.x);
+                anim.SetFloat("MoveY", movementIntention.y);
+                anim.SetBool("isMoving", true);
+            }
         }
         else
         {
             anim.SetBool("isMoving", false);
+            anim.SetFloat("MoveX", 0f);
+            anim.SetFloat("MoveY", 0f);
+            
+            changeDirectionTimer = 0f;
         }
     }
 
     void OnDrawGizmosSelected()
     {
-        // Зеленый конус/луч — куда сейчас направлен взгляд ИИ
         Gizmos.color = Color.green;
         Gizmos.DrawRay(transform.position, (Vector3)lastFacingDirection * chaseDistance);
 
-        // Синяя зона — радиус "слуха" со спины
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, backChaseDistance);
 
@@ -395,35 +478,19 @@ public class EnemyAI : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        // ���� ������ � ��������, �� �� ����� ���������
         if (currentState == State.Stun) return;
-
-        // ��������� ������� ����� (����� ��� ������ � ��� �������)
-        if (Time.time >= lastAttackTime + attackCooldown)
+        
+        if (currentAttackTarget != null) return;
+        
+        if (collision.gameObject.CompareTag("Item"))
         {
-            // 1. ������ ����� ������
-            if (collision.gameObject.CompareTag("Player"))
+            BoxImpact box = collision.gameObject.GetComponent<BoxImpact>();
+            if (box != null && !box.IsFlyingAndCanStun)
             {
-                PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
-                if (playerController != null)
+                if (Time.time >= lastAttackTime + attackCooldown)
                 {
-                    playerController.TakeDamage(damageAmount);
+                    currentAttackTarget = collision.gameObject;
                     lastAttackTime = Time.time;
-
-                    if (anim != null) anim.SetTrigger("Attack");
-                }
-            }
-            // 2. ����� ������ ����� �������
-            else if (collision.gameObject.CompareTag("Item"))
-            {
-                BoxImpact box = collision.gameObject.GetComponent<BoxImpact>();
-                if (box != null)
-                {
-                    // ������ ������� ������� 1 ������� ����� (������� 1 �� �����)
-                    box.TakeDamage(1);
-                    lastAttackTime = Time.time;
-
-                    // ��������� �� �� ����� �������� ����� �����/�������!
                     if (anim != null) anim.SetTrigger("Attack");
                 }
             }

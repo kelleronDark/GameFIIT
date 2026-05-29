@@ -27,10 +27,8 @@ public class HealthBarController : MonoBehaviour
 
         float healthPercent = Mathf.Clamp01((float)currentHealth / maxHealth);
         
-        // 1. Меняем ширину
         fillRect.sizeDelta = new Vector2(maxBarWidth * healthPercent, fillRect.sizeDelta.y);
         
-        // 2. Обновляем цвет в зависимости от процента
         UpdateColor(healthPercent); 
     }
 

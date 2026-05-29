@@ -4,25 +4,25 @@ using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
-    public static InventoryManager Instance; // Синглтон — удобно для доступа из PickupPart
+    public static InventoryManager Instance;
     
     private Sprite[] savedSpritesSnapshot = new Sprite[4];
     
     private PlayerController playerController;
 
     [Header("UI Slots")]
-    public Image[] slots; // Перетащи сюда Image от Slot 1–4
+    public Image[] slots;
 
     [Header("Settings")]
-    public int maxItems = 4; // Максимум предметов
-    private Sprite[] collectedSprites = new Sprite[4]; // Храним спрайты подобранных предметов
+    public int maxItems = 4;
+    private Sprite[] collectedSprites = new Sprite[4];
     
     [Header("Audio")]
-    public AudioSource pickupAudioSource; // Ссылка на источник звука
+    public AudioSource pickupAudioSource;
     public AudioClip pickupClip; 
     
-    private int currentKeys = 0;      // Текущее кол-во ключей
-    private int savedKeysSnapshot = 0; // Снимок для отката
+    private int currentKeys = 0;
+    private int savedKeysSnapshot = 0;
 
     void Awake()
     {
@@ -38,7 +38,6 @@ public class InventoryManager : MonoBehaviour
     {
         if (pickupAudioSource != null && pickupClip != null)
         {
-            // PlayOneShot позволяет звуку доиграть, даже если объект удалится или изменится состояние
             pickupAudioSource.PlayOneShot(pickupClip);
         }
     }
@@ -46,7 +45,6 @@ public class InventoryManager : MonoBehaviour
     
     public void SaveInventoryState()
     {
-        // Копируем текущие спрайты в массив сохранения
         for (int i = 0; i < collectedSprites.Length; i++)
         {
             savedSpritesSnapshot[i] = collectedSprites[i];
@@ -56,18 +54,15 @@ public class InventoryManager : MonoBehaviour
     
     // public void ResetInventory()
     // {
-    //     // 1. Выбрасываем то, что в руках (твой метод уже есть)
     //     if (playerController != null)
     //         playerController.ForceDropItem();
     //     
     //     currentKeys = savedKeysSnapshot;
     //
-    //     // 2. Откатываем массив спрайтов к моменту сохранения
     //     for (int i = 0; i < collectedSprites.Length; i++)
     //     {
     //         collectedSprites[i] = savedSpritesSnapshot[i];
     //     
-    //         // 3. Обновляем визуальные слоты UI
     //         if (collectedSprites[i] != null)
     //         {
     //             slots[i].sprite = collectedSprites[i];
@@ -84,15 +79,12 @@ public class InventoryManager : MonoBehaviour
 
     void Start()
     {
-        // Если инвентарь уже был загружен из сохранения —
-        // просто обновляем UI и не скрываем слоты
         if (isLoaded)
         {
             RefreshUI();
             return;
         }
 
-        // Иначе это новая игра — очищаем UI
         for (int i = 0; i < slots.Length; i++)
         {
             if (slots[i] != null)
@@ -103,11 +95,6 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Подобрать предмет — добавить его спрайт в первый свободный слот
-    /// </summary>
-    /// <param name="itemSprite">Спрайт детали</param>
-    /// <returns>true если успешно подобрано, false если инвентарь полон</returns>
     public bool PickupItem(Sprite itemSprite)
     {
         if (itemSprite == null)
@@ -116,14 +103,13 @@ public class InventoryManager : MonoBehaviour
             return false;
         }
 
-        // Ищем первый свободный слот
         for (int i = 0; i < collectedSprites.Length; i++)
         {
             if (collectedSprites[i] == null)
             {
                 collectedSprites[i] = itemSprite;
                 slots[i].sprite = itemSprite;
-                slots[i].enabled = true; // Показываем иконку
+                slots[i].enabled = true;
 
                 Debug.Log($"Подобрана деталь в слот {i}: {itemSprite.name}");
                 
@@ -133,13 +119,10 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
-        Debug.LogWarning("Инвентарь полон! Нельзя подобрать ещё одну деталь.");
+        Debug.LogWarning("Инвентарь полон! Нельзя подобрать ещё одну деталь");
         return false;
     }
-
-    /// <summary>
-    /// Очистить весь инвентарь (для тестов или сброса)
-    /// </summary>
+    
     public void ClearInventory()
     {
         for (int i = 0; i < collectedSprites.Length; i++)
@@ -153,9 +136,6 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Проверить, занят ли слот
-    /// </summary>
     public bool IsSlotOccupied(int index)
     {
         if (index < 0 || index >= collectedSprites.Length) return false;
@@ -212,14 +192,13 @@ public class InventoryManager : MonoBehaviour
                 slots[i].sprite = found;
                 
                 slots[i].enabled = true; 
-                slots[i].color = new Color(1, 1, 1, 1); // Белый цвет, Альфа 100%
+                slots[i].color = new Color(1, 1, 1, 1);
                 slots[i].gameObject.SetActive(true);
     
                 Debug.Log($"[UI-FIX] Слот {i} активирован для {found.name}");
             }
         }
     
-        // ВАЖНО: Сначала обновляем Snapshot вручную, чтобы он не был пустым
         for (int i = 0; i < collectedSprites.Length; i++)
         {
             savedSpritesSnapshot[i] = collectedSprites[i];

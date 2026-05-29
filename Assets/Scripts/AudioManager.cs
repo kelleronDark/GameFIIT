@@ -20,44 +20,39 @@ public class AudioManager : MonoBehaviour
     [Range(0f, 1f)]
     public float musicVolume = 0.7f;
     public float sfxVolume = 1f;
-    public float fadeDuration = 1.5f; // Длительность плавного перехода
+    public float fadeDuration = 1.5f;
     
     private Coroutine musicFadeCoroutine;
     public bool isPlayingHatch = false;
     
     private void Awake()
     {
-        // Singleton - чтобы был только один AudioManager
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Не уничтожать при загрузке сцен
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject); // Если уже есть - удаляем дубликат
+            Destroy(gameObject);
             return;
         }
 
-        // Создаём AudioSource для музыки, если не назначен
         if (musicSource == null)
             musicSource = gameObject.AddComponent<AudioSource>();
         
         if (sfxSource == null)
             sfxSource = gameObject.AddComponent<AudioSource>();
 
-        // Настройка AudioSource для музыки
         musicSource.loop = true;
-        musicSource.volume = 0f; // Начинаем с тишины (плавное появление)
+        musicSource.volume = 0f;
         sfxSource.volume = sfxVolume;
     }
 
-    // Метод для воспроизведения музыки с плавным переходом
     public void PlayMusic(AudioClip clip, float fadeTime = 2f)
     {
         if (clip == null) return;
 
-        // Если этот трек УЖЕ играет, ничего не переключаем, просто проверяем громкость
         if (musicSource.clip == clip && musicSource.isPlaying)
         {
             if (musicSource.volume < musicVolume)
@@ -68,7 +63,6 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
-        // Если играет другой трек — плавно меняем. Если ничего не играет — просто плавно включаем.
         if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
         
         if (musicSource.isPlaying)
@@ -90,10 +84,8 @@ public class AudioManager : MonoBehaviour
         musicFadeCoroutine = StartCoroutine(FadeOutAndStopCoroutine(fadeTime));
     }
 
-    // Плавная смена музыки
     private IEnumerator FadeAndSwitchMusic(AudioClip newClip, float fadeTime)
     {
-        // Плавно уменьшаем громкость до 0
         float startVolume = musicSource.volume;
         while (musicSource.volume > 0f)
         {
@@ -104,7 +96,6 @@ public class AudioManager : MonoBehaviour
         musicSource.Stop();
         musicSource.clip = newClip;
 
-        // Меняем трек
         if (newClip != null)
         {
             musicSource.Play();
@@ -117,7 +108,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // Плавное изменение громкости
     private IEnumerator FadeMusicCoroutine(float targetVolume, float fadeTime)
     {
         float startVolume = musicSource.volume;
@@ -133,7 +123,6 @@ public class AudioManager : MonoBehaviour
         musicSource.volume = targetVolume;
     }
     
-    // Коruтина затухания и остановки
     private IEnumerator FadeOutAndStopCoroutine(float fadeTime)
     {
         float startVolume = musicSource.volume;
@@ -150,14 +139,12 @@ public class AudioManager : MonoBehaviour
         musicSource.Stop();
     }
 
-    // Воспроизвести звук (SFX)
     public void PlaySFX(AudioClip clip, float volume = 1f)
     {
         if (sfxSource != null && clip != null)
             sfxSource.PlayOneShot(clip, volume);
     }
 
-    // Установить громкость музыки
     public void SetMusicVolume(float volume)
     {
         musicVolume = Mathf.Clamp01(volume);
@@ -165,7 +152,6 @@ public class AudioManager : MonoBehaviour
             musicSource.volume = musicVolume;
     }
 
-    // Установить громкость звуков
     public void SetSFXVolume(float volume)
     {
         sfxVolume = Mathf.Clamp01(volume);

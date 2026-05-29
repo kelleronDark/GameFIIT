@@ -10,12 +10,12 @@ public class DeathScreen : MonoBehaviour
     public GameObject deathPanel;
     public CanvasGroup canvasGroup;
     public TextMeshProUGUI mainText;
-    public TextMeshProUGUI hintText; // Теперь будем печатать и его
+    public TextMeshProUGUI hintText;
     public AudioSource deathSound;
 
     [Header("Settings")]
     public string fullMessage = "Вы погибли в сражении за запчасти в самом таинственном городе на Земле..";
-    public string hintMessage = "Нажмите F, чтобы возродиться"; // <-- Новое поле
+    public string hintMessage = "Нажмите F, чтобы возродиться";
     public float typeSpeed = 0.05f;
     public float fadeDuration = 1.5f;
     
@@ -39,17 +39,17 @@ public class DeathScreen : MonoBehaviour
         
         if (hintText != null)
         {
-            hintText.text = ""; // Очищаем изначально
-            hintText.gameObject.SetActive(true); // Оставляем активным, но пустым
+            hintText.text = "";
+            hintText.gameObject.SetActive(true);
         }
     }
 
     public void ShowDeathScreen()
     {
-        if (isDead) return; // Если уже мертвы — ничего не делаем
+        if (isDead) return;
         isDead = true;
         
-        Debug.Log("Показываем экран смерти...");
+        Debug.Log("Показываем экран смерти");
 
         if (deathPanel != null)
             deathPanel.SetActive(true);
@@ -69,16 +69,13 @@ public class DeathScreen : MonoBehaviour
 
     private IEnumerator ShowDeathSequence()
     {
-        // 1. Плавное затемнение
         yield return StartCoroutine(FadeIn());
 
-        // 2. Печатаем главный текст
         isTyping = true;
         typingCoroutine = StartCoroutine(TypeText(mainText, fullMessage));
         isTyping = false;
 
-        // 3. Печатаем подсказку
-        yield return new WaitForSecondsRealtime(0.3f); // Небольшая пауза для эффекта
+        yield return new WaitForSecondsRealtime(0.3f);
         typingCoroutine = StartCoroutine(TypeText(hintText, hintMessage));
         yield return typingCoroutine;
         
@@ -104,12 +101,11 @@ public class DeathScreen : MonoBehaviour
             canvasGroup.alpha = 1f;
     }
 
-    // Универсальный метод печати для любого TextMeshProUGUI
     private IEnumerator TypeText(TextMeshProUGUI textComponent, string message)
     {
         if (textComponent == null) yield break;
 
-        textComponent.text = ""; // Очищаем
+        textComponent.text = "";
 
         foreach (char letter in message.ToCharArray())
         {
@@ -122,10 +118,8 @@ public class DeathScreen : MonoBehaviour
     {
         if (!isDead) return;
 
-        // Если игрок нажал F
         if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
         {
-            // Скип во время печати текста
             if (isTyping)
             {
                 SkipTyping();
@@ -139,24 +133,21 @@ public class DeathScreen : MonoBehaviour
     
     private void SkipTyping()
     {
-        // Насильно останавливаем корутины вывода текста
         if (sequenceCoroutine != null) StopCoroutine(sequenceCoroutine);
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
 
-        // Мгновенно заполняем весь текст
         if (mainText != null) mainText.text = fullMessage;
         if (hintText != null) hintText.text = hintMessage;
 
-        // Насильно выставляем альфу панели на максимум (на случай, если скипнули во время фейда)
         if (canvasGroup != null) canvasGroup.alpha = 1f;
 
         isTyping = false;
-        canRestart = true; // Теперь можно рестартить следующим нажатием
+        canRestart = true;
     }
 
     public void RestartGame()
     {
-        Debug.Log("Перезагружаем сцену...");
+        Debug.Log("Перезагружаем сцену");
 
         Time.timeScale = 1f;
 

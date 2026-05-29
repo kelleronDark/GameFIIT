@@ -5,18 +5,15 @@ public class CursorManager : MonoBehaviour
 {
     public static CursorManager Instance;
 
-    // Константы индексов сцен (как в Build Settings)
     private const int MAIN_MENU_INDEX = 0;
     private const int CUTSCENES_INDEX = 1;
     private const int GAME_LEVEL_INDEX = 2;
 
-    // Этот метод вызывается АВТОМАТИЧЕСКИ перед загрузкой самой первой сцены
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void InitializeAutomatic()
     {
         if (Instance == null)
         {
-            // Сами создаем пустой объект в памяти, переименовываем и вешаем скрипт
             GameObject go = new GameObject("Automatic_CursorManager");
             Instance = go.AddComponent<CursorManager>();
             DontDestroyOnLoad(go);

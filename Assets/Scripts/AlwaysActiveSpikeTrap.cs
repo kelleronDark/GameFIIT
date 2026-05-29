@@ -3,15 +3,14 @@ using UnityEngine;
 public class AlwaysActiveSpikeTrap : MonoBehaviour
 {
     [Header("Settings")]
-    public int damagePerTick = 10;      // Урон за один "тик"
-    public float damageInterval = 0.5f; // Интервал между нанесениями урона (секунды)
+    public int damagePerTick = 10;
+    public float damageInterval = 0.5f;
 
     private bool isPlayerInside = false;
     private float nextDamageTime = 0f;
 
     void Start()
     {
-        // Опционально: можно добавить проверку, что коллайдер есть и является триггером
         BoxCollider2D trigger = GetComponent<BoxCollider2D>();
         if (trigger == null || !trigger.isTrigger)
         {
@@ -21,7 +20,6 @@ public class AlwaysActiveSpikeTrap : MonoBehaviour
 
     void Update()
     {
-        // Наносим урон периодически, пока игрок внутри зоны
         if (isPlayerInside && Time.time >= nextDamageTime)
         {
             PlayerController player = FindObjectOfType<PlayerController>();
@@ -38,8 +36,8 @@ public class AlwaysActiveSpikeTrap : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerInside = true;
-            nextDamageTime = Time.time + damageInterval; // Первый урон сразу
-            ApplyDamage(other.gameObject);               // И сразу наносим первый тик
+            nextDamageTime = Time.time + damageInterval;
+            ApplyDamage(other.gameObject);
         }
     }
 
@@ -57,8 +55,6 @@ public class AlwaysActiveSpikeTrap : MonoBehaviour
         if (player != null)
         {
             player.TakeDamage(damagePerTick);
-            // Можно убрать лог в релизе, но для отладки полезно
-            // Debug.Log($"Активная ловушка нанесла {damagePerTick} урона игроку.");
         }
     }
 }

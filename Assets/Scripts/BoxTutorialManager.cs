@@ -11,27 +11,22 @@ public class BoxTutorialManager : MonoBehaviour
     public TextMeshProUGUI dialogueText;
     
     [Header("Settings")]
-    public string prefsKey = "HasSeenBoxTutorial";
     public float typingSpeed = 0.04f;
     
     private bool isTutorialActive = false;
     private Coroutine typingCoroutine;
-    
-    // Флаг для игнорирования ввода в первом кадре после открытия
     private bool ignoreInputForOneFrame = false;
 
     void Update()
     {
         if (isTutorialActive)
         {
-            // Пропускаем первый кадр, чтобы избежать мгновенного закрытия от кнопки подбора
             if (ignoreInputForOneFrame)
             {
                 ignoreInputForOneFrame = false;
                 return;
             }
 
-            // Закрытие по клавиатуре
             if (Keyboard.current != null && 
                 (Keyboard.current.fKey.wasPressedThisFrame || 
                  Keyboard.current.escapeKey.wasPressedThisFrame))
@@ -39,7 +34,6 @@ public class BoxTutorialManager : MonoBehaviour
                 CloseTutorial();
             }
         
-            // Закрытие по мыши
             if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             {
                 CloseTutorial();
@@ -49,23 +43,22 @@ public class BoxTutorialManager : MonoBehaviour
 
     public void ShowBoxTutorial()
     {
-        if (!ShouldShowTutorial())
+        if (SaveManager.Instance != null && SaveManager.Instance.IsBoxTutorialSeen())
         {
-            Debug.Log("❌ BoxTutorial: Уже был показан ранее");
+            Debug.Log("BoxTutorial: Уже был показан в этом сохранении.");
             return;
         }
         
         if (dialoguePanel == null)
         {
-            Debug.LogError("❌ BoxTutorial: dialoguePanel не назначен!");
+            Debug.LogError("BoxTutorial: dialoguePanel не назначен!");
             return;
         }
         
-        Debug.Log("✅ BoxTutorial: Показываем туториал!");
+        Debug.Log("BoxTutorial: Показываем туториал!");
         
         isTutorialActive = true;
-        ignoreInputForOneFrame = true; // <-- ВАЖНО: Блокируем ввод на 1 кадр
-        
+        ignoreInputForOneFrame = true;
         dialoguePanel.SetActive(true);
         
         if (nameText != null)
@@ -110,24 +103,15 @@ public class BoxTutorialManager : MonoBehaviour
             typingCoroutine = null;
         }
         
-        PlayerPrefs.SetInt(prefsKey, 1);
-        PlayerPrefs.Save();
-        
-        Debug.Log("✅ Box tutorial saved");
-        
         if (SaveManager.Instance != null)
         {
-            SaveManager.Instance.SaveGame(); 
+            SaveManager.Instance.SetBoxTutorialSeen(true);
+            Debug.Log("Состояние туториала изменено в памяти. Ждем чекпоинт.");
         }
         
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);
         
         isTutorialActive = false;
-    }
-
-    public static bool ShouldShowTutorial(string prefsKey = "HasSeenBoxTutorial")
-    {
-        return PlayerPrefs.GetInt(prefsKey, 0) == 0;
     }
 }

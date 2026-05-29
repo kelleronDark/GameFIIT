@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class KeySlotPulse : MonoBehaviour
 {
-    public float pulseScale = 4f; // Насколько сильно увеличивается (1.15 = +15%)
-    public float pulseDuration = 0.4f; // Как долго длится анимация
+    public float pulseScale = 4f;
+    public float pulseDuration = 0.4f;
     
     private Vector3 originalScale;
     private bool isPulsing = false;
@@ -11,7 +11,6 @@ public class KeySlotPulse : MonoBehaviour
 
     void Start()
     {
-        // Запоминаем исходный размер слота
         originalScale = transform.localScale;
     }
 
@@ -21,11 +20,9 @@ public class KeySlotPulse : MonoBehaviour
         {
             pulseTimer += Time.deltaTime / pulseDuration;
             
-            // Плавное увеличение и уменьшение (синусоида)
             float scaleMultiplier = Mathf.Lerp(1f, pulseScale, Mathf.Sin(pulseTimer * Mathf.PI));
             transform.localScale = originalScale * scaleMultiplier;
             
-            // Когда время вышло, возвращаем исходный размер
             if (pulseTimer >= 1f)
             {
                 isPulsing = false;
@@ -34,7 +31,6 @@ public class KeySlotPulse : MonoBehaviour
         }
     }
 
-    // Этот метод мы будем вызывать из KeyInventory, когда добавляем ключ
     public void Pulse()
     {
         isPulsing = true;

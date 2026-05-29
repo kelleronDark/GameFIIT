@@ -5,20 +5,18 @@ using UnityEngine.InputSystem;
 public class MenuScreen : MonoBehaviour
 {
     [Header("References")]
-    public GameObject pausePanel; // Ссылка на PauseMenuPanel
+    public GameObject pausePanel;
 
     private bool isPaused = false;
 
     void Start()
     {
-        // При старте игры панель паузы обязательно скрыта
         if (pausePanel != null)
             pausePanel.SetActive(false);
     }
 
     void Update()
     {
-        // Ловим нажатие Escape
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             if (isPaused)
@@ -28,13 +26,12 @@ public class MenuScreen : MonoBehaviour
         }
     }
 
-    // 1. Продолжить игру
     public void Resume()
     {
         if (pausePanel != null)
             pausePanel.SetActive(false);
 
-        Time.timeScale = 1f; // Возвращаем нормальное время
+        Time.timeScale = 1f;
         isPaused = false;
 
         if (CursorManager.Instance != null)
@@ -48,13 +45,12 @@ public class MenuScreen : MonoBehaviour
         }
     }
 
-    // Активация паузы
     public void Pause()
     {
         if (pausePanel != null)
             pausePanel.SetActive(true);
 
-        Time.timeScale = 0f; // Замораживаем физику и Update'ы
+        Time.timeScale = 0f;
         isPaused = true;
 
         if (CursorManager.Instance != null)
@@ -68,10 +64,8 @@ public class MenuScreen : MonoBehaviour
         }
     }
 
-    // 2. Выйти в главное меню
     public void LoadMainMenu(string mainMenuSceneName)
     {
-        Time.timeScale = 1f; // ОБЯЗАТЕЛЬНО возвращаем время в 1 перед сменой сцены!
         StartCoroutine(WaitAndLoadMenu(mainMenuSceneName));
     }
     
@@ -79,21 +73,17 @@ public class MenuScreen : MonoBehaviour
     {
         if (AudioManager.Instance != null)
         {
-            // Быстро тушим музыку уровня за 0.3 секунды
             AudioManager.Instance.StopMusicWithFade(0.3f);
         }
 
-        // Ждем эти 0.3 секунды, пока музыка затихает
         yield return new WaitForSecondsRealtime(0.3f);
 
-        // И только теперь меняем сцену
         SceneManager.LoadScene(sceneName);
     }
 
-    // 3. Выйти из игры
     public void QuitGame()
     {
-        Debug.Log("Выход из приложения...");
+        Debug.Log("Выход из приложения");
         Application.Quit();
     }
 }

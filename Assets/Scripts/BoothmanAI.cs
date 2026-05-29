@@ -5,8 +5,8 @@ using UnityEngine;
 
 public enum BoothKeeperStoryState
 {
-    NotMet,         // Еще не подходили (Будет катсцена с Лавочником)
-    AlreadyTalked   // Уже подходили, Будочник просто молчит "..."
+    NotMet,
+    AlreadyTalked
 }
 
 public class BoothmanAI : MonoBehaviour
@@ -33,13 +33,11 @@ public class BoothmanAI : MonoBehaviour
     public AudioClip typeSound;            
 
     [Header("Ссылки на Лавочника и Камеру")]
-    [Tooltip("Перетащи сюда трансформ Лавочника, чтобы камера полетела к нему")]
     public Transform merchantTransform;   
     public float cameraPanSpeed = 3f;      
-    public float merchantViewDuration = 3f; // Сколько секунд Лавочник ворчит
+    public float merchantViewDuration = 3f;
 
     [Header("Реплики Лавочника (Первая встреча)")]
-    [Tooltip("Сюда пишем реплики Лавочника, который объясняет, почему Будочник молчит")]
     public DialogueLine[] merchantCommentPhrases;
 
     [Header("UI Hint")]
@@ -96,7 +94,6 @@ public class BoothmanAI : MonoBehaviour
     
     private void HandleInteraction()
     {
-        // 1. Скип анимации текста
         if (typingCoroutine != null)
         {
             StopCoroutine(typingCoroutine);
@@ -109,14 +106,12 @@ public class BoothmanAI : MonoBehaviour
             return;
         }
 
-        // 2. Старт диалога
         if (!isTalking)
         {
             StartDialogueBranch();
         }
         else
         {
-            // 3. Листаем фразы
             currentPhraseIndex++;
             if (currentActivePhrases != null && currentPhraseIndex < currentActivePhrases.Length)
             {
@@ -137,13 +132,11 @@ public class BoothmanAI : MonoBehaviour
 
         if (storyState == BoothKeeperStoryState.NotMet)
         {
-            // Сначала Будочник выдает свои "...", а потом запустится камера к Лавочнику
             DialogueLine silentLine = new DialogueLine { speaker = Speaker.BoothKeeper, text = "..." };
             currentActivePhrases = new DialogueLine[] { silentLine };
         }
         else
         {
-            // Во все последующие разы он просто молчит и диалог сразу закрывается на следующую F
             DialogueLine silentLine = new DialogueLine { speaker = Speaker.BoothKeeper, text = "..." };
             currentActivePhrases = new DialogueLine[] { silentLine };
         }
@@ -158,7 +151,6 @@ public class BoothmanAI : MonoBehaviour
     {
         if (storyState == BoothKeeperStoryState.NotMet && currentActivePhrases == merchantCommentPhrases)
         {
-            // Мы закончили читать реплики Лавочника -> Катсцена завершена
             isTalking = false;
             if (dialoguePanel != null) dialoguePanel.SetActive(false);
             storyState = BoothKeeperStoryState.AlreadyTalked;
@@ -174,13 +166,11 @@ public class BoothmanAI : MonoBehaviour
 
         if (storyState == BoothKeeperStoryState.NotMet)
         {
-            // Игрок увидел "..." Будочника, теперь закрываем это окно и запускаем полет камеры к Лавочнику
             if (dialoguePanel != null) dialoguePanel.SetActive(false);
             StartCoroutine(CutsceneLookAtMerchant());
         }
         else
         {
-            // Если уже встречались, просто закрываем "..."
             isTalking = false;
             if (dialoguePanel != null) dialoguePanel.SetActive(false);
         }
@@ -211,7 +201,6 @@ public class BoothmanAI : MonoBehaviour
             merchantAI.SetMovementLocked(true);
         }
 
-        // Блокируем игрока
         PlayerController playerCtrl = null;
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
@@ -226,7 +215,6 @@ public class BoothmanAI : MonoBehaviour
             CameraFollow camFollow = mainCamera.GetComponent<CameraFollow>();
             if (camFollow != null) camFollow.enabled = false;
 
-            // Летим к Лавочнику
             float elapsed = 0f;
             Vector3 targetCamPos = new Vector3(merchantTransform.position.x, merchantTransform.position.y, originalCamPos.z);
             while (elapsed < 1.5f)
@@ -239,13 +227,11 @@ public class BoothmanAI : MonoBehaviour
             
             isCutsceneActive = false;
             
-            // Включаем диалог Лавочника, пока камера на нем
             currentActivePhrases = merchantCommentPhrases;
             currentPhraseIndex = 0;
             if (dialoguePanel != null) dialoguePanel.SetActive(true);
             SetupDialogueLine(currentActivePhrases[currentPhraseIndex]);
 
-            // Ждем, пока игрок пролистает ВСЕ фразы Лавочника (EndDialogueBranch переключит флаг)
             while (storyState == BoothKeeperStoryState.NotMet)
             {
                 yield return null;
@@ -253,7 +239,6 @@ public class BoothmanAI : MonoBehaviour
             
             isCutsceneActive = true;
 
-            // Возвращаем камеру к Будочнику/Игроку
             elapsed = 0f;
             while (elapsed < 1.5f)
             {

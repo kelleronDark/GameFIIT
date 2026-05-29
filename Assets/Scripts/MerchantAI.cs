@@ -5,11 +5,11 @@ using System.Collections;
 
 public enum MerchantStoryState
 {
-    NotMet,             // Еще не разговаривали (Первая встреча)
-    LookingAtSubmarine, // Камера летит к подлодке (блокировка управления)
-    PostSubmarineOffer, // Рассказал про поломку лодки, готов объяснять правила
-    SearchingForParts,  // Игрок бегает по уровню и ищет детали
-    ReadyToRepair       // Все детали собраны, пора чинить!
+    NotMet,
+    LookingAtSubmarine,
+    PostSubmarineOffer,
+    SearchingForParts,
+    ReadyToRepair
 }
 
 public class MerchantAI : MonoBehaviour
@@ -23,9 +23,9 @@ public class MerchantAI : MonoBehaviour
     [System.Serializable]
     public struct DialogueLine
     {
-        public Speaker speaker;       // Выпадающий список: Merchant или Hero
+        public Speaker speaker;
         [TextArea(2, 4)]
-        public string text;           // Просто чистый текст реплики
+        public string text;
     }
     
     [Header("Настройки движения")]
@@ -33,23 +33,23 @@ public class MerchantAI : MonoBehaviour
     public float walkDistance = 3f;
 
     [Header("Настройки диалога")]
-    public GameObject dialoguePanel;       // Панель для текста (можно без фона)
+    public GameObject dialoguePanel;
     public TextMeshProUGUI nameText;
-    public TextMeshProUGUI dialogueText;   // Текст TMP
-    public float typingSpeed = 0.04f;      // Скорость печати
-    public AudioClip typeSound;            // Звук клика при печати (опционально)
+    public TextMeshProUGUI dialogueText;
+    public float typingSpeed = 0.04f;
+    public AudioClip typeSound;
     
     [Header("Настройки Сюжета & Камеры")]
-    public Transform submarineTransform;   // Ссылка на объект подлодки на сцене
-    public float cameraPanSpeed = 3f;      // Скорость полета камеры к лодке
-    public float submarineViewDuration = 2.5f; // Сколько секунд показываем лодку игроку
+    public Transform submarineTransform;
+    public float cameraPanSpeed = 3f;
+    public float submarineViewDuration = 2.5f;
     private bool isExternalMovementLock = false;
     
     [Header("Настройки Инвентаря")]
-    [Tooltip("Имена спрайтов деталей в инвентаре, которые нужно собрать (например, engine, propeller, battery)")]
+    [Tooltip("Имена спрайтов деталей в инвентаре, которые нужно собрать")]
     public string[] partItemNames = new string[] { "Part1", "Part2", "Part3", "Part4" };
 
-    [Header("Диалоговые ветки (Реплики)")]
+    [Header("Диалоговые реплики")]
     public DialogueLine[] introPhrases;
     public DialogueLine[] repairOfferPhrases;
     public DialogueLine[] tutorialPhrases;
@@ -58,9 +58,8 @@ public class MerchantAI : MonoBehaviour
     public DialogueLine[] finalPhrases;
 
     [Header("UI Hint")]
-    public GameObject hintPrefab;          // Префаб подсказки "Нажмите F"
+    public GameObject hintPrefab;
     
-    // Внутренние переменные состояния (объявлены для контроля)
     private MerchantStoryState storyState = MerchantStoryState.NotMet;
     private Rigidbody2D rb;
     private Vector2 startPos;
@@ -93,11 +92,9 @@ public class MerchantAI : MonoBehaviour
             rb.freezeRotation = true;
         }
 
-        // Выключаем панель в начале игры
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);
 
-        // Настраиваем звук (если есть)
         if (typeSound != null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
@@ -113,7 +110,6 @@ public class MerchantAI : MonoBehaviour
             return; 
         }
         
-        // Игрок нажимает F рядом с Лавочником
         if (isPlayerNearby && Keyboard.current.fKey.wasPressedThisFrame)
         {
             HandleInteraction();
@@ -122,25 +118,21 @@ public class MerchantAI : MonoBehaviour
     
     private void HandleInteraction()
     {
-        // 1. Если текст сейчас печатается — при нажатии F мгновенно отображаем всю фразу целиком
         if (typingCoroutine != null)
         {
             StopCoroutine(typingCoroutine);
             typingCoroutine = null;
             
-            // Сразу выводим чистый текст текущей реплики
             dialogueText.text = currentActivePhrases[currentPhraseIndex].text;
             return;
         }
 
-        // 2. Если разговор еще не был начат — запускаем его
         if (!isTalking)
         {
             StartDialogueBranch();
         }
         else
         {
-            // 3. Если разговор уже идет — переходим к следующей фразе
             currentPhraseIndex++;
             if (currentPhraseIndex < currentActivePhrases.Length)
             {
@@ -148,7 +140,6 @@ public class MerchantAI : MonoBehaviour
             }
             else
             {
-                // Если фразы закончились — закрываем диалоговое окно
                 EndDialogueBranch();
             }
         }
@@ -178,13 +169,11 @@ public class MerchantAI : MonoBehaviour
         }
         else if (storyState == MerchantStoryState.PostSubmarineOffer)
         {
-            // Сюда мы попадем ОДИН раз, когда игрок заговорит ПОСЛЕ катсцены лодки
             currentActivePhrases = tutorialPhrases;
         }
         else if (storyState == MerchantStoryState.SearchingForParts 
                  || storyState == MerchantStoryState.LookingAtSubmarine)
         {
-            // Обучение позади, теперь гоняем проверки инвентаря
             bool hasAnyParts = CheckPlayerHasAnyParts(); 
             bool hasAllParts = CheckPlayerHasAllParts(); 
 
@@ -237,16 +226,13 @@ public class MerchantAI : MonoBehaviour
         isTalking = false;
         if (dialoguePanel != null) dialoguePanel.SetActive(false);
 
-        // Что происходит ПОСЛЕ завершения диалога?
         if (storyState == MerchantStoryState.NotMet)
         {
-            // Закончили первое приветствие — запускаем полет камеры к подлодке
             storyState = MerchantStoryState.LookingAtSubmarine;
             StartCoroutine(CutsceneLookAtSubmarine());
         }
         else if (storyState == MerchantStoryState.LookingAtSubmarine)
         {
-            // Шаг 3: Игрок дослушал туториал "Как тут выживать?" до конца -> отправляем искать детали
             storyState = MerchantStoryState.PostSubmarineOffer;
             
             if (SaveManager.Instance != null)
@@ -266,8 +252,6 @@ public class MerchantAI : MonoBehaviour
                 SaveManager.Instance.SetMerchantState((int)storyState);
                 SaveManager.Instance.QuickSave();
             }
-            
-            // Debug.Log("[MerchantAI] Инструкция прослушана. Переход в режим случайных фраз.");
         }
         else if (storyState == MerchantStoryState.ReadyToRepair)
         {
@@ -283,7 +267,6 @@ public class MerchantAI : MonoBehaviour
     
     private void SetupDialogueLine(DialogueLine line)
     {
-        // Никакого парсинга строк! Просто смотрим на enum говорящего
         if (line.speaker == Speaker.Hero)
         {
             if (nameText != null) nameText.text = "Герой";
@@ -293,7 +276,6 @@ public class MerchantAI : MonoBehaviour
             if (nameText != null) nameText.text = "Лавочник";
         }
 
-        // Запускаем печать абсолютно чистой строки
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         typingCoroutine = StartCoroutine(TypeText(line.text));
     }
@@ -302,7 +284,6 @@ public class MerchantAI : MonoBehaviour
     {
         HideHint();
 
-        // 1. Блокируем управление игроком (ищем PlayerController и выключаем его)
         PlayerController playerCtrl = null;
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
@@ -315,11 +296,9 @@ public class MerchantAI : MonoBehaviour
         {
             Vector3 originalCamPos = mainCamera.transform.position;
             
-            // 2. Находим и отключаем скрипт следования камеры, чтобы он нам не мешал
             CameraFollow camFollow = mainCamera.GetComponent<CameraFollow>();
             if (camFollow != null) camFollow.enabled = false;
 
-            // 3. Плавно ведем камеру К подлодке
             float elapsed = 0f;
             Vector3 targetCamPos = new Vector3(submarineTransform.position.x, submarineTransform.position.y, originalCamPos.z);
             while (elapsed < 1.5f)
@@ -330,25 +309,20 @@ public class MerchantAI : MonoBehaviour
             }
             mainCamera.transform.position = targetCamPos;
 
-            // 4. Держим камеру на подлодке
             yield return new WaitForSeconds(submarineViewDuration);
 
-            // 5. Плавно возвращаем камеру назад к игроку/лавочнику
             elapsed = 0f;
             while (elapsed < 1.5f)
             {
-                // Если игрок двигался или позиция изменилась, возвращаемся к исходной точке камеры
                 mainCamera.transform.position = Vector3.Lerp(targetCamPos, originalCamPos, elapsed / 1.5f);
                 elapsed += Time.deltaTime;
                 yield return null;
             }
             mainCamera.transform.position = originalCamPos;
 
-            // 6. Включаем следование камеры обратно
             if (camFollow != null) camFollow.enabled = true;
         }
 
-        // 7. Возвращаем управление игроку
         if (playerCtrl != null) playerCtrl.enabled = true;
         
         storyState = MerchantStoryState.LookingAtSubmarine; 
@@ -367,7 +341,6 @@ public class MerchantAI : MonoBehaviour
     {
         if (InventoryManager.Instance == null) return false;
 
-        // Проверяем, есть ли хотя бы один предмет из списка деталей в инвентаре
         foreach (string partName in partItemNames)
         {
             if (InventoryManager.Instance.HasItem(partName))
@@ -382,15 +355,14 @@ public class MerchantAI : MonoBehaviour
     {
         if (InventoryManager.Instance == null) return false;
 
-        // Проверяем, все ли детали из списка собраны
         foreach (string partName in partItemNames)
         {
             if (!InventoryManager.Instance.HasItem(partName))
             {
-                return false; // Нашли деталь, которой нет — значит собраны не все
+                return false;
             }
         }
-        return true; // Все детали на месте!
+        return true;
     }
 
     void FixedUpdate()
@@ -401,7 +373,6 @@ public class MerchantAI : MonoBehaviour
             return;
         }
 
-        // Логика движения туда-сюда
         float leftBoundary = startPos.x - walkDistance;
         float rightBoundary = startPos.x + walkDistance;
 
@@ -414,12 +385,10 @@ public class MerchantAI : MonoBehaviour
         Vector2 nextPos = rb.position + new Vector2(direction * speed * Time.fixedDeltaTime, 0);
         rb.MovePosition(nextPos);
 
-        // Разворот спрайта
         float scaleX = Mathf.Abs(transform.localScale.x) * direction;
         transform.localScale = new Vector3(scaleX, transform.localScale.y, transform.localScale.z);
     }
 
-    // Эффект печатной машинки со звуком
     IEnumerator TypeText(string line)
     {
         dialogueText.text = ""; 
@@ -432,7 +401,7 @@ public class MerchantAI : MonoBehaviour
 
             yield return new WaitForSeconds(typingSpeed);
         }
-        typingCoroutine = null; // Закончили печать
+        typingCoroutine = null;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -457,9 +426,7 @@ public class MerchantAI : MonoBehaviour
                 StopCoroutine(typingCoroutine);
         }
     }
-
-    // === МЕТОДЫ ДЛЯ ПОДСКАЗКИ ===
-
+    
     void ShowHint()
     {
         if (currentHint != null) return;

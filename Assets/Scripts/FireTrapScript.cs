@@ -6,7 +6,7 @@ public class FireTrap : MonoBehaviour
     public float damageInterval = 0.5f;
 
     [Header("Audio")]
-    public AudioSource audioSource; // 1. Ссылка на звук
+    public AudioSource audioSource;
 
     private bool isPlayerInside = false;
     private float nextDamageTime = 0f;
@@ -16,7 +16,6 @@ public class FireTrap : MonoBehaviour
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
         
-        // 2. Запускаем звук сразу при старте (ловушка всегда "гудит")
         if (audioSource != null)
         {
             audioSource.Play(); 
@@ -43,7 +42,6 @@ public class FireTrap : MonoBehaviour
 
     void Update()
     {
-        // Логика урона БЕЗ ИЗМЕНЕНИЙ (работает только внутри маленького триггера)
         if (isPlayerInside && Time.time >= nextDamageTime)
         {
             PlayerController player = FindObjectOfType<PlayerController>();

@@ -5,7 +5,7 @@ public class AuraPulse : MonoBehaviour
     [Header("Pulse")]
     public float minScale = 1.4f;
     public float maxScale = 1.6f;
-    public float pulseSpeed = 2.0f; // Цикл
+    public float pulseSpeed = 2.0f;
 
     [Header("Opacity")]
     public float minAlpha = 0.4f;
@@ -24,11 +24,9 @@ public class AuraPulse : MonoBehaviour
     {
         float t = Mathf.PingPong(Time.time * pulseSpeed, 1f);
         
-        // Масштаб
         float s = Mathf.Lerp(minScale, maxScale, t);
         transform.localScale = baseScale * s;
 
-        // Прозрачность
         Color c = sr.color;
         c.a = Mathf.Lerp(minAlpha, maxAlpha, t);
         sr.color = c;
