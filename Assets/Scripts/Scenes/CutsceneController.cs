@@ -107,11 +107,6 @@ public class CutsceneController : MonoBehaviour
             elapsed += Time.unscaledDeltaTime;
             yield return null;
         }
-        
-        if (isFinalCutscene && SaveManager.Instance != null)
-        {
-            SaveManager.Instance.DeleteSaveFile();
-        }
 
         asyncLoad.allowSceneActivation = true;
     }

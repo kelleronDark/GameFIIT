@@ -15,7 +15,7 @@ public class Door : MonoBehaviour
     public GameObject sparklesEffect;
 
     private GameObject currentHint;
-    private bool playerInRange = false;
+    public bool IsPlayerInRange { get; private set; } = false;
 
     void Start()
     {
@@ -41,7 +41,7 @@ public class Door : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            playerInRange = true;
+            IsPlayerInRange = true;
             ShowHint();
             UpdateSparkles();
         }
@@ -51,7 +51,7 @@ public class Door : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            playerInRange = false;
+            IsPlayerInRange = false;
             HideHint();
             UpdateSparkles();
         }
@@ -59,7 +59,7 @@ public class Door : MonoBehaviour
 
     void Update()
     {
-        if (currentHint != null && playerInRange)
+        if (currentHint != null && IsPlayerInRange)
         {
             StringUpdateHint();
         }

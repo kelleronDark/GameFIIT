@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4114433203210660516}
   - component: {fileID: 8960075044033918659}
   - component: {fileID: 4767402195404030306}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TriggerZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 5850649186324401166}
   - component: {fileID: 5794719447617720927}
   - component: {fileID: 1500789320959314503}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Box
   m_TagString: Item
   m_Icon: {fileID: 0}

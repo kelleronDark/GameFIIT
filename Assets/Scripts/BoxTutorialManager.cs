@@ -11,12 +11,10 @@ public class BoxTutorialManager : MonoBehaviour
     public TextMeshProUGUI dialogueText;
     
     [Header("Settings")]
-    public string prefsKey = "HasSeenBoxTutorial";
     public float typingSpeed = 0.04f;
     
     private bool isTutorialActive = false;
     private Coroutine typingCoroutine;
-    
     private bool ignoreInputForOneFrame = false;
 
     void Update()
@@ -45,9 +43,9 @@ public class BoxTutorialManager : MonoBehaviour
 
     public void ShowBoxTutorial()
     {
-        if (!ShouldShowTutorial())
+        if (SaveManager.Instance != null && SaveManager.Instance.IsBoxTutorialSeen())
         {
-            Debug.Log("BoxTutorial: Уже был показан ранее");
+            Debug.Log("BoxTutorial: Уже был показан в этом сохранении.");
             return;
         }
         
@@ -61,7 +59,6 @@ public class BoxTutorialManager : MonoBehaviour
         
         isTutorialActive = true;
         ignoreInputForOneFrame = true;
-        
         dialoguePanel.SetActive(true);
         
         if (nameText != null)
@@ -106,24 +103,15 @@ public class BoxTutorialManager : MonoBehaviour
             typingCoroutine = null;
         }
         
-        PlayerPrefs.SetInt(prefsKey, 1);
-        PlayerPrefs.Save();
-        
-        Debug.Log("Box tutorial saved");
-        
         if (SaveManager.Instance != null)
         {
-            SaveManager.Instance.SaveGame(); 
+            SaveManager.Instance.SetBoxTutorialSeen(true);
+            Debug.Log("Состояние туториала изменено в памяти. Ждем чекпоинт.");
         }
         
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);
         
         isTutorialActive = false;
-    }
-
-    public static bool ShouldShowTutorial(string prefsKey = "HasSeenBoxTutorial")
-    {
-        return PlayerPrefs.GetInt(prefsKey, 0) == 0;
     }
 }

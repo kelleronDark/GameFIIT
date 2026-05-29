@@ -28,6 +28,10 @@ public class PlayerController : MonoBehaviour
     public float throwHeight = 2f;
     public float throwSpeed = 2f;
     private bool isAiming = false;
+    
+    [Header("Interaction Settings")]
+    public float interactionRadius = 1f; 
+    public float pickupRadius = 1f;
 
     [Header("Arc Visualization")]
     private LineRenderer lineRenderer;
@@ -128,7 +132,7 @@ public class PlayerController : MonoBehaviour
         {
             bool interactedWithObject = false;
 
-            Collider2D[] nearbyObjects = Physics2D.OverlapCircleAll(transform.position, 2f);
+            Collider2D[] nearbyObjects = Physics2D.OverlapCircleAll(transform.position, interactionRadius);
 
             foreach (var hit in nearbyObjects)
             {
@@ -141,7 +145,7 @@ public class PlayerController : MonoBehaviour
                 }
 
                 Chest chest = hit.GetComponent<Chest>();
-                if (chest != null && !chest.isOpened)
+                if (chest != null && chest.IsPlayerInRange && !chest.isOpened)
                 {
                     chest.OpenChest();
                     interactedWithObject = true;
@@ -149,7 +153,7 @@ public class PlayerController : MonoBehaviour
                 }
 
                 Door door = hit.GetComponent<Door>();
-                if (door != null && !door.isOpened)
+                if (door != null &&  door.IsPlayerInRange && !door.isOpened)
                 {
                     door.TryOpen();
                     interactedWithObject = true;
@@ -214,7 +218,7 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("TryPickUp: Начало проверки...");
     
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 1.5f);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, pickupRadius);
         Debug.Log($"TryPickUp: Найдено объектов в радиусе: {hits.Length}");
 
         foreach (var hit in hits)
@@ -258,8 +262,6 @@ public class PlayerController : MonoBehaviour
                 else
                 {
                     Debug.Log("Tutorial: BoxTutorialManager найден!");
-                    Debug.Log($"Tutorial: ShouldShowTutorial() = {BoxTutorialManager.ShouldShowTutorial()}");
-                
                     tutorial.ShowBoxTutorial();
                 }
 

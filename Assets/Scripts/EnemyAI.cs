@@ -30,6 +30,11 @@ public class EnemyAI : MonoBehaviour
     public float playerDistError = 0.4f;
     public LayerMask obstacleMask;
     
+    private float changeDirectionTimer = 0f;
+    [Header("Damping Settings")]
+    public float directionChangeDamping = 0.08f;
+    private Vector2 movementIntention = Vector2.zero;
+    
     [Header("Layer Settings")]
     public string doorLayerName = "DynamicObs";
 
@@ -53,10 +58,14 @@ public class EnemyAI : MonoBehaviour
     private Vector3 lastPlayerPosTrack;
     
     private Vector2 lastFacingDirection = Vector2.down;
+    
+    private float originalMaxSpeed;
 
     void Start()
     {
         ai = GetComponent<IAstarAI>();
+        rb = GetComponent<Rigidbody2D>();
+        if (ai != null) originalMaxSpeed = ai.maxSpeed;
         if (anim == null) anim = GetComponent<Animator>();
         if (stunEffectObject != null) stunEffectObject.SetActive(false);
     }
@@ -163,6 +172,8 @@ public class EnemyAI : MonoBehaviour
     private void TryAttackTarget()
     {
         if (player == null || currentState == State.Stun) return;
+        
+        if (currentAttackTarget != null) return;
 
         if (Time.time >= lastAttackTime + attackCooldown)
         {
@@ -192,21 +203,28 @@ public class EnemyAI : MonoBehaviour
         float dist = Vector2.Distance(transform.position, currentAttackTarget.transform.position);
         if (dist <= attackRange + 1.5f)
         {
-            // Напрямую берем контроллер игрока и уменьшаем ему ХП!
-            PlayerController playerController = player.GetComponent<PlayerController>();
-            if (playerController != null)
+            if (currentAttackTarget == player.gameObject)
             {
-                playerController.TakeDamage(damageAmount);
-                Debug.Log($"[Монстр] Успешно нанес {damageAmount} урона игроку! Дистанция: {dist}");
+                PlayerController playerController = player.GetComponent<PlayerController>();
+                if (playerController != null)
+                {
+                    playerController.TakeDamage(damageAmount);
+                    Debug.Log("[Монстр] Нанес урон игроку!");
+                }
             }
-            else
+            else if (currentAttackTarget.CompareTag("Item"))
             {
-                Debug.LogError("[Монстр] Ошибка! На объекте Player не найден скрипт PlayerController!");
+                BoxImpact box = currentAttackTarget.GetComponent<BoxImpact>();
+                if (box != null)
+                {
+                    box.TakeDamage(1);
+                    Debug.Log("[Монстр] Ударил по коробке, игрок в безопасности.");
+                }
             }
         }
         else
         {
-            Debug.LogWarning($"[Монстр] Промах! Игрок успел отбежать. Дистанция: {dist}, а надо хотя бы {attackRange + 1.5f}");
+            Debug.LogWarning($"[Монстр] Промах по объекту {currentAttackTarget.name}! Дистанция: {dist}, а надо хотя бы {attackRange + 1.5f}");
         }
         
         currentAttackTarget = null;
@@ -322,8 +340,8 @@ public class EnemyAI : MonoBehaviour
         if (ai != null)
         {
             ai.isStopped = true;
-            ai.destination = transform.position;
             ai.maxSpeed = 0f;
+            if (ai is MonoBehaviour aiComponent) aiComponent.enabled = false;
         }
 
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
@@ -364,8 +382,9 @@ public class EnemyAI : MonoBehaviour
 
         if (ai != null)
         {
+            if (ai is MonoBehaviour aiComponent) aiComponent.enabled = true;
             ai.isStopped = false;
-            ai.maxSpeed = 2.5f;
+            ai.maxSpeed = originalMaxSpeed;
         }
 
         currentState = State.Patrol;
@@ -374,37 +393,80 @@ public class EnemyAI : MonoBehaviour
 
     void UpdateAnimation()
     {
-        if (anim == null) return;
+        if (anim == null || ai == null) return;
 
-        Vector2 velocity = ai.velocity;
-        float speed = velocity.magnitude;
+        // Снова берем чистый desiredVelocity, он лучше всего подходит.
+        Vector2 desiredDir = ai.desiredVelocity;
+        float speed = desiredDir.magnitude;
 
-        if (speed > 0.25f && currentState != State.Stun && !ai.isStopped)
+        // Условие для анимации движения (завысил порог скорости, чтобы убить дрожь у точек)
+        if (speed > 0.5f && currentState != State.Stun && !ai.isStopped && !ai.reachedDestination)
         {
-            Vector2 dir = velocity.normalized;
+            Vector2 normalizedDir = desiredDir.normalized;
             
-            if (Mathf.Abs(dir.x) > 0.3f || Mathf.Abs(dir.y) > 0.3f)
+            // 1. Убиваем диагонали на корню. Принудительно выпрямляем вектор в "крест" U,D,L,R.
+            // Это решит проблему прокрутки Право->Вверх->Лево.
+            Vector2 snapedDir = Vector2.zero;
+            if (Mathf.Abs(normalizedDir.x) > Mathf.Abs(normalizedDir.y))
             {
-                lastFacingDirection = dir;
-                
-                if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+                snapedDir = new Vector2(normalizedDir.x > 0 ? 1f : -1f, 0f); // Только горизонталь
+            }
+            else
+            {
+                snapedDir = new Vector2(0f, normalizedDir.y > 0 ? 1f : -1f); // Только вертикаль
+            }
+
+            // 2. Вводим гистерезис. Если новое snapped-направление совпадает со старым, сбрасываем таймер.
+            if (snapedDir == movementIntention)
+            {
+                changeDirectionTimer = 0f;
+            }
+            else
+            {
+                // 3. Если новое snapped-направление отличается, запускаем таймер уверенности.
+                // movementIntention == zero — это когда он только начал идти или вышел из стана.
+                if (movementIntention == Vector2.zero)
                 {
-                    anim.SetFloat("MoveX", dir.x > 0 ? 1f : -1f);
-                    anim.SetFloat("MoveY", 0f);
+                    // Если он стоял, принимаем поворот мгновенно, без задержки.
+                    movementIntention = snapedDir;
+                    changeDirectionTimer = 0f;
                 }
                 else
                 {
-                    anim.SetFloat("MoveX", 0f);
-                    anim.SetFloat("MoveY", dir.y > 0 ? 1f : -1f);
+                    // Если он уже шел, требуем уверенности в новом векторе.
+                    changeDirectionTimer += Time.deltaTime;
+
+                    // 4. Если уверенность в новом направлении длилась дольше directionChangeDamping...
+                    if (changeDirectionTimer >= directionChangeDamping)
+                    {
+                        // То наконец принимаем решение развернуть спрайт.
+                        movementIntention = snapedDir;
+                        changeDirectionTimer = 0f;
+                    }
                 }
             }
-            anim.SetBool("isMoving", true);
+
+            // 5. И только на основе проверенного intentions (movementIntention) ставим Float'ы в аниматор.
+            // directionChangeDamping гарантирует, что движение и спрайт всегда будут синхронны.
+            // Это решит проблему Вверх->Вниз->Влево.
+            if (movementIntention != Vector2.zero)
+            {
+                lastFacingDirection = movementIntention; // Запоминаем для стана/атаки
+                
+                anim.SetFloat("MoveX", movementIntention.x);
+                anim.SetFloat("MoveY", movementIntention.y);
+                anim.SetBool("isMoving", true);
+            }
         }
         else
         {
+            // При остановке сбрасываем всё
             anim.SetBool("isMoving", false);
             anim.SetFloat("MoveX", 0f);
             anim.SetFloat("MoveY", 0f);
+            
+            //movementIntention = Vector2.zero; // Лучше не сбрасывать, чтобы спрайт не "дрожал" при микро-остановках.
+            changeDirectionTimer = 0f;
         }
     }
 
@@ -434,6 +496,8 @@ public class EnemyAI : MonoBehaviour
     {
         if (currentState == State.Stun) return;
         
+        if (currentAttackTarget != null) return;
+        
         if (collision.gameObject.CompareTag("Item"))
         {
             BoxImpact box = collision.gameObject.GetComponent<BoxImpact>();
@@ -444,8 +508,6 @@ public class EnemyAI : MonoBehaviour
                     currentAttackTarget = collision.gameObject;
                     lastAttackTime = Time.time;
                     if (anim != null) anim.SetTrigger("Attack");
-                    
-                    box.TakeDamage(1);
                 }
             }
         }

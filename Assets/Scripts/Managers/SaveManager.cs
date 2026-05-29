@@ -11,6 +11,8 @@ public class SaveManager : MonoBehaviour
     private bool bayonetTrapDeactivated = false;
     private int savedMerchantState = 0;
     private int savedBoothmanState = 0;
+    private bool hasSeenBoxTutorial = false;
+    [HideInInspector] public bool playHatchSoundNext = false;
     
     [HideInInspector] public bool playFinalCutsceneNext = false;
 
@@ -55,9 +57,7 @@ public class SaveManager : MonoBehaviour
         }
         
         data.keyCount = KeyInventory.Instance.GetKeyCount();
-        
         data.activatedCheckpoints = new List<string>(activeCheckpointsList);
-        
         data.isBayonetTrapDeactivated = bayonetTrapDeactivated;
         
         MerchantAI merchant = Object.FindFirstObjectByType<MerchantAI>();
@@ -75,8 +75,7 @@ public class SaveManager : MonoBehaviour
         data.boothmanStoryStateInt = savedBoothmanState;
         
         data.playFinalCutsceneNext = playFinalCutsceneNext;
-        
-        data.hasSeenBoxTutorial = PlayerPrefs.GetInt("HasSeenBoxTutorial", 0) == 1;
+        data.hasSeenBoxTutorial = hasSeenBoxTutorial;
         
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(filePath, json);
@@ -111,7 +110,6 @@ public class SaveManager : MonoBehaviour
         }
         
         activeCheckpointsList = new List<string>(data.activatedCheckpoints);
-        
         bayonetTrapDeactivated = data.isBayonetTrapDeactivated;
 
         BayonetTrap trap = Object.FindFirstObjectByType<BayonetTrap>();
@@ -155,9 +153,7 @@ public class SaveManager : MonoBehaviour
         }
         
         playFinalCutsceneNext = data.playFinalCutsceneNext;
-        
-        PlayerPrefs.SetInt("HasSeenBoxTutorial", data.hasSeenBoxTutorial ? 1 : 0);
-        PlayerPrefs.Save();
+        hasSeenBoxTutorial = data.hasSeenBoxTutorial;
     }
     
     public bool HasSaveFile()
@@ -255,6 +251,16 @@ public class SaveManager : MonoBehaviour
         return savedBoothmanState;
     }
     
+    public void SetBoxTutorialSeen(bool state)
+    {
+        hasSeenBoxTutorial = state;
+    }
+
+    public bool IsBoxTutorialSeen()
+    {
+        return hasSeenBoxTutorial;
+    }
+    
     public void ResetInMemoryData()
     {
         activeCheckpointsList.Clear();
@@ -263,10 +269,9 @@ public class SaveManager : MonoBehaviour
         savedMerchantState = 0;
         savedBoothmanState = 0;
         player = null;
+        hasSeenBoxTutorial = false;
+        playHatchSoundNext = false;
         
-        PlayerPrefs.SetInt("HasSeenBoxTutorial", 0); 
-        PlayerPrefs.Save();
-    
         Debug.Log("<color=cyan>Данные сохранения в RAM успешно сброшены к начальным значениям.</color>");
     }
 }

@@ -14,7 +14,7 @@ public class Chest : MonoBehaviour
     public GameObject sparklesEffect;
 
     private GameObject currentHint;
-    private bool playerInRange = false;
+    public bool IsPlayerInRange { get; private set; } = false;
 
     void Start()
     {
@@ -38,7 +38,7 @@ public class Chest : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            playerInRange = true;
+            IsPlayerInRange = true;
             ShowHint();
         }
     }
@@ -47,7 +47,7 @@ public class Chest : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            playerInRange = false;
+            IsPlayerInRange = false;
             HideHint();
         }
     }

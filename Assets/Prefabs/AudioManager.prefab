@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc5633436dc400642a568a0946a52087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
-  hatchOpenSound: {fileID: 8300000, guid: 7a7765dd41dc6484f9cb1915d1fe0ead, type: 3}
+  hatchOpenSound: {fileID: 8300000, guid: 9338172a19ae64424a1117d937766c90, type: 3}
   musicSource: {fileID: 0}
   sfxSource: {fileID: 0}
   mainMenuMusic: {fileID: 8300000, guid: a4796da8467b6174fa678d06e57674fb, type: 3}
@@ -52,3 +52,4 @@ MonoBehaviour:
   musicVolume: 0.617
   sfxVolume: 1
   fadeDuration: 1.5
+  isPlayingHatch: 0
