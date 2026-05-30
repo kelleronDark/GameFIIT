@@ -351,11 +351,11 @@ public class EnemyAI : MonoBehaviour
         {
             audioSource.PlayOneShot(spotRoarClip);
             lastRoarTime = Time.time;
-            Debug.Log($"🔊 Монстр {gameObject.name} издал боевой рёв!");
+            Debug.Log($"Монстр {gameObject.name} издал боевой рёв!");
         }
         else
         {
-            Debug.LogWarning($"⚠️ На {gameObject.name} не настроен AudioSource или не подкинут клип рёва!");
+            Debug.LogWarning($"На {gameObject.name} не настроен AudioSource или не подкинут клип рёва!");
         }
     }
 
