@@ -38,10 +38,7 @@ public class BoothmanAI : MonoBehaviour
     public float merchantViewDuration = 3f;
 
     [Header("Реплики Лавочника (Первая встреча)")]
-    public DialogueLine[] merchantCommentPhrases;
-
-    [Header("UI Hint")]
-    public GameObject hintPrefab;          
+    public DialogueLine[] merchantCommentPhrases;         
     
     private BoothKeeperStoryState storyState = BoothKeeperStoryState.NotMet;
     private bool isTalking = false;
@@ -193,7 +190,6 @@ public class BoothmanAI : MonoBehaviour
 
     private IEnumerator CutsceneLookAtMerchant()
     {
-        HideHint();
         isCutsceneActive = true;
         
         if (merchantAI != null)
@@ -259,7 +255,6 @@ public class BoothmanAI : MonoBehaviour
         }
         
         isCutsceneActive = false;
-        ShowHint();
     }
 
     IEnumerator TypeText(string line)
@@ -280,7 +275,6 @@ public class BoothmanAI : MonoBehaviour
         if (other.CompareTag("Player")) 
         {
             isPlayerNearby = true;
-            ShowHint();
         }
     }
 
@@ -289,32 +283,9 @@ public class BoothmanAI : MonoBehaviour
         if (other.CompareTag("Player")) 
         {
             isPlayerNearby = false;
-            HideHint();
             isTalking = false;
             if (dialoguePanel != null) dialoguePanel.SetActive(false);
             if (typingCoroutine != null) StopCoroutine(typingCoroutine);
-        }
-    }
-
-    void ShowHint()
-    {
-        if (currentHint != null) return;
-        currentHint = Instantiate(hintPrefab, transform.position + Vector3.up * 1.5f, Quaternion.identity);
-        currentHint.transform.SetParent(transform);
-
-        TextMeshProUGUI hintText = currentHint.GetComponentInChildren<TextMeshProUGUI>();
-        if (hintText != null) hintText.text = "Нажмите F";
-
-        Canvas canvas = currentHint.GetComponentInChildren<Canvas>();
-        if (canvas != null && Camera.main != null) canvas.worldCamera = Camera.main;
-    }
-
-    void HideHint()
-    {
-        if (currentHint != null)
-        {
-            Destroy(currentHint);
-            currentHint = null;
         }
     }
     

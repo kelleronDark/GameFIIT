@@ -378,7 +378,7 @@ public class EnemyAI : MonoBehaviour
         if (anim != null)
         {
             anim.ResetTrigger("Attack");
-            anim.SetBool("IsStunned", true);
+            // anim.SetBool("IsStunned", true);
             anim.SetBool("isMoving", false);
         }
 
@@ -391,7 +391,7 @@ public class EnemyAI : MonoBehaviour
 
         if (anim != null)
         {
-            anim.SetBool("IsStunned", false);
+            // anim.SetBool("IsStunned", false);
         }
 
         if (stunEffectObject != null)

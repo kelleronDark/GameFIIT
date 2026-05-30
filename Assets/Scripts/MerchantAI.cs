@@ -58,9 +58,6 @@ public class MerchantAI : MonoBehaviour
     public DialogueLine[] idleNoPartsPhrases;
     public DialogueLine[] idleWithPartsPhrases;
     public DialogueLine[] finalPhrases;
-
-    [Header("UI Hint")]
-    public GameObject hintPrefab;
     
     private MerchantStoryState storyState = MerchantStoryState.NotMet;
     private Rigidbody2D rb;
@@ -296,8 +293,6 @@ public class MerchantAI : MonoBehaviour
     
     private IEnumerator CutsceneLookAtSubmarine()
     {
-        HideHint();
-
         PlayerController playerCtrl = null;
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
@@ -347,8 +342,6 @@ public class MerchantAI : MonoBehaviour
         currentPhraseIndex = 0;
         
         SetupDialogueLine(currentActivePhrases[currentPhraseIndex]);
-        
-        ShowHint();
     }
     
     private bool CheckPlayerHasAnyParts()
@@ -423,7 +416,6 @@ public class MerchantAI : MonoBehaviour
         if (other.CompareTag("Player")) 
         {
             isPlayerNearby = true;
-            ShowHint();
         }
     }
 
@@ -432,37 +424,11 @@ public class MerchantAI : MonoBehaviour
         if (other.CompareTag("Player")) 
         {
             isPlayerNearby = false;
-            HideHint();
             isTalking = false;
             if (dialoguePanel != null) 
                 dialoguePanel.SetActive(false);
             if (typingCoroutine != null) 
                 StopCoroutine(typingCoroutine);
-        }
-    }
-    
-    void ShowHint()
-    {
-        if (currentHint != null) return;
-
-        currentHint = Instantiate(hintPrefab, transform.position + Vector3.up * 1.5f, Quaternion.identity);
-        currentHint.transform.SetParent(transform);
-
-        TextMeshProUGUI hintText = currentHint.GetComponentInChildren<TextMeshProUGUI>();
-        if (hintText != null)
-            hintText.text = "Нажмите F";
-
-        Canvas canvas = currentHint.GetComponentInChildren<Canvas>();
-        if (canvas != null && Camera.main != null)
-            canvas.worldCamera = Camera.main;
-    }
-
-    void HideHint()
-    {
-        if (currentHint != null)
-        {
-            Destroy(currentHint);
-            currentHint = null;
         }
     }
     
