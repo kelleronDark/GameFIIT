@@ -12,6 +12,12 @@ public class EnemyAI : MonoBehaviour
     public Transform player;
     public Transform[] waypoints;
     public Animator anim;
+    
+    [Header("Audio Settings")]
+    public AudioSource audioSource;
+    public AudioClip spotRoarClip;
+    public float roarCooldown = 120f;
+    private float lastRoarTime = -120f;
 
     [Header("Attack Settings")]
     public int damageAmount = 30;
@@ -108,6 +114,10 @@ public class EnemyAI : MonoBehaviour
             if (currentState == State.Patrol || currentState == State.Search)
             {
                 currentState = State.Chase;
+                if (Time.time >= lastRoarTime + roarCooldown)
+                {
+                    PlaySpotRoar();
+                }
             }
         }
 
@@ -333,6 +343,20 @@ public class EnemyAI : MonoBehaviour
         
         if (stunCoroutine != null) StopCoroutine(stunCoroutine);
         stunCoroutine = StartCoroutine(StunExecution(duration));
+    }
+    
+    private void PlaySpotRoar()
+    {
+        if (audioSource != null && spotRoarClip != null)
+        {
+            audioSource.PlayOneShot(spotRoarClip);
+            lastRoarTime = Time.time;
+            Debug.Log($"🔊 Монстр {gameObject.name} издал боевой рёв!");
+        }
+        else
+        {
+            Debug.LogWarning($"⚠️ На {gameObject.name} не настроен AudioSource или не подкинут клип рёва!");
+        }
     }
 
     private IEnumerator StunExecution(float duration)
